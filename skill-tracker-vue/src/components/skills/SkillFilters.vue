@@ -81,6 +81,7 @@
           </div>
           <button 
             class="btn btn-outline-secondary"
+            data-testid="sort-direction-button"
             :title="`Sort ${sorting.direction === 'asc' ? 'Descending' : 'Ascending'}`"
             @click="handleSortDirectionToggle"
           >

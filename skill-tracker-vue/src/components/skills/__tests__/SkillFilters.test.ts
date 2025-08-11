@@ -181,23 +181,15 @@ describe('SkillFilters', () => {
       props: defaultProps
     })
 
-    // Find the specific direction button by looking for buttons with sort icons
-    const buttons = wrapper.findAll('button')
-    const directionButton = buttons.find(btn => {
-      const icons = btn.findAll('i')
-      return icons.some(icon => 
-        icon.classes().some(cls => cls.includes('sort-up') || cls.includes('sort-down'))
-      )
-    })
+    // Find the direction button by test id
+    const directionButton = wrapper.find('[data-testid="sort-direction-button"]')
     
-    expect(directionButton).toBeDefined()
+    expect(directionButton.exists()).toBe(true)
     
-    if (directionButton) {
-      await directionButton.trigger('click')
-      
-      expect(wrapper.emitted('sort-direction-toggle')).toBeTruthy()
-      expect(wrapper.emitted('sort-direction-toggle')?.[0]).toEqual([])
-    }
+    await directionButton.trigger('click')
+    
+    expect(wrapper.emitted('sort-direction-toggle')).toBeTruthy()
+    expect(wrapper.emitted('sort-direction-toggle')?.[0]).toEqual([])
   })
 
   it('shows correct sort direction icon', () => {

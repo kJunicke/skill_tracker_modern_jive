@@ -6,7 +6,8 @@ import type { SkillData } from '@/types/skill'
 const mockSkillStore = {
   updateSkill: vi.fn(),
   deleteSkill: vi.fn(),
-  levelUpSkill: vi.fn()
+  levelUpSkill: vi.fn(),
+  shouldSuggestStatusTransition: vi.fn().mockResolvedValue({ shouldSuggest: false })
 }
 
 const mockWithSkill = vi.fn()

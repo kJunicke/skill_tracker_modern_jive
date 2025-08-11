@@ -2,6 +2,8 @@
   <!-- All Modals -->
   <div>
     <SkillModal
+      v-if="modalStates.skill.isVisible"
+      data-testid="skill-modal"
       :skill="modalStates.skill.selectedSkill"
       :is-visible="modalStates.skill.isVisible"
       @save="$emit('save-skill', $event)"
@@ -9,6 +11,8 @@
     />
 
     <PracticeRating
+      v-if="modalStates.practice.isVisible"
+      data-testid="practice-rating"
       :skill="modalStates.practice.selectedSkill"
       :is-visible="modalStates.practice.isVisible"
       @practice-complete="(skillId, quality, notes, isLevelUp, levelUpComment) => $emit('practice-complete', skillId, quality, notes, isLevelUp, levelUpComment)"
@@ -16,6 +20,8 @@
     />
 
     <TimelineModal
+      v-if="modalStates.timeline.isVisible"
+      data-testid="timeline-modal"
       :skill="modalStates.timeline.selectedSkill"
       :is-visible="modalStates.timeline.isVisible"
       @close="$emit('close-timeline-modal')"
@@ -28,6 +34,8 @@
     />
 
     <StatusEditor
+      v-if="modalStates.status.isVisible"
+      data-testid="status-editor"
       :skill="modalStates.status.selectedSkill"
       :is-visible="modalStates.status.isVisible"
       @status-changed="(skillId, newStatus) => $emit('status-changed', {skillId, newStatus})"
@@ -35,6 +43,8 @@
     />
 
     <TagsEditor
+      v-if="modalStates.tags.isVisible"
+      data-testid="tags-editor"
       :skill="modalStates.tags.selectedSkill"
       :is-visible="modalStates.tags.isVisible"
       @tags-changed="(skillId, newTags) => $emit('tags-changed', {skillId, newTags})"
@@ -42,6 +52,8 @@
     />
 
     <NotesEditor
+      v-if="modalStates.notes.isVisible"
+      data-testid="notes-editor"
       :skill="modalStates.notes.selectedSkill"
       :is-visible="modalStates.notes.isVisible"
       @notes-changed="(skillId, newNotes) => $emit('notes-changed', skillId, newNotes)"
@@ -54,6 +66,8 @@
     />
 
     <TrainingLog
+      v-if="modalStates.trainingLog.isVisible"
+      data-testid="training-log"
       :skills="skills"
       :is-visible="modalStates.trainingLog.isVisible"
       @close="$emit('close-training-log-modal')"

@@ -224,7 +224,7 @@ describe('ModalManager', () => {
       wrapper = createWrapper(modalStates)
       
       const skillModal = wrapper.findComponent({ name: 'SkillModal' })
-      expect(skillModal.props('skill')).toBe(mockSkill)
+      expect(skillModal.props('skill')).toStrictEqual(mockSkill)
       expect(skillModal.props('isVisible')).toBe(true)
     })
 
@@ -236,7 +236,7 @@ describe('ModalManager', () => {
       wrapper = createWrapper(modalStates)
       
       const practiceRating = wrapper.findComponent({ name: 'PracticeRating' })
-      expect(practiceRating.props('skill')).toBe(mockSkill)
+      expect(practiceRating.props('skill')).toStrictEqual(mockSkill)
       expect(practiceRating.props('isVisible')).toBe(true)
     })
 
@@ -256,7 +256,15 @@ describe('ModalManager', () => {
 
   describe('Event Emission', () => {
     beforeEach(() => {
-      wrapper = createWrapper()
+      wrapper = createWrapper({
+        ...mockModalStates,
+        skill: { selectedSkill: mockSkill, isVisible: true },
+        practice: { selectedSkill: mockSkill, isVisible: true },
+        timeline: { selectedSkill: mockSkill, isVisible: true },
+        status: { selectedSkill: mockSkill, isVisible: true },
+        tags: { selectedSkill: mockSkill, isVisible: true },
+        notes: { selectedSkill: mockSkill, isVisible: true }
+      })
     })
 
     it('emits save-skill event from SkillModal', async () => {
@@ -362,7 +370,15 @@ describe('ModalManager', () => {
 
   describe('Event Handler Parameter Consistency', () => {
     beforeEach(() => {
-      wrapper = createWrapper()
+      wrapper = createWrapper({
+        ...mockModalStates,
+        skill: { selectedSkill: mockSkill, isVisible: true },
+        practice: { selectedSkill: mockSkill, isVisible: true },
+        timeline: { selectedSkill: mockSkill, isVisible: true },
+        status: { selectedSkill: mockSkill, isVisible: true },
+        tags: { selectedSkill: mockSkill, isVisible: true },
+        notes: { selectedSkill: mockSkill, isVisible: true }
+      })
     })
 
     it('maintains parameter consistency for complex events', async () => {
