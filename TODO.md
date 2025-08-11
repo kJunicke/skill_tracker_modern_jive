@@ -50,7 +50,7 @@
 - [x] **Icon Generation**: Complete PWA icon set (72x72 to 512x512)
 - [x] **Public Repository**: https://github.com/kJunicke/skill_tracker_modern_jive
 - [x] **Privacy Protection**: Clean commit history without personal email traces
-- [x] **Unit Test Fixes**: All 175 tests passing ✅ (Fixed: ModalManager, SkillFilters, useSkillEventHandlers)
+- [x] **Unit Test Fixes**: All 216 tests passing ✅ (Enhanced: Toast system, validation, error handling)
 - [x] **Testing & Launch**: Production deployment LIVE 🚀
 - [x] **Live URL**: https://kjunicke.github.io/skill_tracker_modern_jive/
 
@@ -74,7 +74,13 @@
 
 ## 🚧 In Development (2025-08-11)
 
-*No active development tasks*
+### **Critical Bug Investigation** 🐛 PRIORITY
+- [ ] **Timeline Modal Reactivity Bug**: Modal doesn't update with new Quick Notes after first opening
+  - **Status**: INVESTIGATING
+  - **Description**: Quick Notes appear immediately in sidebar timeline but not in main timeline modal after first modal opening. First modal opening shows all notes correctly, subsequent modal openings don't show newly added quick notes until page reload.
+  - **Root Cause Theories**: Vue modal component state/prop caching, Bootstrap modal lifecycle interference, or modal manager state not updating properly between modal open/close cycles
+  - **Impact**: User experience degradation, requires page reload to see timeline updates
+  - **Investigation Areas**: Modal state management, SkillTimelineContent.vue reactivity, BaseModal.vue lifecycle
 
 ## 🚀 Future Features & Enhancements
 
@@ -85,6 +91,7 @@
 - [ ] **Practice Templates**: Pre-defined practice session structures
 - [ ] **Goal Setting System**: Short-term and long-term skill development goals
 - [ ] **Progress Milestones**: Achievement system with custom milestones
+- [ ] **Filtering in timeline** Implement filtering for marked notes (or filtering them out)
 
 ### **Data & Analytics**
 - [ ] **Performance Dashboard**: Visual analytics for skill progression
@@ -149,7 +156,7 @@
 - [ ] **Caching Strategy**: Implement intelligent data caching
 
 ### **Developer Experience**
-- [x] **Unit Test Coverage**: Comprehensive test suite (175 tests, 90%+ coverage) ✅
+- [x] **Unit Test Coverage**: Comprehensive test suite (216 tests, 90%+ coverage) ✅
 - [x] **GitHub Actions CI/CD**: Automated testing and deployment pipeline ✅
 - [ ] **E2E Testing**: Cypress or Playwright integration
 - [ ] **Storybook Integration**: Component documentation and testing
@@ -162,7 +169,7 @@
   - Test folder structure created (`src/components/__tests__/`, `src/services/__tests__/`, `src/composables/__tests__/`)
   - Vitest configuration and test scripts verified and working
   - Test utilities and shared mocks implemented
-- [x] **Phase 2 - Service Layer Tests** (11 test files, 175 tests total)
+- [x] **Phase 2 - Service Layer Tests** (14 test files, 216 tests total)
   - `SkillService.test.ts`: Complete CRUD operations and business logic (21 tests)
   - `SpacedRepetitionService.test.ts`: SM2 algorithm implementation (25 tests) 
   - `StorageService.test.ts`: Data persistence abstraction (11 tests)

@@ -13,7 +13,14 @@
     :is-visible="isVisible"
     @close="$emit('close')"
   >
-    <div v-if="currentSkill">
+    <!-- Error state when skill cannot be found in store -->
+    <div v-if="!currentSkill && props.skill?.id" class="text-center text-muted py-5">
+      <i class="bi bi-exclamation-triangle fs-1"></i>
+      <p class="mt-3 mb-0">Unable to load skill data</p>
+      <small class="text-muted">The skill may have been deleted or modified</small>
+    </div>
+    
+    <div v-else-if="currentSkill">
       <!-- Unified Timeline Component -->
       <SkillTimelineContent
         :skill="currentSkill"
@@ -87,9 +94,10 @@ const emit = defineEmits<Emits>()
 const skillStore = useSkillStore()
 
 // Get the current skill from store instead of using the prop copy
+// Never use the static prop as fallback to prevent stale data issues
 const currentSkill = computed(() => {
   if (!props.skill?.id) return null
-  return skillStore.skills.find(s => s.id === props.skill!.id) || props.skill
+  return skillStore.skills.find(s => s.id === props.skill!.id) || null
 })
 
 const nextReviewDays = computed(() => {

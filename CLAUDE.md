@@ -25,6 +25,7 @@ This file provides guidance to Claude Code when working with the Modern Jive Ski
 - **Quality**: TypeScript strict mode, ESLint clean, 90%+ test coverage
 - **UX Enhanced**: Comprehensive toast notification system for optimal user feedback ✅
 - **Bug Fixed**: Bootstrap Modal + Vue 3 integration issue - Practice Modal buttons now work on repeated openings ✅
+- **KNOWN BUG**: Timeline Modal reactivity issue - Quick Notes appear in sidebar but not in main modal after first opening (pending investigation)
 
 ## Documentation Index
 
@@ -57,9 +58,9 @@ const { filteredData } = useComposable(toRef(props, 'data'), filters)
 
 **Store Access**: Always get current data from reactive store, not static prop copies
 ```typescript
-// ✅ Reactive store access
+// ✅ Reactive store access (NEVER use fallback to props - causes stale data!)
 const currentSkill = computed(() => 
-  skillStore.skills.find(s => s.id === props.skill.id) || props.skill
+  skillStore.skills.find(s => s.id === props.skill.id) || null
 )
 ```
 
@@ -104,6 +105,7 @@ const currentSkill = computed(() =>
 - **Skill Operations**: Save confirmations, practice completions with level-up detection
 - **Level & Deletion**: Manual level updates and skill deletion confirmations
 - **Status Transitions**: Warning toasts for potential progress loss (SkillModal)
+- **Quick Notes**: Success notifications for quick note creation with timeline feedback
 
 ## Development Environment
 
@@ -140,7 +142,7 @@ src/
 - **Reactive Props**: Use `toRef()` for composable integration
 - **Computed Over Watchers**: Prefer computed properties for derived state
 
-### Testing with Vitest (175 tests passing ✅)
+### Testing with Vitest (216 tests passing ✅)
 - **Structure**: Arrange-Act-Assert pattern
 - **Mocking**: Use vi.fn() for dependency isolation
 - **Coverage**: 90%+ for service layer, component interaction testing

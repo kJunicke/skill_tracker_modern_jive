@@ -10,7 +10,13 @@
 
     <!-- Timeline Content -->
     <div class="timeline-content">
-      <div v-if="filteredEntries.length === 0" class="text-center text-muted py-4">
+      <!-- Error state when skill cannot be found in store -->
+      <div v-if="!currentSkill" class="text-center text-muted py-4">
+        <i class="bi bi-exclamation-triangle"></i>
+        <p class="mb-0 mt-2">Unable to load skill data</p>
+      </div>
+      
+      <div v-else-if="filteredEntries.length === 0" class="text-center text-muted py-4">
         <i class="bi bi-clock-history"></i>
         <p class="mb-0 mt-2">No activities to show</p>
       </div>
@@ -61,6 +67,7 @@
 import { ref, computed } from 'vue'
 import type { SkillData, ProgressionEntry, PracticeSession, QuickNote } from '@/types/skill'
 import { useSkillTimeline, type TimelineEvent } from '@/composables/useSkillTimeline'
+import { useSkillStore } from '@/stores/skillStore'
 import TimelineFilters from './TimelineFilters.vue'
 import TimelineEventCard from './TimelineEventCard.vue'
 
@@ -87,15 +94,23 @@ interface Emits {
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
+const skillStore = useSkillStore()
+
+// Get the current skill from store instead of using the prop copy
+// Never use the static prop as fallback to prevent stale data issues
+const currentSkill = computed(() => {
+  if (!props.skill?.id) return null
+  return skillStore.skills.find(s => s.id === props.skill!.id) || null
+})
+
 const filters = ref<TimelineFilters>({
   showLevelUps: true,
   showPractices: true,
   showQuickNotes: props.isModalView ? true : true
 })
 
-// Use unified timeline logic
-const skillRef = computed(() => props.skill)
-const { timelineEvents, getFilteredEvents, eventCounts, formatEventDate, formatEventDateTime, getEventTypeInfo } = useSkillTimeline(skillRef)
+// Use unified timeline logic with reactive skill data
+const { timelineEvents, getFilteredEvents, eventCounts, formatEventDate, formatEventDateTime, getEventTypeInfo } = useSkillTimeline(currentSkill)
 
 
 // Filter entries based on toggles and view mode
@@ -142,7 +157,7 @@ const toggleTransferredToNotes = (event: TimelineEvent) => {
 
 // Create a computed map for transferred states for better reactivity
 const transferredStates = computed(() => {
-  const skill = props.skill
+  const skill = currentSkill.value
   if (!skill) return new Map<string, boolean>()
   
   const states = new Map<string, boolean>()

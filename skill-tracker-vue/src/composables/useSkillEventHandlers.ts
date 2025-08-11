@@ -112,6 +112,9 @@ export function useSkillEventHandlers(modalActions: {
           quickNotes: updatedQuickNotes,
           dateModified: timestamp 
         })
+        
+        // Show success toast
+        showSuccess('Quick Note Saved', 'Your note has been added to the timeline')
       })
     },
 
