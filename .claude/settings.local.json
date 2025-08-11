@@ -36,7 +36,8 @@
       "Bash(start http://localhost:5176)",
       "Bash(git checkout:*)",
       "Bash(git config:*)",
-      "Bash(git shortlog:*)"
+      "Bash(git shortlog:*)",
+      "Bash(git branch:*)"
     ],
     "deny": []
   }

@@ -19,7 +19,8 @@ This file provides guidance to Claude Code when working with the Modern Jive Ski
 
 ### Current Status (2025-08-11)
 - **Production-Ready**: Complete 5-status learning system with PWA functionality ✅
-- **Next Priority**: GitHub Pages PWA deployment (see [TODO.md](./TODO.md)) 🎯
+- **DEPLOYED**: GitHub Pages PWA deployment LIVE 🚀
+- **Repository**: Public release at https://github.com/kJunicke/skill_tracker_modern_jive
 
 ## Documentation Index
 
@@ -97,10 +98,10 @@ src/
 **IMPORTANT**: Always commit ALL modified files with `git add .` to preserve parallel user changes.
 
 **Privacy Configuration** (configured 2025-08-11):
-- **Private Email**: Git configured to use `132850162+kJunicke@users.noreply.github.com` for all future commits
-- **Mailmap**: `.mailmap` file masks historical commits in public displays (GitHub, git shortlog, etc.)
-- **⚠️ WICHTIG**: Alte Commits in `.git/logs/` enthalten weiterhin die echte E-Mail-Adresse
-- **Für vollständige Anonymisierung**: Neue Git-History mit `git checkout --orphan` erforderlich
+- **✅ FULLY PROTECTED**: Clean Git-History mit `git checkout --orphan` erstellt
+- **Private Email**: Git configured to use `132850162+kJunicke@users.noreply.github.com` für alle Commits
+- **Mailmap**: `.mailmap` file masks any remaining email references in public displays  
+- **Public Repository**: https://github.com/kJunicke/skill_tracker_modern_jive - sicher für öffentliche Veröffentlichung
 
 ## Vue 3 Development Guidelines
 
@@ -121,5 +122,5 @@ src/
 - **Platform**: Windows development
 - **Package Manager**: npm
 - **PWA Ready**: Offline-first with installable app experience
-- **Deployment**: GitHub Pages with automated workflow (pending)
+- **Deployment**: GitHub Pages with automated workflow ✅ LIVE
 - **Skill Levels**: 0 bis unendlich (0 to infinity)
