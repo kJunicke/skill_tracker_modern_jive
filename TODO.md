@@ -1,0 +1,211 @@
+# Modern Jive Skill Tracker - TODO List
+
+**Created:** 2025-08-07  
+**Purpose:** Track future features, enhancements, and improvements
+
+## ✅ Recently Completed (2025-08)
+
+### **5-Status Learning System Implementation** ✅ 
+- **Status**: FULLY IMPLEMENTED (2025-08-09)
+- **Description**: Complete scientifically-backed 3+2 status learning system
+- **Implemented Features**:
+  - **BACKLOG**: Skill collection (Level 0, excluded from learning algorithms) ✅
+  - **ACQUISITION**: Active skill building (Level 1-4, fixed 1-2-3 day intervals) ✅
+  - **MAINTENANCE**: Skill retention (Level 5+, standard SM2 algorithm) ✅
+  - **FOCUS**: Deliberate practice (Overlay on Maintenance, XP-based progression) ✅
+  - **ARCHIVED**: Inactive skills (Excluded from learning algorithms, level frozen) ✅
+- **Key Features Delivered**:
+  - Status-specific spaced repetition algorithms ✅
+  - Automatic ACQUISITION → MAINTENANCE transition at Level 5 ✅
+  - XP system for FOCUS mode with auto-return to MAINTENANCE ✅
+  - 1-4 Practice Rating Scale (Forgotten | Hard | Good | Very Easy) ✅
+  - Comprehensive test coverage (85+ passing service tests) ✅
+
+### **Component Architecture Refactoring** ✅
+- **SkillCard.vue**: 78% reduction (700→157 lines) + 5 sub-components ✅
+- **App.vue**: 32% reduction (267→182 lines) + 4 layout components ✅
+- **TrainingLog.vue**: 84% reduction (683→107 lines) + 4 sub-components ✅
+- **Base Component Library**: BaseModal.vue and BaseButton.vue with 90%+ UI consistency ✅
+- **Service Layer Architecture**: Complete separation with dependency injection ✅
+- **Professional Test Infrastructure**: 1,355+ lines of comprehensive unit tests ✅
+
+### **Progressive Web App (PWA) Implementation** ✅
+- **Status**: FULLY IMPLEMENTED (2025-08-08)
+- **Features Delivered**:
+  - **Offline-First Architecture**: Complete service worker with caching strategies ✅
+  - **App Installation**: Installable PWA with proper manifest configuration ✅
+  - **Modern Branding**: Modern Jive themed app with custom icons ✅
+  - **localStorage Integration**: Seamless offline data persistence ✅
+  - **Responsive Design**: Optimized for desktop, tablet, and mobile ✅
+
+## 🚀 Current Priority: GitHub Pages Deployment
+
+### **GitHub Pages PWA Deployment - Next Steps**
+- [x] **PWA Setup**: Vite-plugin-pwa configured with offline functionality
+- [x] **Service Worker**: Offline-first caching strategy implemented  
+- [x] **App Manifest**: Modern Jive branding and installation capability
+- [ ] **GitHub Actions Workflow**: Automated deployment from main branch
+- [ ] **Repository Configuration**: GitHub Pages settings and base path
+- [ ] **Production Build**: Optimized PWA build for static hosting
+- [ ] **Icon Generation**: Complete PWA icon set (72x72 to 512x512)
+- [ ] **Data Export/Import System**: JSON backup functionality for cross-device sync
+- [ ] **Testing & Launch**: Production deployment testing and go-live
+
+## 🚀 Future Features & Enhancements
+
+### **Core Functionality Improvements**
+- [ ] **Advanced Skill Search**: Full-text search across skill names, notes, and tags
+- [ ] **Skill Dependencies**: Define prerequisite relationships between skills
+- [ ] **Custom Skill Categories**: User-defined skill groupings beyond tags
+- [ ] **Practice Templates**: Pre-defined practice session structures
+- [ ] **Goal Setting System**: Short-term and long-term skill development goals
+- [ ] **Progress Milestones**: Achievement system with custom milestones
+
+### **Data & Analytics**
+- [ ] **Performance Dashboard**: Visual analytics for skill progression
+- [ ] **Practice Pattern Analysis**: Identify optimal practice schedules
+- [ ] **Skill Correlation Analysis**: Discover relationships between different skills
+- [ ] **Progress Forecasting**: Predict skill development timelines
+- [x] **Export/Import System**: JSON backup functionality for cross-device data transfer
+- [ ] **Data Visualization Charts**: Interactive charts for skill progress
+- [ ] **Cloud Backup Integration**: Automatic cloud backup with user accounts
+
+### **User Experience Enhancements**
+- [ ] **Dark Mode Support**: Complete dark theme implementation
+- [ ] **Keyboard Shortcuts**: Comprehensive keyboard navigation
+- [ ] **Accessibility Improvements**: Screen reader support, high contrast mode
+- [ ] **Mobile Responsiveness**: Optimized mobile interface
+- [ ] **Offline Support**: PWA with offline-first capabilities
+- [ ] **Customizable Interface**: User-configurable layouts and preferences
+
+### **Advanced Features**
+- [ ] **Video Integration**: Link skills to instructional videos
+- [ ] **Audio Notes**: Voice recordings for practice insights
+- [ ] **Photo Documentation**: Visual progress tracking with images
+- [ ] **Calendar Integration**: Schedule practice sessions
+- [ ] **Reminder System**: Smart notifications for practice timing
+- [ ] **Sharing Features**: Export skills for sharing with instructors
+
+### **Multi-Dance Support**
+- [ ] **Salsa Integration**: Adapt system for Salsa dance training
+- [ ] **Bachata Support**: Bachata-specific skill categories
+- [ ] **West Coast Swing**: WCS dance style integration
+- [ ] **Dance Style Switching**: Multi-dance profile management
+- [ ] **Cross-Dance Skills**: Skills applicable across dance styles
+
+### **Social & Community Features**
+- [ ] **Skill Sharing**: Share skill definitions with other dancers
+- [ ] **Progress Sharing**: Social progress updates and achievements
+- [ ] **Instructor Dashboard**: Tools for dance instructors
+- [ ] **Student Progress Tracking**: Instructor view of student development
+- [ ] **Community Challenges**: Group skill challenges and competitions
+- [ ] **Peer Learning**: Collaborative skill development features
+
+## 🌐 Backend Integration (Future)
+- [ ] **Supabase Integration**: Cloud database and authentication
+- [ ] **Multi-Device Sync**: Cross-device data synchronization  
+- [ ] **User Accounts**: Registration and profile management
+- [ ] **Cloud Backup**: Automatic data backup and restore
+- [ ] **API Development**: REST API for mobile app integration
+
+## 🚀 Alternative Deployment Options (Future)
+- [ ] **Vercel**: Zero-config deployment with GitHub integration
+- [ ] **Netlify**: Advanced deployment with build optimizations  
+- [ ] **Custom Domain**: Professional domain setup with SSL
+
+## 🔧 Technical Improvements
+
+### **Performance & Architecture**
+- [ ] **Component Memoization**: Optimize re-rendering performance
+- [ ] **Lazy Loading**: Code splitting and dynamic imports
+- [ ] **Virtual Scrolling**: Handle large skill lists efficiently
+- [ ] **State Management Optimization**: Improve Pinia store performance
+- [ ] **Bundle Size Optimization**: Tree shaking and dead code elimination
+- [ ] **Caching Strategy**: Implement intelligent data caching
+
+### **Developer Experience**
+- [ ] **Unit Test Coverage**: Comprehensive test suite (target: 80%+)
+- [ ] **E2E Testing**: Cypress or Playwright integration
+- [ ] **Storybook Integration**: Component documentation and testing
+- [ ] **API Documentation**: Comprehensive developer documentation
+- [ ] **Contributing Guidelines**: Clear contribution workflow
+- [ ] **Automated Deployment**: CI/CD pipeline improvements
+
+### **Unit Testing Implementation**
+- [ ] **Phase 1 - Test Infrastructure Setup**
+  - Create test folder structure (`src/components/__tests__/`, `src/utils/__tests__/`, `src/composables/__tests__/`)
+  - Verify Vitest configuration and test scripts
+  - Setup test utilities and shared mocks
+- [ ] **Phase 2 - Utility Function Tests** (Priority: High - Easy wins)
+  - `qualityUtils.ts`: Test `getQualityColor`, `calculateSessionStats`, `getQualityXP`
+  - `dateHelpers.ts`: Test date formatting and calculation functions
+  - `spacedRepetition.ts`: Test SM2 algorithm implementation
+  - `focusDataHelpers.ts`: Test focus mode calculations
+- [ ] **Phase 3 - Composable Tests** (Priority: Medium)
+  - `useSkillActions.ts`: Test skill lookup and manipulation with Pinia store mocking
+  - `useArrayToggle.ts`: Test array manipulation utilities
+  - `useCharacterCounter.ts`: Test text counting functionality
+  - `useMarkdown.ts`: Test markdown processing utilities
+- [ ] **Phase 4 - Component Tests** (Priority: Medium-Low)
+  - `StarRating.vue`: Test rating display and interaction
+  - `StatusEditor.vue`: Test status change functionality
+  - `TagsEditor.vue`: Test tag management interface
+  - `SkillCard.vue`: Test skill display with mocked props/events
+- [ ] **Phase 5 - Integration & Coverage**
+  - Setup test coverage reporting with Vitest
+  - Integrate `npm run test:unit` into CI/CD workflows
+  - Achieve target 80%+ test coverage
+  - Document testing patterns and best practices
+
+### **Code Quality**
+- [ ] **ESLint Rule Enhancements**: Stricter code quality rules
+- [ ] **TypeScript Strict Mode**: Enable strict TypeScript settings
+- [ ] **Code Coverage Reports**: Automated coverage tracking
+- [ ] **Performance Monitoring**: Runtime performance analytics
+- [ ] **Error Tracking**: Comprehensive error reporting system
+- [ ] **Security Audit**: Regular security vulnerability assessments
+
+## 📱 Mobile & Desktop Apps
+
+### **Progressive Web App Enhancements (Future)**
+- [ ] **Push Notifications**: Practice reminders and achievements
+- [ ] **Background Sync**: Offline data synchronization
+- [ ] **Mobile Gestures**: Touch-optimized interactions
+- [ ] **App Store Publishing**: Submit PWA to app stores
+
+### **Native Applications**
+- [ ] **Electron Desktop App**: Cross-platform desktop application
+- [ ] **Mobile App Development**: React Native or Flutter implementation
+- [ ] **Tablet Optimization**: Large-screen interface optimization
+- [ ] **Cross-Platform Sync**: Data synchronization across devices
+
+## 🌐 Integration & Extensions
+
+### **Third-Party Integrations**
+- [ ] **Google Calendar**: Practice session scheduling
+- [ ] **Spotify/Apple Music**: Music integration for practice
+- [ ] **YouTube Integration**: Instructional video linking
+- [ ] **Cloud Storage**: Google Drive, Dropbox backup integration
+- [ ] **Fitness Trackers**: Activity monitoring integration
+- [ ] **Social Media**: Progress sharing on social platforms
+
+### **API Development**
+- [ ] **REST API**: Backend API for data management
+- [ ] **GraphQL Interface**: Flexible data querying
+- [ ] **Webhook Support**: External system notifications
+- [ ] **Plugin Architecture**: Extensible functionality system
+- [ ] **Third-Party SDK**: Developer tools for extensions
+
+---
+
+## 📝 Implementation Notes
+
+- **Priority Order**: Focus on Post-Training Reflection redesign and component refactoring first
+- **User Feedback**: Gather input before implementing major new features  
+- **Incremental Development**: Implement features in small, testable increments
+- **Backward Compatibility**: Maintain data compatibility during major changes
+- **Documentation**: Update documentation with each new feature
+
+---
+
+*This TODO list is a living document - items will be moved, prioritized, and updated based on user needs and development progress.*

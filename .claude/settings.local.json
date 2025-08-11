@@ -1,0 +1,43 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir \"C:\\Users\\Kilian\\Nextcloud\\clientsync\\Programming\\Skill_tracking_suite\")",
+      "Bash(ls:*)",
+      "Bash(start index.html)",
+      "Bash(python:*)",
+      "Bash(npm create vue:*)",
+      "Bash(npm install)",
+      "Bash(npm install:*)",
+      "Bash(npm run build:*)",
+      "Bash(timeout 10 npm run dev)",
+      "Bash(node:*)",
+      "Bash(rm:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npm run type-check:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(find:*)",
+      "Bash(timeout 5 npm run dev)",
+      "Bash(npm run lint)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(npx vue-tsc:*)",
+      "Bash(mv:*)",
+      "Bash(start http://localhost:5175)",
+      "Bash(pkill:*)",
+      "Bash(true)",
+      "Bash(start http://localhost:5173)",
+      "Bash(mkdir:*)",
+      "Bash(start http://localhost:5174)",
+      "Bash(npm run:*)",
+      "Bash(npm test)",
+      "WebFetch(domain:vuejs.org)",
+      "WebFetch(domain:vitest.dev)",
+      "Bash(start http://localhost:5176)",
+      "Bash(git checkout:*)",
+      "Bash(git config:*)",
+      "Bash(git shortlog:*)"
+    ],
+    "deny": []
+  }
+}
