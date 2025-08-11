@@ -7,7 +7,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/Skill_tracking_suite/',
+  base: '/skill_tracker_modern_jive/',
   plugins: [
     vue(),
     vueDevTools(),
@@ -36,50 +36,50 @@ export default defineConfig({
         theme_color: '#6f42c1',
         background_color: '#ffffff',
         display: 'standalone',
-        scope: '/Skill_tracking_suite/',
-        start_url: '/Skill_tracking_suite/',
+        scope: '/skill_tracker_modern_jive/',
+        start_url: '/skill_tracker_modern_jive/',
         orientation: 'any',
         categories: ['education', 'health', 'lifestyle'],
         lang: 'de-DE',
         icons: [
           {
-            src: '/icons/icon-72x72.png',
+            src: '/skill_tracker_modern_jive/icons/icon-72x72.png',
             sizes: '72x72',
             type: 'image/png'
           },
           {
-            src: '/icons/icon-96x96.png',
+            src: '/skill_tracker_modern_jive/icons/icon-96x96.png',
             sizes: '96x96',
             type: 'image/png'
           },
           {
-            src: '/icons/icon-128x128.png',
+            src: '/skill_tracker_modern_jive/icons/icon-128x128.png',
             sizes: '128x128',
             type: 'image/png'
           },
           {
-            src: '/icons/icon-144x144.png',
+            src: '/skill_tracker_modern_jive/icons/icon-144x144.png',
             sizes: '144x144',
             type: 'image/png'
           },
           {
-            src: '/icons/icon-152x152.png',
+            src: '/skill_tracker_modern_jive/icons/icon-152x152.png',
             sizes: '152x152',
             type: 'image/png'
           },
           {
-            src: '/icons/icon-192x192.png',
+            src: '/skill_tracker_modern_jive/icons/icon-192x192.png',
             sizes: '192x192',
             type: 'image/png',
             purpose: 'any maskable'
           },
           {
-            src: '/icons/icon-384x384.png',
+            src: '/skill_tracker_modern_jive/icons/icon-384x384.png',
             sizes: '384x384',
             type: 'image/png'
           },
           {
-            src: '/icons/icon-512x512.png',
+            src: '/skill_tracker_modern_jive/icons/icon-512x512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable'

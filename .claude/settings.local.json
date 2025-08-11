@@ -37,7 +37,9 @@
       "Bash(git checkout:*)",
       "Bash(git config:*)",
       "Bash(git shortlog:*)",
-      "Bash(git branch:*)"
+      "Bash(git branch:*)",
+      "WebFetch(domain:kjunicke.github.io)",
+      "Bash(gh run list:*)"
     ],
     "deny": []
   }
