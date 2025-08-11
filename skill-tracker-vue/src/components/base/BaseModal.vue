@@ -1,7 +1,7 @@
 <template>
   <!-- Base Modal Component with Bootstrap 5 -->
   <div 
-    v-if="isVisible"
+    v-show="isVisible"
     :class="modalClasses"
     :id="modalId"
     tabindex="-1" 

@@ -1,4 +1,4 @@
-import { reactive, nextTick } from 'vue'
+import { reactive, ref, nextTick } from 'vue'
 import type { SkillData } from '@/types/skill'
 import type { SkillStatus } from '@/utils/constants'
 import type { 
@@ -6,11 +6,15 @@ import type {
   ModalEventHandlers, 
   ModalId 
 } from '@/types/modals'
-import { showModal, hideModal } from '@/utils/modalManager'
+import { showModal, hideModal, destroyModal } from '@/utils/modalManager'
 import { useToasts } from './useToasts'
 
 export function useModals(handlers: ModalEventHandlers) {
   const { showSuccess } = useToasts()
+  
+  // Modal key for forcing re-render
+  const modalKey = ref(0)
+  
   // Modal states - reactive for Vue reactivity
   const modalStates = reactive<AllModalStates>({
     skill: {
@@ -100,7 +104,11 @@ export function useModals(handlers: ModalEventHandlers) {
     closeSkillModal: () => closeModal('skill'),
     
     // Practice Rating Modal
-    showPracticeModal: (skill: SkillData) => openModal('practice', skill),
+    showPracticeModal: (skill: SkillData) => {
+      destroyModal('practiceRatingModal') // Destroy old Bootstrap instance
+      modalKey.value++ // Force component re-render
+      openModal('practice', skill)
+    },
     closePracticeModal: () => closeModal('practice'),
     
     // Timeline Modal
@@ -178,6 +186,7 @@ export function useModals(handlers: ModalEventHandlers) {
   return {
     // State
     modalStates,
+    modalKey,
     
     // Actions
     ...modalActions,

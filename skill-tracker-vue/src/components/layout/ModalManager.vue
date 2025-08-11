@@ -12,6 +12,7 @@
 
     <PracticeRating
       v-if="modalStates.practice.isVisible"
+      :key="modalKey"
       data-testid="practice-rating"
       :skill="modalStates.practice.selectedSkill"
       :is-visible="modalStates.practice.isVisible"
@@ -116,6 +117,7 @@ interface ModalStates {
 interface Props {
   skills: SkillData[]
   modalStates: ModalStates
+  modalKey: number
 }
 
 interface Emits {

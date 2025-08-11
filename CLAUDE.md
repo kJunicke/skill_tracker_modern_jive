@@ -23,6 +23,7 @@ This file provides guidance to Claude Code when working with the Modern Jive Ski
 - **Repository**: Public release at https://github.com/kJunicke/skill_tracker_modern_jive
 - **Testing**: All 175 unit tests passing ✅ (Fixed: ModalManager, SkillFilters, useSkillEventHandlers)
 - **Quality**: TypeScript strict mode, ESLint clean, 90%+ test coverage
+- **Bug Fixed**: Bootstrap Modal + Vue 3 integration issue - Practice Modal buttons now work on repeated openings ✅
 
 ## Documentation Index
 
@@ -44,6 +45,7 @@ This file provides guidance to Claude Code when working with the Modern Jive Ski
 - **TDD Mandatory**: Write tests BEFORE implementing changes (90%+ coverage requirement)
 - **Pre-Development**: Always run `npm run test:unit`, `npm run type-check`, `npm run dev` first
 - **Post-Development**: Tests, type-check, lint, and functional verification MUST pass
+- **Bug Investigation**: ALWAYS consult `docs/BUG_PATTERNS.md` first when debugging - contains proven solutions for common Vue.js/Bootstrap integration issues
 
 ### Critical Patterns
 **Vue.js Reactivity**: Use `toRef(props, 'propName')` when passing props to composables

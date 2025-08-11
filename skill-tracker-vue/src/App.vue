@@ -34,6 +34,7 @@
     <ModalManager
       :skills="skills"
       :modal-states="modalStates"
+      :modal-key="modalKey"
       @save-skill="handleSaveSkill"
       @close-skill-modal="closeSkillModal"
       @practice-complete="handlePracticeComplete"
@@ -91,6 +92,7 @@ const appEventHandlers = useAppEventHandlers()
 // Initialize modals composable
 const {
   modalStates,
+  modalKey,
   showAddSkillModal,
   showEditSkillModal,
   closeSkillModal,

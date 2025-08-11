@@ -222,3 +222,47 @@ const mockSkillStore = {
 - `SkillFilters.vue`: Added `data-testid="sort-direction-button"`
 - `SkillFilters.test.ts`: Simplified button selection with test ID
 - `useSkillEventHandlers.test.ts`: Added missing mock method `shouldSuggestStatusTransition`
+
+## Bootstrap Modal + Vue 3 Integration Bug (2025-08-11)
+
+**⚠️ CRITICAL BUG**: Practice Modal works correctly on first open but subsequent attempts result in unclickable quality rating buttons.
+
+**Root Cause**: Bootstrap Modal instances are cached and remain associated with old DOM elements even when Vue components are force re-rendered with `:key` changes.
+
+**Symptoms**:
+- First modal opening: All buttons work perfectly
+- Second+ modal opening: Quality buttons appear but clicks don't register
+- Component-level events fire but DOM event handlers are detached
+- Page refresh fixes the issue temporarily
+
+**Technical Details**:
+- `modalManager.ts` caches Bootstrap Modal instances in `modalInstances Map<string, Modal>`
+- Vue's key-based re-rendering creates new DOM elements
+- Cached Bootstrap instances still reference the destroyed DOM elements
+- Event handlers remain bound to the old, non-existent elements
+
+**Failed Solutions Attempted**:
+1. ❌ Form reset with `watch()` on modal visibility - didn't fix event handlers
+2. ❌ Changed `v-if` to `v-show` in BaseModal.vue - didn't prevent instance caching
+3. ❌ Key-based component re-rendering alone - Bootstrap instances still cached
+
+**Solution Applied**:
+```typescript
+// useModals.ts - showPracticeModal function
+showPracticeModal: (skill: SkillData) => {
+  destroyModal('practiceRatingModal') // ✅ Destroy old Bootstrap instance FIRST
+  modalKey.value++                   // ✅ Force Vue component re-render  
+  openModal('practice', skill)       // ✅ Create fresh Bootstrap instance
+},
+```
+
+**Prevention Pattern**: For Vue components with Bootstrap modals that use key-based re-rendering:
+1. **Always destroy Bootstrap instance before component re-render**
+2. **Then increment component key to force Vue re-creation**
+3. **Finally create new modal with fresh DOM elements**
+
+**Files Fixed (2025-08-11)**:
+- `useModals.ts:108-111`: Added `destroyModal()` call before component re-render
+- Import statement updated to include `destroyModal` from `@/utils/modalManager`
+
+**Root Learning**: Bootstrap's instance caching conflicts with Vue's reactivity system. Both the JavaScript Modal instance AND the Vue component must be fresh for proper event binding.

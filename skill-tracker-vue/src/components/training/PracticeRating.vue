@@ -116,7 +116,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import type { SkillData } from '@/types/skill'
 import { calculateNextReview } from '@/utils/spacedRepetition'
 import BaseModal from '@/components/base/BaseModal.vue'
@@ -222,13 +222,20 @@ const submitRating = () => {
   levelUpComment.value = ''
 }
 
-// Watch for modal visibility changes to reset form
+// Reset form function
 const resetForm = () => {
   selectedQuality.value = null
   sessionNotes.value = ''
   isLevelUp.value = false
   levelUpComment.value = ''
 }
+
+// Watch for modal visibility changes to reset form when modal opens
+watch(() => props.isVisible, (isVisible) => {
+  if (isVisible) {
+    resetForm()
+  }
+})
 
 // Reset form when modal closes
 defineExpose({
