@@ -11,6 +11,7 @@ import {
   AnalyticsService,
   StorageService
 } from '@/services'
+import { useToasts } from '@/composables/useToasts'
 
 export const useSkillStore = defineStore('skills', () => {
   // Get services from container
@@ -18,6 +19,9 @@ export const useSkillStore = defineStore('skills', () => {
   const skillService = services[SERVICE_TOKENS.SKILL_SERVICE] as SkillService
   const analyticsService = services[SERVICE_TOKENS.ANALYTICS_SERVICE] as AnalyticsService
   const storageService = services[SERVICE_TOKENS.STORAGE_SERVICE] as StorageService
+  
+  // Toast notifications
+  const { showError } = useToasts()
 
   // UI State (reactive data for components)
   const skills = ref<SkillData[]>([])
@@ -193,6 +197,7 @@ export const useSkillStore = defineStore('skills', () => {
       }
     } catch (error) {
       console.error('Error loading skills:', error)
+      showError('Data Load Failed', 'Unable to load your skills from storage. Please refresh the page.')
       skills.value = []
     }
   }
@@ -203,6 +208,7 @@ export const useSkillStore = defineStore('skills', () => {
       skills.value = []
     } catch (error) {
       console.error('Error deleting all skills:', error)
+      showError('Clear Data Failed', 'Unable to clear your skills from storage.')
     }
   }
 
@@ -212,6 +218,7 @@ export const useSkillStore = defineStore('skills', () => {
       skills.value = testSkills
     } catch (error) {
       console.error('Error resetting test environment:', error)
+      showError('Reset Failed', 'Unable to reset the test environment.')
     }
   }
 
@@ -222,6 +229,7 @@ export const useSkillStore = defineStore('skills', () => {
       await loadSkills()
     } catch (error) {
       console.error('Error updating level-up comment:', error)
+      showError('Update Failed', 'Unable to save the comment changes.')
     }
   }
 
@@ -232,6 +240,7 @@ export const useSkillStore = defineStore('skills', () => {
       await loadSkills()
     } catch (error) {
       console.error('Error updating practice note:', error)
+      showError('Update Failed', 'Unable to save the practice note changes.')
     }
   }
 

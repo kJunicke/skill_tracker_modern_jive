@@ -114,7 +114,8 @@ describe('ModalManager', () => {
     return mount(ModalManager, {
       props: {
         skills,
-        modalStates
+        modalStates,
+        modalKey: 0
       },
       global: {
         stubs: {

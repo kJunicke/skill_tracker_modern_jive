@@ -21,8 +21,9 @@ This file provides guidance to Claude Code when working with the Modern Jive Ski
 - **Production-Ready**: Complete 5-status learning system with PWA functionality ✅
 - **DEPLOYED**: GitHub Pages PWA deployment LIVE 🚀
 - **Repository**: Public release at https://github.com/kJunicke/skill_tracker_modern_jive
-- **Testing**: All 175 unit tests passing ✅ (Fixed: ModalManager, SkillFilters, useSkillEventHandlers)
+- **Testing**: All 216 unit tests passing ✅ (Enhanced: Toast system, validation, error handling)
 - **Quality**: TypeScript strict mode, ESLint clean, 90%+ test coverage
+- **UX Enhanced**: Comprehensive toast notification system for optimal user feedback ✅
 - **Bug Fixed**: Bootstrap Modal + Vue 3 integration issue - Practice Modal buttons now work on repeated openings ✅
 
 ## Documentation Index
@@ -96,9 +97,13 @@ const currentSkill = computed(() =>
 - `showInfo()` - Blue info notifications (5s default)
 
 **Current Integrations**:
-- Skill save confirmation
-- Practice session completion with level-up detection
-- Level updates and skill deletion confirmations
+- **Storage Operations**: Data load/save error notifications in skillStore
+- **Form Validation**: Enhanced validation in SkillModal with specific error messages
+- **CSV Export**: Success/failure notifications in TrainingLogExport with data counts
+- **Auto-save**: Confirmation toasts for inline markdown editors (notes, comments)
+- **Skill Operations**: Save confirmations, practice completions with level-up detection
+- **Level & Deletion**: Manual level updates and skill deletion confirmations
+- **Status Transitions**: Warning toasts for potential progress loss (SkillModal)
 
 ## Development Environment
 

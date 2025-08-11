@@ -1,5 +1,6 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import type { ToolbarNames } from 'md-editor-v3'
+import { useToasts } from './useToasts'
 
 export type EditorMode = 'edit' | 'preview' | 'split'
 
@@ -144,6 +145,7 @@ export function useInlineEditor(
   const isEditing = ref(false)
   const originalContent = ref(initialValue)
   const { content, ...editorUtils } = useMarkdownEditor(initialValue, config, emit)
+  const { showSuccess } = useToasts()
   
   const hasChanges = computed(() => content.value !== originalContent.value)
 
@@ -157,6 +159,11 @@ export function useInlineEditor(
     if (hasChanges.value || !config.autoSave) {
       emit?.('update:modelValue', content.value)
       emit?.('change', content.value)
+      
+      // Show auto-save confirmation only if there were changes
+      if (hasChanges.value && config.autoSave) {
+        showSuccess('Auto-saved', 'Notes saved successfully')
+      }
     }
     isEditing.value = false
     emit?.('edit-end')

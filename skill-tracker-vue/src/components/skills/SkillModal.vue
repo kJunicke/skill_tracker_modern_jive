@@ -112,6 +112,7 @@
 import { ref, watch } from 'vue'
 import type { SkillData } from '@/types/skill'
 import { SKILL_TAGS, STATUS_CONFIG, type SkillTag, type SkillStatus } from '@/utils/constants'
+import { useToasts } from '@/composables/useToasts'
 
 interface Props {
   skill?: SkillData | null
@@ -126,6 +127,7 @@ interface Emits {
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
+const { showError, showWarning } = useToasts()
 const availableTags = SKILL_TAGS
 
 const formData = ref({
@@ -166,9 +168,35 @@ function resetForm() {
 }
 
 function saveSkill() {
+  // Validation
   if (!formData.value.name.trim()) {
-    alert('Please enter a skill name')
+    showError('Skill Name Required', 'Please enter a skill name before saving.')
     return
+  }
+
+  if (formData.value.name.trim().length < 2) {
+    showError('Invalid Skill Name', 'Skill name must be at least 2 characters long.')
+    return
+  }
+
+  if (formData.value.level < 0) {
+    showError('Invalid Level', 'Skill level cannot be negative.')
+    return
+  }
+
+  // Status transition warnings for existing skills
+  if (isEditing.value && props.skill) {
+    const currentStatus = props.skill.status
+    const newStatus = formData.value.status
+    
+    if (currentStatus === 'focus' && newStatus !== 'focus') {
+      showWarning('Focus Mode Exit', 'Changing from Focus status will reset focus progress.')
+    }
+    
+    if ((currentStatus === 'maintenance' || currentStatus === 'focus') && 
+        (newStatus === 'acquisition' || newStatus === 'backlog')) {
+      showWarning('Status Downgrade', 'This change may reset spaced repetition progress.')
+    }
   }
 
   emit('save', {

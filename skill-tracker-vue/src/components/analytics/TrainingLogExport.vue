@@ -6,6 +6,8 @@
 </template>
 
 <script setup lang="ts">
+import { useToasts } from '@/composables/useToasts'
+
 interface Activity {
   id: string
   type: 'practice' | 'levelup' | 'quicknote'
@@ -23,6 +25,7 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+const { showSuccess, showError, showInfo } = useToasts()
 
 const formatDate = (dateString: string): string => {
   const date = new Date(dateString)
@@ -36,19 +39,32 @@ const formatDate = (dateString: string): string => {
 }
 
 const exportData = () => {
-  const data = props.activities.map(activity => ({
-    Date: formatDate(activity.date),
-    Type: activity.type,
-    Skill: activity.skillName,
-    Details: activity.type === 'practice' ? activity.data.qualityText as string : 
-             activity.type === 'levelup' ? `Level ${activity.data.newLevel}` :
-             activity.type === 'quicknote' ? 'Quick Note' :
-             activity.type === 'quicknote' ? 'Quick Note' : '',
-    Notes: activity.type === 'quicknote' ? (activity.data as { note: string }).note : activity.description || ''
-  }))
-  
-  const csv = convertToCSV(data)
-  downloadCSV(csv, 'training-log.csv')
+  try {
+    // Check if there's data to export
+    if (!props.activities || props.activities.length === 0) {
+      showInfo('No Data to Export', 'There are no training activities to export.')
+      return
+    }
+
+    const data = props.activities.map(activity => ({
+      Date: formatDate(activity.date),
+      Type: activity.type,
+      Skill: activity.skillName,
+      Details: activity.type === 'practice' ? activity.data.qualityText as string : 
+               activity.type === 'levelup' ? `Level ${activity.data.newLevel}` :
+               activity.type === 'quicknote' ? 'Quick Note' :
+               activity.type === 'quicknote' ? 'Quick Note' : '',
+      Notes: activity.type === 'quicknote' ? (activity.data as { note: string }).note : activity.description || ''
+    }))
+    
+    const csv = convertToCSV(data)
+    downloadCSV(csv, 'training-log.csv')
+    
+    showSuccess('Export Complete', `Successfully exported ${props.activities.length} training activities.`)
+  } catch (error) {
+    console.error('Export failed:', error)
+    showError('Export Failed', 'Unable to export training data. Please try again.')
+  }
 }
 
 const convertToCSV = (data: Record<string, string>[]): string => {

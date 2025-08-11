@@ -77,7 +77,7 @@ export function useSkillEventHandlers(modalActions: {
             if (updatedSkill) {
               modalActions.showStatusTransitionModal(
                 updatedSkill, 
-                transitionSuggestion.suggestedStatus, 
+                transitionSuggestion.suggestedStatus,
                 transitionSuggestion.reason || ''
               )
             }
