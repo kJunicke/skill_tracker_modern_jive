@@ -1,5 +1,6 @@
 import { useSkillStore } from '@/stores/skillStore'
 import { useSkillActions } from './useSkillActions'
+import { useToasts } from './useToasts'
 import type { SkillData } from '@/types/skill'
 import type { SkillStatus } from '@/utils/constants'
 
@@ -14,6 +15,7 @@ export function useSkillEventHandlers(modalActions: {
 }) {
   const skillStore = useSkillStore()
   const { withSkill } = useSkillActions()
+  const { showSuccess } = useToasts()
 
   return {
     handlePracticeRating: (skillId: string) => {
@@ -24,6 +26,7 @@ export function useSkillEventHandlers(modalActions: {
       withSkill(skillId, (skill) => {
         if (confirm(`Change "${skill.name}" to level ${newLevel}?`)) {
           skillStore.updateSkill(skillId, { level: newLevel })
+          showSuccess('Level Updated', `${skill.name} is now level ${newLevel}`)
         }
       })
     },
@@ -40,6 +43,7 @@ export function useSkillEventHandlers(modalActions: {
       withSkill(skillId, (skill) => {
         if (confirm(`Are you sure you want to delete "${skill.name}"?`)) {
           skillStore.deleteSkill(skillId)
+          showSuccess('Skill Deleted', `${skill.name} has been removed`)
         }
       })
     },

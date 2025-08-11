@@ -77,7 +77,26 @@ const currentSkill = computed(() =>
 - **App.vue**: Main orchestration with 4 layout sub-components
 - **SkillCard.vue**: Modular display with 5 focused sub-components
 - **ModalManager.vue**: Centralized modal management
-- **Base Components**: BaseModal.vue, BaseButton.vue for UI consistency
+- **ToastManager.vue**: Centralized toast notification system with auto-dismiss
+- **Base Components**: BaseModal.vue, BaseButton.vue, BaseToast.vue for UI consistency
+
+### Toast System (NEW)
+**Complete notification system** with 4 variants and full test coverage:
+- **BaseToast.vue**: Individual toast component with animations and auto-dismiss
+- **ToastManager.vue**: Global toast container with positioning
+- **useToasts()**: Composable for creating and managing toasts
+- **toastStore**: Pinia store for centralized toast state management
+
+**Toast Types**:
+- `showSuccess()` - Green success notifications (3s default)
+- `showError()` - Red error notifications (8s default) 
+- `showWarning()` - Yellow warning notifications (5s default)
+- `showInfo()` - Blue info notifications (5s default)
+
+**Current Integrations**:
+- Skill save confirmation
+- Practice session completion with level-up detection
+- Level updates and skill deletion confirmations
 
 ## Development Environment
 

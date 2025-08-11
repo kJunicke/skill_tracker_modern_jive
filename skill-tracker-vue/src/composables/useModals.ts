@@ -7,8 +7,10 @@ import type {
   ModalId 
 } from '@/types/modals'
 import { showModal, hideModal } from '@/utils/modalManager'
+import { useToasts } from './useToasts'
 
 export function useModals(handlers: ModalEventHandlers) {
+  const { showSuccess } = useToasts()
   // Modal states - reactive for Vue reactivity
   const modalStates = reactive<AllModalStates>({
     skill: {
@@ -137,11 +139,18 @@ export function useModals(handlers: ModalEventHandlers) {
     handleSaveSkill: (skillData: Partial<SkillData>) => {
       handlers.onSaveSkill(skillData)
       modalActions.closeSkillModal()
+      showSuccess('Skill Saved', `${skillData.name || 'Skill'} has been saved successfully`)
     },
 
     handlePracticeComplete: (skillId: string, quality: number, notes: string, isLevelUp?: boolean, levelUpComment?: string) => {
       handlers.onPracticeComplete(skillId, quality, notes, isLevelUp, levelUpComment)
       modalActions.closePracticeModal()
+      
+      const skill = modalStates.practice.selectedSkill
+      if (skill) {
+        const qualityText = ['Forgotten', 'Hard', 'Good', 'Very Easy'][quality - 1]
+        showSuccess('Practice Complete', `${skill.name} - ${qualityText}${isLevelUp ? ' (Level Up!)' : ''}`)
+      }
     },
 
     handleStatusChanged: (data: {skillId: string, newStatus: string}) => {

@@ -55,6 +55,9 @@
       @status-transition-confirm="handleStatusTransitionConfirm"
       @close-status-transition-modal="closeStatusTransitionModal"
     />
+
+    <!-- Toast Notifications -->
+    <ToastManager />
   </div>
 </template>
 
@@ -70,6 +73,7 @@ import { useAppEventHandlers } from '@/composables/useAppEventHandlers'
 import AppHeader from '@/components/layout/AppHeader.vue'
 import MainSkillInterface from '@/components/layout/MainSkillInterface.vue'
 import ModalManager from '@/components/layout/ModalManager.vue'
+import ToastManager from '@/components/layout/ToastManager.vue'
 
 // Store
 const skillStore = useSkillStore()
