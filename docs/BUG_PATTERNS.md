@@ -120,3 +120,105 @@ handleTagsChanged: (data: {skillId: string, newTags: string[]}) => { ... }
 - Mock objects in tests must match complete interface definitions
 - Ensure all TypeScript interfaces are properly implemented
 - Use strict type checking to catch parameter mismatches early
+
+## Unit Testing Bug Patterns (2025-08-11)
+
+### **Modal Component Testing Issues**
+
+**⚠️ COMMON BUG**: Tests fail with "Cannot call vm on an empty VueWrapper" or modal components not found.
+
+**Root Cause**: Modal components with `v-if` directives are not rendered when `isVisible: false`, making them unavailable for testing.
+
+**Symptoms**:
+- `wrapper.findComponent({ name: 'ModalName' })` returns empty wrapper
+- Tests that check modal visibility pass, but event tests fail  
+- Error: "Cannot call vm on an empty VueWrapper"
+
+**Solution Applied**:
+```typescript
+// ❌ BAD - Tests without proper modal state setup
+beforeEach(() => {
+  wrapper = createWrapper() // All modals isVisible: false
+})
+
+// ✅ GOOD - Set modal states for event testing
+beforeEach(() => {
+  wrapper = createWrapper({
+    ...mockModalStates,
+    skill: { selectedSkill: mockSkill, isVisible: true },
+    practice: { selectedSkill: mockSkill, isVisible: true }
+    // Set all needed modals to isVisible: true for event tests
+  })
+})
+```
+
+### **Test ID and Component Selection**
+
+**⚠️ PATTERN**: Use `data-testid` attributes for reliable component testing, not complex CSS selectors.
+
+**Problem**: Tests using complex selectors like icon class searches are fragile:
+```typescript
+// ❌ FRAGILE - Searches by CSS class patterns
+const directionButton = buttons.find(btn => {
+  const icons = btn.findAll('i')
+  return icons.some(icon => 
+    icon.classes().some(cls => cls.includes('bi-sort-up'))
+  )
+})
+```
+
+**Solution**:
+```typescript
+// ✅ RELIABLE - Use data-testid attributes
+// In component template:
+<button data-testid="sort-direction-button" @click="handleToggle">
+
+// In test:
+const directionButton = wrapper.find('[data-testid="sort-direction-button"]')
+```
+
+### **Object Comparison in Tests**
+
+**⚠️ COMMON BUG**: Test failures with "serializes to the same string" but using `.toBe()` for objects.
+
+**Problem**: `.toBe()` uses Object.is() equality, which fails for different object instances even with same content.
+
+**Solution**:
+```typescript
+// ❌ BAD - Object comparison with .toBe()
+expect(component.props('skill')).toBe(mockSkill)
+
+// ✅ GOOD - Deep equality comparison
+expect(component.props('skill')).toStrictEqual(mockSkill)
+```
+
+### **Mock Method Completeness**
+
+**⚠️ CRITICAL**: Tests fail with "function is not a function" when mocks are incomplete.
+
+**Problem**: Store mocks missing methods used in actual components:
+```typescript
+// ❌ INCOMPLETE MOCK
+const mockSkillStore = {
+  updateSkill: vi.fn(),
+  deleteSkill: vi.fn()
+  // Missing: shouldSuggestStatusTransition
+}
+```
+
+**Solution**: Ensure all mock objects include all methods referenced in code:
+```typescript
+// ✅ COMPLETE MOCK
+const mockSkillStore = {
+  updateSkill: vi.fn(),
+  deleteSkill: vi.fn(),
+  shouldSuggestStatusTransition: vi.fn().mockResolvedValue({ shouldSuggest: false })
+}
+```
+
+**Files Fixed (2025-08-11)**:
+- `ModalManager.vue`: Added `data-testid` attributes and `v-if` visibility logic
+- `ModalManager.test.ts`: Fixed event tests with proper modal state setup, object comparison
+- `SkillFilters.vue`: Added `data-testid="sort-direction-button"`
+- `SkillFilters.test.ts`: Simplified button selection with test ID
+- `useSkillEventHandlers.test.ts`: Added missing mock method `shouldSuggestStatusTransition`

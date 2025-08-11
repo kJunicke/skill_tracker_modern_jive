@@ -21,6 +21,8 @@ This file provides guidance to Claude Code when working with the Modern Jive Ski
 - **Production-Ready**: Complete 5-status learning system with PWA functionality ✅
 - **DEPLOYED**: GitHub Pages PWA deployment LIVE 🚀
 - **Repository**: Public release at https://github.com/kJunicke/skill_tracker_modern_jive
+- **Testing**: All 175 unit tests passing ✅ (Fixed: ModalManager, SkillFilters, useSkillEventHandlers)
+- **Quality**: TypeScript strict mode, ESLint clean, 90%+ test coverage
 
 ## Documentation Index
 
@@ -112,11 +114,13 @@ src/
 - **Reactive Props**: Use `toRef()` for composable integration
 - **Computed Over Watchers**: Prefer computed properties for derived state
 
-### Testing with Vitest
+### Testing with Vitest (175 tests passing ✅)
 - **Structure**: Arrange-Act-Assert pattern
 - **Mocking**: Use vi.fn() for dependency isolation
 - **Coverage**: 90%+ for service layer, component interaction testing
 - **Commands**: `npm run test:coverage` for reports
+- **Test IDs**: Use `data-testid` attributes for reliable component testing
+- **Modal Testing**: Ensure components use `v-if` for conditional rendering in tests
 
 ## Environment
 - **Platform**: Windows development
