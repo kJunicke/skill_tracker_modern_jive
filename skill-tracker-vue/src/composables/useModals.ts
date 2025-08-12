@@ -112,19 +112,35 @@ export function useModals(handlers: ModalEventHandlers) {
     closePracticeModal: () => closeModal('practice'),
     
     // Timeline Modal
-    showTimelineModal: (skill: SkillData) => openModal('timeline', skill),
+    showTimelineModal: (skill: SkillData) => {
+      destroyModal('progressionTimelineModal') // Destroy old Bootstrap instance
+      modalKey.value++ // Force component re-render
+      openModal('timeline', skill)
+    },
     closeTimelineModal: () => closeModal('timeline'),
     
     // Status Editor Modal
-    showStatusModal: (skill: SkillData) => openModal('status', skill),
+    showStatusModal: (skill: SkillData) => {
+      destroyModal('statusEditorModal') // Destroy old Bootstrap instance
+      modalKey.value++ // Force component re-render
+      openModal('status', skill)
+    },
     closeStatusModal: () => closeModal('status'),
     
     // Tags Editor Modal
-    showTagsModal: (skill: SkillData) => openModal('tags', skill),
+    showTagsModal: (skill: SkillData) => {
+      destroyModal('tagsEditorModal') // Destroy old Bootstrap instance
+      modalKey.value++ // Force component re-render
+      openModal('tags', skill)
+    },
     closeTagsModal: () => closeModal('tags'),
     
     // Notes Editor Modal
-    showNotesModal: (skill: SkillData) => openModal('notes', skill),
+    showNotesModal: (skill: SkillData) => {
+      destroyModal('notesEditorModal') // Destroy old Bootstrap instance
+      modalKey.value++ // Force component re-render
+      openModal('notes', skill)
+    },
     closeNotesModal: () => closeModal('notes'),
     
     // Training Log Modal

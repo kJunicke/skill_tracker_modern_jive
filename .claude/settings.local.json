@@ -39,7 +39,9 @@
       "Bash(git shortlog:*)",
       "Bash(git branch:*)",
       "WebFetch(domain:kjunicke.github.io)",
-      "Bash(gh run list:*)"
+      "Bash(gh run list:*)",
+      "Bash(git pull:*)",
+      "Bash(git merge:*)"
     ],
     "deny": []
   }

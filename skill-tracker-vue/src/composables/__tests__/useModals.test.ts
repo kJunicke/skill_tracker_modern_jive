@@ -6,7 +6,15 @@ import type { SkillData } from '@/types/skill'
 // Mock modal utilities
 vi.mock('@/utils/modalManager', () => ({
   showModal: vi.fn().mockResolvedValue(undefined),
-  hideModal: vi.fn().mockResolvedValue(undefined)
+  hideModal: vi.fn().mockResolvedValue(undefined),
+  destroyModal: vi.fn()
+}))
+
+// Mock useToasts
+vi.mock('../useToasts', () => ({
+  useToasts: () => ({
+    showSuccess: vi.fn()
+  })
 }))
 
 describe('useModals', () => {

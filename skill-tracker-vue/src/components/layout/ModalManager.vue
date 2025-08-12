@@ -22,6 +22,7 @@
 
     <TimelineModal
       v-if="modalStates.timeline.isVisible"
+      :key="modalKey"
       data-testid="timeline-modal"
       :skill="modalStates.timeline.selectedSkill"
       :is-visible="modalStates.timeline.isVisible"
@@ -36,6 +37,7 @@
 
     <StatusEditor
       v-if="modalStates.status.isVisible"
+      :key="modalKey"
       data-testid="status-editor"
       :skill="modalStates.status.selectedSkill"
       :is-visible="modalStates.status.isVisible"
@@ -45,6 +47,7 @@
 
     <TagsEditor
       v-if="modalStates.tags.isVisible"
+      :key="modalKey"
       data-testid="tags-editor"
       :skill="modalStates.tags.selectedSkill"
       :is-visible="modalStates.tags.isVisible"
@@ -54,6 +57,7 @@
 
     <NotesEditor
       v-if="modalStates.notes.isVisible"
+      :key="modalKey"
       data-testid="notes-editor"
       :skill="modalStates.notes.selectedSkill"
       :is-visible="modalStates.notes.isVisible"

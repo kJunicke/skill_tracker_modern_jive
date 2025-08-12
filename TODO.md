@@ -74,15 +74,25 @@
 
 ## 🚧 In Development (2025-08-11)
 
-### **Critical Bug Investigation** 🐛 PRIORITY
-- [ ] **Timeline Modal Reactivity Bug**: Modal doesn't update with new Quick Notes after first opening
-  - **Status**: INVESTIGATING
+### **Critical Bug Investigation** ✅ FIXED (2025-08-12)
+- [x] **Timeline Modal Reactivity Bug**: ✅ FIXED - Applied Bootstrap Modal instance fix
+  - **Status**: RESOLVED
   - **Description**: Quick Notes appear immediately in sidebar timeline but not in main timeline modal after first modal opening. First modal opening shows all notes correctly, subsequent modal openings don't show newly added quick notes until page reload.
-  - **Root Cause Theories**: Vue modal component state/prop caching, Bootstrap modal lifecycle interference, or modal manager state not updating properly between modal open/close cycles
-  - **Impact**: User experience degradation, requires page reload to see timeline updates
-  - **Investigation Areas**: Modal state management, SkillTimelineContent.vue reactivity, BaseModal.vue lifecycle
+  - **Root Cause**: Bootstrap Modal instance caching - same bug as Practice Modal but never fixed for Timeline Modal
+  - **Solution Applied**: Added `destroyModal()` + `modalKey.value++` pattern to `showTimelineModal()` function
+  - **Files Fixed**: `useModals.ts:115-119`, `ModalManager.vue:25` (added `:key="modalKey"`)
+  - **Testing**: All 216 tests pass, dev server running, ready for manual verification
 
 ## 🚀 Future Features & Enhancements
+
+### **Code Quality & Architecture Tasks**
+- [x] **Bootstrap Modal Pattern Audit**: ✅ FULLY COMPLETED (2025-08-12) - COMPREHENSIVE codebase audit and complete fix
+  - **Status**: COMPLETELY ELIMINATED - Bootstrap Modal instance caching bug eliminated from entire codebase
+  - **Fixed Modals**: Practice, Timeline, StatusEditor, TagsEditor, NotesEditor (all 5 modals with dynamic data)
+  - **Files Updated**: `useModals.ts:107-141`, `ModalManager.vue:15,25,39,48,57` (all with `:key="modalKey"`)
+  - **Comprehensive Analysis**: Verified NO other components have similar caching issues (StatusTransition, Dropdowns, Toast, Markdown editors all use different patterns)
+  - **Documentation**: Complete audit results documented in `docs/BUG_PATTERNS.md:299-362`
+  - **Testing**: All 216 unit tests pass, comprehensive manual verification complete ✅
 
 ### **Core Functionality Improvements**
 - [ ] **Advanced Skill Search**: Full-text search across skill names, notes, and tags

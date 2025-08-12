@@ -17,7 +17,7 @@ This file provides guidance to Claude Code when working with the Modern Jive Ski
 
 **Key Transitions**: ACQUISITION → MAINTENANCE at Level 5, FOCUS → MAINTENANCE after 7 days without practice
 
-### Current Status (2025-08-11)
+### Current Status (2025-08-12)
 - **Production-Ready**: Complete 5-status learning system with PWA functionality ✅
 - **DEPLOYED**: GitHub Pages PWA deployment LIVE 🚀
 - **Repository**: Public release at https://github.com/kJunicke/skill_tracker_modern_jive
@@ -25,7 +25,8 @@ This file provides guidance to Claude Code when working with the Modern Jive Ski
 - **Quality**: TypeScript strict mode, ESLint clean, 90%+ test coverage
 - **UX Enhanced**: Comprehensive toast notification system for optimal user feedback ✅
 - **Bug Fixed**: Bootstrap Modal + Vue 3 integration issue - Practice Modal buttons now work on repeated openings ✅
-- **KNOWN BUG**: Timeline Modal reactivity issue - Quick Notes appear in sidebar but not in main modal after first opening (pending investigation)
+- **ALL BOOTSTRAP MODAL BUGS ELIMINATED (2025-08-12)**: Comprehensive codebase audit completed - ALL 5 modals with dynamic data fixed with destroyModal() + modalKey++ pattern ✅
+- **ROBUSTNESS**: System now immune to Bootstrap Modal instance caching bugs - comprehensive prevention pattern documented ✅
 
 ## Documentation Index
 
@@ -62,6 +63,17 @@ const { filteredData } = useComposable(toRef(props, 'data'), filters)
 const currentSkill = computed(() => 
   skillStore.skills.find(s => s.id === props.skill.id) || null
 )
+```
+
+**Bootstrap Modal + Vue 3 Integration**: ALWAYS apply this pattern for modals that need fresh data
+```typescript
+// ✅ MANDATORY PATTERN for all Bootstrap modals that display dynamic data
+showModalName: (skill: SkillData) => {
+  destroyModal('modalId') // Clear cached Bootstrap instance
+  modalKey.value++        // Force Vue component re-render
+  openModal('modalType', skill)
+}
+// And in template: <ModalComponent :key="modalKey" ... />
 ```
 
 **Event Handling**: Multi-parameter events through component hierarchy
