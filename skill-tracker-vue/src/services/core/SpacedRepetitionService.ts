@@ -1,5 +1,6 @@
 import type { SkillData } from '@/types/skill'
 import { dateUtils } from '@/utils/dateHelpers'
+import { calculateTargetXP } from '@/utils/focusDataHelpers'
 
 /**
  * SM2 Algorithm parameters update result
@@ -48,7 +49,7 @@ export class SpacedRepetitionService {
    * Calculate target XP needed for current level (grows with level)
    */
   calculateTargetXP(level: number): number {
-    return Math.ceil(level * 10 + (level - 1) * 5)
+    return calculateTargetXP(level)
   }
 
   /**
@@ -171,7 +172,7 @@ export class SpacedRepetitionService {
       totalSessions: 0,
       consecutiveGoodSessions: 0,
       currentXP: 0,
-      targetXP: this.calculateTargetXP(skill.level),
+      targetXP: calculateTargetXP(skill.level),
       lastQuality: null,
       readyForLevelUp: false
     }
@@ -223,7 +224,7 @@ export class SpacedRepetitionService {
       focusData: {
         ...skill.focusData,
         currentXP: 0,
-        targetXP: this.calculateTargetXP(newLevel),
+        targetXP: calculateTargetXP(newLevel),
         readyForLevelUp: false
       }
     }

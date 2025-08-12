@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { SpacedRepetitionService } from '../core/SpacedRepetitionService'
 import type { SkillData } from '@/types/skill'
+import { calculateTargetXP } from '@/utils/focusDataHelpers'
 
 describe('SpacedRepetitionService', () => {
   let service: SpacedRepetitionService
@@ -28,10 +29,10 @@ describe('SpacedRepetitionService', () => {
 
   describe('calculateTargetXP', () => {
     it('should calculate correct target XP for different levels', () => {
-      expect(service.calculateTargetXP(1)).toBe(10) // 1*10 + 0*5 = 10
-      expect(service.calculateTargetXP(2)).toBe(25) // 2*10 + 1*5 = 25
-      expect(service.calculateTargetXP(3)).toBe(40) // 3*10 + 2*5 = 40
-      expect(service.calculateTargetXP(5)).toBe(70) // 5*10 + 4*5 = 70
+      expect(service.calculateTargetXP(1)).toBe(6) // Math.floor(3*2 + 1/3) = 6
+      expect(service.calculateTargetXP(2)).toBe(6) // Math.floor(3*2 + 2/3) = 6
+      expect(service.calculateTargetXP(3)).toBe(7) // Math.floor(3*2 + 3/3) = 7
+      expect(service.calculateTargetXP(5)).toBe(7) // Math.floor(3*2 + 5/3) = 7
     })
   })
 
@@ -135,7 +136,7 @@ describe('SpacedRepetitionService', () => {
           totalSessions: 1,
           consecutiveGoodSessions: 0,
           currentXP: 0,
-          targetXP: 40,
+          targetXP: calculateTargetXP(1),
           lastQuality: null,
           readyForLevelUp: false
         }
@@ -180,7 +181,7 @@ describe('SpacedRepetitionService', () => {
           totalSessions: 2,
           consecutiveGoodSessions: 1,
           currentXP: 5,
-          targetXP: 70, // Updated for level 5
+          targetXP: calculateTargetXP(5), // Updated for level 5
           lastQuality: 3,
           readyForLevelUp: false
         }
@@ -207,16 +208,16 @@ describe('SpacedRepetitionService', () => {
         focusData: {
           totalSessions: 10,
           consecutiveGoodSessions: 5,
-          currentXP: 51, // Just below 75% of 70 (52.5)
-          targetXP: 70, // Level 5 target XP
+          currentXP: 5, // Just below 75% of 7 (5.25)
+          targetXP: calculateTargetXP(5), // Level 5 target XP
           lastQuality: 3,
           readyForLevelUp: false
         }
       }
 
-      const result = service.handleFocusProgression(focusSkill, 3) // +2 XP = 53 total
-      expect(result.focusData.currentXP).toBe(53)
-      expect(result.focusData.readyForLevelUp).toBe(true) // 53 >= 53 (75% of 70 = 52.5, rounded up to 53)
+      const result = service.handleFocusProgression(focusSkill, 3) // +2 XP = 7 total
+      expect(result.focusData.currentXP).toBe(7)
+      expect(result.focusData.readyForLevelUp).toBe(true) // 7 >= 6 (75% of 7 = 5.25, rounded up to 6)
     })
 
     it('should increment total sessions', () => {
@@ -226,8 +227,8 @@ describe('SpacedRepetitionService', () => {
         focusData: {
           totalSessions: 5,
           consecutiveGoodSessions: 2,
-          currentXP: 10,
-          targetXP: 70,
+          currentXP: 3,
+          targetXP: calculateTargetXP(5),
           lastQuality: 3,
           readyForLevelUp: false
         }
@@ -269,8 +270,8 @@ describe('SpacedRepetitionService', () => {
         focusData: {
           totalSessions: 15,
           consecutiveGoodSessions: 8,
-          currentXP: 35,
-          targetXP: 40,
+          currentXP: 5,
+          targetXP: calculateTargetXP(1),
           lastQuality: 3,
           readyForLevelUp: true
         }
@@ -283,7 +284,7 @@ describe('SpacedRepetitionService', () => {
           totalSessions: 15, // Preserved
           consecutiveGoodSessions: 8, // Preserved
           currentXP: 0, // Reset
-          targetXP: 55, // New target for level 4
+          targetXP: calculateTargetXP(4), // New target for level 4
           lastQuality: 3, // Preserved
           readyForLevelUp: false // Reset
         }
@@ -372,8 +373,8 @@ describe('SpacedRepetitionService', () => {
         focusData: {
           totalSessions: 5,
           consecutiveGoodSessions: 3,
-          currentXP: 53,
-          targetXP: 70,
+          currentXP: 6,
+          targetXP: calculateTargetXP(5),
           lastQuality: 3,
           readyForLevelUp: true
         }
@@ -385,8 +386,8 @@ describe('SpacedRepetitionService', () => {
         focusData: {
           totalSessions: 5,
           consecutiveGoodSessions: 3,
-          currentXP: 30,
-          targetXP: 70,
+          currentXP: 4,
+          targetXP: calculateTargetXP(5),
           lastQuality: 3,
           readyForLevelUp: false
         }

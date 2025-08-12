@@ -41,7 +41,8 @@
       "WebFetch(domain:kjunicke.github.io)",
       "Bash(gh run list:*)",
       "Bash(git pull:*)",
-      "Bash(git merge:*)"
+      "Bash(git merge:*)",
+      "Bash(sed:*)"
     ],
     "deny": []
   }

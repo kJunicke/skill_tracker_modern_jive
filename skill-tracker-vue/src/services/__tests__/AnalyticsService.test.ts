@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { AnalyticsService } from '../core/AnalyticsService'
 import type { SkillData } from '@/types/skill'
+import { calculateTargetXP } from '@/utils/focusDataHelpers'
 
 describe('AnalyticsService', () => {
   let service: AnalyticsService
@@ -73,8 +74,8 @@ describe('AnalyticsService', () => {
         focusData: {
           totalSessions: 10,
           consecutiveGoodSessions: 5,
-          currentXP: 45,
-          targetXP: 60,
+          currentXP: 6,
+          targetXP: calculateTargetXP(5),
           lastQuality: 3,
           readyForLevelUp: true
         },
@@ -224,7 +225,7 @@ describe('AnalyticsService', () => {
       expect(metrics.practiceCount).toBe(2)
       expect(metrics.levelUpCount).toBe(1)
       expect(metrics.averageQuality).toBe(2.5) // (2+3)/2 = 2.5
-      expect(metrics.focusProgress).toBe(75) // 45/60 * 100 = 75
+      expect(metrics.focusProgress).toBe(85.71) // 6/7 * 100 = 85.71
       expect(metrics.isReadyForLevelUp).toBe(true)
     })
 

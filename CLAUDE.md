@@ -28,6 +28,7 @@ This file provides guidance to Claude Code when working with the Modern Jive Ski
 - **ALL BOOTSTRAP MODAL BUGS ELIMINATED (2025-08-12)**: Comprehensive codebase audit completed - ALL 5 modals with dynamic data fixed with destroyModal() + modalKey++ pattern ✅
 - **ROBUSTNESS**: System now immune to Bootstrap Modal instance caching bugs - comprehensive prevention pattern documented ✅
 - **Timeline Filtering IMPLEMENTED (2025-08-12)**: Universal marked/unmarked filter for all timeline entries (Level-Ups, Practice, Quick Notes) ✅
+- **XP SYSTEM CENTRALIZED (2025-08-12)**: Focus mode XP logic fully centralized in single function - eliminates hardcoded values throughout codebase ✅
 
 ## Documentation Index
 
@@ -38,6 +39,7 @@ This file provides guidance to Claude Code when working with the Modern Jive Ski
 **🔧 Development Guidelines:**
 - **[docs/DEVELOPMENT_WORKFLOW.md](./docs/DEVELOPMENT_WORKFLOW.md)** - Mandatory TDD workflow and testing requirements
 - **[docs/BUG_PATTERNS.md](./docs/BUG_PATTERNS.md)** - Common Vue.js reactivity and event handling bugs
+- **[docs/XP_SYSTEM.md](./docs/XP_SYSTEM.md)** - Centralized XP calculation system architecture and usage
 
 **🔒 Privacy & Security:**
 - **[docs/PRIVACY_SETUP.md](./docs/PRIVACY_SETUP.md)** - Email privacy configuration and security audit results
@@ -88,6 +90,7 @@ showModalName: (skill: SkillData) => {
 - **SkillService.ts**: Business logic for CRUD operations, practice sessions, level progression
 - **SpacedRepetitionService.ts**: SM2 algorithm implementation with 5-status logic
 - **StorageService.ts**: Data persistence abstraction with LocalStorageAdapter
+- **focusDataHelpers.ts**: Centralized XP calculation logic for Focus mode
 - **Dependency Injection**: Centralized DI container for testable architecture
 
 ### Key Components
@@ -128,6 +131,14 @@ showModalName: (skill: SkillData) => {
 - **Smart Counts**: Shows accurate counts for marked/unmarked entries across all types
 - **Dual View Support**: Works in both compact sidebar and full modal timeline views
 - **Vue-native Implementation**: No Bootstrap dependencies, pure Vue reactivity
+
+### XP System Architecture (NEW - 2025-08-12)
+**Centralized Focus Mode XP calculation eliminates maintenance overhead:**
+- **Central Function**: `calculateTargetXP(level)` in `focusDataHelpers.ts` - single source of truth
+- **Formula**: `Math.floor(3 * 2 + level / 3)` - optimized for faster level-up suggestions
+- **Automatic Propagation**: All services, tests, and mock data use central function
+- **Zero Hardcoding**: No XP values hardcoded anywhere - formula changes apply universally
+- **Maintainable**: Change formula once, entire system updates automatically
 
 ## Development Environment
 

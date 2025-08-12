@@ -95,6 +95,12 @@
   - **Testing**: All 216 unit tests pass, comprehensive manual verification complete ✅
 
 ### **Core Functionality Improvements**
+
+#### **Next Priority Features (2025-08-12)**
+- [ ] **Focus Mode XP System**: XP System in Focus Mode anpassen - Aktuelles XP-System überarbeiten für bessere Benutzerführung
+- [ ] **Timeline UI Optimization**: Timeline Aussehen optimieren - UI/UX Verbesserungen für bessere Darstellung und Benutzerfreundlichkeit
+
+#### **Future Core Features**
 - [ ] **Skill Dependencies**: Define prerequisite relationships between skills
 - [ ] **Custom Skill Categories**: User-defined skill groupings beyond tags
 - [ ] **Practice Templates**: Pre-defined practice session structures

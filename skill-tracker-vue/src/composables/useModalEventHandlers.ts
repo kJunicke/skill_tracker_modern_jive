@@ -3,7 +3,7 @@ import { useSkillStore } from '@/stores/skillStore'
 import { useSkillActions } from './useSkillActions'
 import { updateSM2Parameters, handleFocusProgression } from '@/utils/spacedRepetition'
 import { dateUtils } from '@/utils/dateHelpers'
-import { initializeFocusData } from '@/utils/focusDataHelpers'
+import { initializeFocusData, calculateTargetXP } from '@/utils/focusDataHelpers'
 import type { SkillData } from '@/types/skill'
 import type { ModalEventHandlers } from '@/types/modals'
 import type { SkillStatus, SkillTag } from '@/utils/constants'
@@ -62,8 +62,8 @@ export function useModalEventHandlers(): ModalEventHandlers {
 
         if (newStatus === 'focus' && skill.status !== 'focus') {
           updates.focusData = initializeFocusData({
-            targetXP: (skill.level * 10 + (skill.level - 1) * 5)
-          })
+            targetXP: calculateTargetXP(skill.level)
+          }, skill.level)
         }
 
         if (skill.status === 'focus' && newStatus !== 'focus') {

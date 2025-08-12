@@ -1,4 +1,5 @@
 import type { SkillData, PracticeSession, ProgressionEntry } from '@/types/skill'
+import { calculateTargetXP } from '@/utils/focusDataHelpers'
 
 /**
  * Mock skill data factory for consistent testing
@@ -66,8 +67,8 @@ export function createMockSkills(): SkillData[] {
       focusData: {
         totalSessions: 8,
         consecutiveGoodSessions: 3,
-        currentXP: 35,
-        targetXP: 50,
+        currentXP: 5,
+        targetXP: calculateTargetXP(4),
         lastQuality: 3,
         readyForLevelUp: true
       },
@@ -150,8 +151,8 @@ export function createCompleteTestSkill(): SkillData {
     focusData: {
       totalSessions: 12,
       consecutiveGoodSessions: 5,
-      currentXP: 40,
-      targetXP: 60,
+      currentXP: 6,
+      targetXP: calculateTargetXP(5),
       lastQuality: 3,
       readyForLevelUp: true
     },

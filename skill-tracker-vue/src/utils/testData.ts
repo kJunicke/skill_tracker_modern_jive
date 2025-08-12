@@ -1,4 +1,5 @@
 import type { SkillData } from '@/types/skill'
+import { calculateTargetXP } from './focusDataHelpers'
 
 export function createTestSkills(): SkillData[] {
   const now = new Date().toISOString()
@@ -329,8 +330,8 @@ Ready for Level Up: Almost! (15 XP needed)
       focusData: {
         consecutiveGoodSessions: 4,
         totalSessions: 18,
-        currentXP: 85,
-        targetXP: 100,
+        currentXP: 6,
+        targetXP: calculateTargetXP(5),
         lastQuality: 3,
         readyForLevelUp: false
       },
@@ -668,8 +669,8 @@ Sunday: Competition simulation (1 hour)
       focusData: {
         consecutiveGoodSessions: 8,
         totalSessions: 45,
-        currentXP: 92,
-        targetXP: 120,
+        currentXP: 8,
+        targetXP: calculateTargetXP(15),
         lastQuality: 3,
         readyForLevelUp: false
       },

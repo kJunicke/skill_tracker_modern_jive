@@ -4,6 +4,7 @@ import type { StorageService } from '../core/StorageService'
 import type { SpacedRepetitionService } from '../core/SpacedRepetitionService'
 import type { AnalyticsService } from '../core/AnalyticsService'
 import type { SkillData } from '@/types/skill'
+import { calculateTargetXP } from '@/utils/focusDataHelpers'
 
 // Mock services
 const mockStorageService = {
@@ -76,7 +77,7 @@ describe('SkillService', () => {
         notes: 'New skill notes'
       }
 
-      mockSpacedRepetitionService.calculateTargetXP.mockReturnValue(15)
+      mockSpacedRepetitionService.calculateTargetXP.mockReturnValue(6)
 
       const result = await skillService.createSkill(skillData)
 
@@ -105,7 +106,7 @@ describe('SkillService', () => {
         notes: 'Focus skill notes'
       }
 
-      mockSpacedRepetitionService.calculateTargetXP.mockReturnValue(25)
+      mockSpacedRepetitionService.calculateTargetXP.mockReturnValue(6)
 
       const result = await skillService.createSkill(skillData)
 
@@ -113,7 +114,7 @@ describe('SkillService', () => {
         totalSessions: 0,
         consecutiveGoodSessions: 0,
         currentXP: 0,
-        targetXP: 25,
+        targetXP: calculateTargetXP(2),
         lastQuality: null,
         readyForLevelUp: false
       })
@@ -278,7 +279,7 @@ describe('SkillService', () => {
       mockStorageService.loadSkills.mockResolvedValue([focusSkill])
 
       const focusResetUpdates = {
-        focusData: { currentXP: 0, targetXP: 30, readyForLevelUp: false }
+        focusData: { currentXP: 0, targetXP: calculateTargetXP(4), readyForLevelUp: false }
       }
       mockSpacedRepetitionService.resetFocusDataForLevelUp.mockReturnValue(focusResetUpdates)
 

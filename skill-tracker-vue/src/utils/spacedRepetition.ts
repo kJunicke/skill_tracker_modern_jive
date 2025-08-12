@@ -1,5 +1,6 @@
 import type { SkillData } from '@/types/skill'
 import { dateUtils } from './dateHelpers'
+import { calculateTargetXP as calculateXP } from './focusDataHelpers'
 
 /**
  * SM2 Spaced Repetition Algorithm Implementation
@@ -146,7 +147,7 @@ export function updateSM2Parameters(skill: SkillData, quality: number): Partial<
  * Calculate target XP needed for current level (grows with level)
  */
 export function calculateTargetXP(level: number): number {
-  return Math.ceil(level * 10 + (level - 1) * 5)
+  return calculateXP(level)
 }
 
 /**
@@ -161,7 +162,7 @@ export function handleFocusProgression(skill: SkillData, quality: number): Parti
       totalSessions: 0,
       consecutiveGoodSessions: 0,
       currentXP: 0,
-      targetXP: calculateTargetXP(skill.level),
+      targetXP: calculateXP(skill.level),
       lastQuality: null,
       readyForLevelUp: false
     }
@@ -178,7 +179,7 @@ export function handleFocusProgression(skill: SkillData, quality: number): Parti
   focusData.currentXP = (focusData.currentXP || 0) + xpGained
 
   // Check if ready for level up (75% of target XP)
-  const levelUpThreshold = Math.ceil((focusData.targetXP || 50) * 0.75)
+  const levelUpThreshold = Math.ceil((focusData.targetXP || 6) * 0.75)
   if ((focusData.currentXP || 0) >= levelUpThreshold && !focusData.readyForLevelUp) {
     focusData.readyForLevelUp = true
   }
@@ -187,7 +188,7 @@ export function handleFocusProgression(skill: SkillData, quality: number): Parti
     consecutiveGoodSessions: focusData.consecutiveGoodSessions || 0,
     totalSessions: focusData.totalSessions || 0,
     currentXP: focusData.currentXP || 0,
-    targetXP: focusData.targetXP || 50,
+    targetXP: focusData.targetXP || 6,
     lastQuality: focusData.lastQuality,
     readyForLevelUp: focusData.readyForLevelUp || false
   }
