@@ -29,6 +29,7 @@ This file provides guidance to Claude Code when working with the Modern Jive Ski
 - **ROBUSTNESS**: System now immune to Bootstrap Modal instance caching bugs - comprehensive prevention pattern documented ✅
 - **Timeline Filtering IMPLEMENTED (2025-08-12)**: Universal marked/unmarked filter for all timeline entries (Level-Ups, Practice, Quick Notes) ✅
 - **XP SYSTEM CENTRALIZED (2025-08-12)**: Focus mode XP logic fully centralized in single function - eliminates hardcoded values throughout codebase ✅
+- **DARK MODE IMPLEMENTED (2025-08-12)**: Complete dark theme with floating toggle button, CSS variables, localStorage persistence ✅
 
 ## Documentation Index
 
@@ -182,6 +183,26 @@ src/
 - **Commands**: `npm run test:coverage` for reports
 - **Test IDs**: Use `data-testid` attributes for reliable component testing
 - **Modal Testing**: Ensure components use `v-if` for conditional rendering in tests
+
+### Dark Mode System (NEW - 2025-08-12)
+**Complete dark theme implementation with user preference persistence:**
+- **DarkModeStore**: Pinia store for theme state management with toggle functionality
+- **CSS Variables**: Comprehensive light/dark color schemes in `base.css` with smooth transitions
+- **DarkModeToggle**: Fixed-position floating button (top-right) with Bootstrap Icons (bi-sun/bi-moon)
+- **Theme Persistence**: User preference saved in localStorage and restored on app load
+- **Component Integration**: Added to App.vue with onMounted initialization
+- **Comprehensive Coverage**: Dark theme styles for cards, modals, forms, dropdowns, and all UI components
+- **Accessibility**: Proper ARIA labels, tooltips, and keyboard navigation support
+- **Smooth Transitions**: 0.3s ease transitions for all theme changes
+- **Future Enhancement**: Markdown editor components need dark mode styling integration
+
+**Usage**:
+```typescript
+// Store usage
+const darkModeStore = useDarkModeStore()
+darkModeStore.toggleDarkMode() // Toggle between themes
+darkModeStore.isDarkMode // Reactive theme state
+```
 
 ## Environment
 - **Platform**: Windows development

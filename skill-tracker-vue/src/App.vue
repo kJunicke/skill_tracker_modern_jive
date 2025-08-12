@@ -59,12 +59,16 @@
 
     <!-- Toast Notifications -->
     <ToastManager />
+    
+    <!-- Dark Mode Toggle -->
+    <DarkModeToggle />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useSkillStore } from '@/stores/skillStore'
+import { useDarkModeStore } from '@/stores/darkModeStore'
 import { useModals } from '@/composables/useModals'
 import { useModalEventHandlers } from '@/composables/useModalEventHandlers'
 import { useSkillEventHandlers } from '@/composables/useSkillEventHandlers'
@@ -75,9 +79,16 @@ import AppHeader from '@/components/layout/AppHeader.vue'
 import MainSkillInterface from '@/components/layout/MainSkillInterface.vue'
 import ModalManager from '@/components/layout/ModalManager.vue'
 import ToastManager from '@/components/layout/ToastManager.vue'
+import DarkModeToggle from '@/components/ui/DarkModeToggle.vue'
 
-// Store
+// Stores
 const skillStore = useSkillStore()
+const darkModeStore = useDarkModeStore()
+
+// Initialize dark mode from localStorage
+onMounted(() => {
+  darkModeStore.loadDarkModePreference()
+})
 
 // Reactive references from store
 const skills = computed(() => skillStore.skills)
