@@ -95,13 +95,12 @@
   - **Testing**: All 216 unit tests pass, comprehensive manual verification complete ✅
 
 ### **Core Functionality Improvements**
-- [ ] **Advanced Skill Search**: Full-text search across skill names, notes, and tags
 - [ ] **Skill Dependencies**: Define prerequisite relationships between skills
 - [ ] **Custom Skill Categories**: User-defined skill groupings beyond tags
 - [ ] **Practice Templates**: Pre-defined practice session structures
 - [ ] **Goal Setting System**: Short-term and long-term skill development goals
 - [ ] **Progress Milestones**: Achievement system with custom milestones
-- [ ] **Filtering in timeline** Implement filtering for marked notes (or filtering them out)
+- [x] **Timeline Filtering** ✅ COMPLETED (2025-08-12) - Universal marked/unmarked filter for all timeline entries
 
 ### **Data & Analytics**
 - [ ] **Performance Dashboard**: Visual analytics for skill progression
@@ -121,6 +120,7 @@
 - [ ] **Customizable Interface**: User-configurable layouts and preferences
 
 ### **Advanced Features**
+- [ ] **Advanced Skill Search**: Full-text search across skill names, notes, and tags
 - [ ] **Video Integration**: Link skills to instructional videos
 - [ ] **Audio Notes**: Voice recordings for practice insights
 - [ ] **Photo Documentation**: Visual progress tracking with images

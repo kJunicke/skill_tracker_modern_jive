@@ -14,6 +14,7 @@ export interface TimelineFilters {
   showLevelUps: boolean
   showPractices: boolean
   showQuickNotes: boolean
+  markedNotesFilter: 'all' | 'marked' | 'unmarked'
 }
 
 export function useSkillTimeline(skill: Ref<SkillData | null>) {
@@ -72,9 +73,29 @@ export function useSkillTimeline(skill: Ref<SkillData | null>) {
 
   const getFilteredEvents = (events: TimelineEvent[], filters: TimelineFilters, limit?: number): TimelineEvent[] => {
     const filtered = events.filter(event => {
+      // First apply main category filters
       if (event.type === 'levelup' && !filters.showLevelUps) return false
       if (event.type === 'practice' && !filters.showPractices) return false
       if (event.type === 'quicknote' && !filters.showQuickNotes) return false
+      
+      // Then apply marked notes overlay filter to all types
+      let isMarked = false
+      
+      if (event.type === 'levelup') {
+        const levelUp = event.data as ProgressionEntry
+        isMarked = Boolean(levelUp.transferredToNotes)
+      } else if (event.type === 'practice') {
+        const practice = event.data as PracticeSession
+        isMarked = Boolean(practice.transferredToNotes)
+      } else if (event.type === 'quicknote') {
+        const quickNote = event.data as QuickNote
+        isMarked = Boolean(quickNote.transferredToNotes)
+      }
+      
+      // Apply marked filter to all entry types
+      if (filters.markedNotesFilter === 'marked' && !isMarked) return false
+      if (filters.markedNotesFilter === 'unmarked' && isMarked) return false
+      
       return true
     })
 
@@ -82,15 +103,28 @@ export function useSkillTimeline(skill: Ref<SkillData | null>) {
   }
 
   const getEventCounts = computed(() => {
-    if (!skill.value) return { levelUps: 0, practices: 0, quickNotes: 0, total: 0 }
+    if (!skill.value) return { levelUps: 0, practices: 0, quickNotes: 0, markedNotes: 0, unmarkedNotes: 0, total: 0 }
+    
+    // Count marked entries across all types
+    const markedLevelUps = skill.value.progressionHistory?.filter(entry => entry.transferredToNotes).length || 0
+    const markedPractices = skill.value.practiceLog?.filter(entry => entry.transferredToNotes).length || 0
+    const markedQuickNotes = skill.value.quickNotes?.filter(note => note.transferredToNotes).length || 0
+    const totalMarkedEntries = markedLevelUps + markedPractices + markedQuickNotes
+    
+    // Count totals
+    const totalLevelUps = skill.value.progressionHistory?.length || 0
+    const totalPractices = skill.value.practiceLog?.length || 0
+    const totalQuickNotes = skill.value.quickNotes?.length || 0
+    const totalEntries = totalLevelUps + totalPractices + totalQuickNotes
+    const totalUnmarkedEntries = totalEntries - totalMarkedEntries
     
     return {
-      levelUps: skill.value.progressionHistory?.length || 0,
-      practices: skill.value.practiceLog?.length || 0,
-      quickNotes: skill.value.quickNotes?.length || 0,
-      total: (skill.value.progressionHistory?.length || 0) + 
-             (skill.value.practiceLog?.length || 0) + 
-             (skill.value.quickNotes?.length || 0)
+      levelUps: totalLevelUps,
+      practices: totalPractices,
+      quickNotes: totalQuickNotes,
+      markedNotes: totalMarkedEntries,
+      unmarkedNotes: totalUnmarkedEntries,
+      total: totalEntries
     }
   })
 

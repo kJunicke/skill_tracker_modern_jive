@@ -75,6 +75,7 @@ interface TimelineFilters {
   showLevelUps: boolean
   showPractices: boolean
   showQuickNotes: boolean
+  markedNotesFilter: 'all' | 'marked' | 'unmarked'
 }
 
 interface Props {
@@ -106,7 +107,8 @@ const currentSkill = computed(() => {
 const filters = ref<TimelineFilters>({
   showLevelUps: true,
   showPractices: true,
-  showQuickNotes: props.isModalView ? true : true
+  showQuickNotes: props.isModalView ? true : true,
+  markedNotesFilter: 'all'
 })
 
 // Use unified timeline logic with reactive skill data

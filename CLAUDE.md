@@ -27,6 +27,7 @@ This file provides guidance to Claude Code when working with the Modern Jive Ski
 - **Bug Fixed**: Bootstrap Modal + Vue 3 integration issue - Practice Modal buttons now work on repeated openings ✅
 - **ALL BOOTSTRAP MODAL BUGS ELIMINATED (2025-08-12)**: Comprehensive codebase audit completed - ALL 5 modals with dynamic data fixed with destroyModal() + modalKey++ pattern ✅
 - **ROBUSTNESS**: System now immune to Bootstrap Modal instance caching bugs - comprehensive prevention pattern documented ✅
+- **Timeline Filtering IMPLEMENTED (2025-08-12)**: Universal marked/unmarked filter for all timeline entries (Level-Ups, Practice, Quick Notes) ✅
 
 ## Documentation Index
 
@@ -118,6 +119,15 @@ showModalName: (skill: SkillData) => {
 - **Level & Deletion**: Manual level updates and skill deletion confirmations
 - **Status Transitions**: Warning toasts for potential progress loss (SkillModal)
 - **Quick Notes**: Success notifications for quick note creation with timeline feedback
+
+### Timeline Filtering System (NEW - 2025-08-12)
+**Universal marked/unmarked filter for complete timeline control:**
+- **All Entry Types**: Filters Level-Ups, Practice Sessions, and Quick Notes uniformly
+- **Overlay Filter Design**: Works as secondary filter on top of main category toggles
+- **Cycle Button UI**: Simple click-to-cycle through All → Unmarked → Marked → All
+- **Smart Counts**: Shows accurate counts for marked/unmarked entries across all types
+- **Dual View Support**: Works in both compact sidebar and full modal timeline views
+- **Vue-native Implementation**: No Bootstrap dependencies, pure Vue reactivity
 
 ## Development Environment
 
