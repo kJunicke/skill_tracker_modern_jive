@@ -5,8 +5,12 @@
 
 ## 🚧 Current Development Priorities
 
-### **Next Priority Features (2025-08-12)**
-- [ ] **Timeline UI Optimization**: Timeline Aussehen optimieren - UI/UX Verbesserungen für bessere Darstellung und Benutzerfreundlichkeit
+### **Completed Recent Features (2025-08-13)**
+- [x] **Timeline UI Optimization**: Timeline Aussehen optimieren - UI/UX Verbesserungen für bessere Darstellung und Benutzerfreundlichkeit
+- [x] **Spaced Repetition Display Bug**: Fixed daysBetween function to correctly show "Due today" and "Overdue by X days" status
+- [x] **Enhanced Test Data**: Added comprehensive test skills with due/overdue examples and extensive quick notes
+
+### **Next Priority Features (2025-08-13)**
 - [ ] **Markdown Notes Dark Mode**: Add dark mode support for markdown editor and notes components
 
 ## 🚀 Future Features & Enhancements

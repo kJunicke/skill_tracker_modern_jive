@@ -22,6 +22,7 @@ This file provides guidance to Claude Code when working with the Modern Jive Ski
 - **Live Deployment**: https://github.com/kJunicke/skill_tracker_modern_jive
 - **Quality Assured**: 230+ unit tests passing, TypeScript strict mode, ESLint clean, 90%+ coverage
 - **Feature Complete**: Dark mode, data backup, toast notifications, timeline filtering, centralized XP system
+- **Bug Fixes**: Spaced repetition due/overdue display corrected (daysBetween function fix)
 
 ## Documentation Index
 
