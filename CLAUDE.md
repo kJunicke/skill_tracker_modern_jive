@@ -145,9 +145,10 @@ src/
 ### Dark Mode System
 **Complete dark theme with user preference persistence:**
 - **DarkModeStore**: Pinia store with toggle functionality and localStorage persistence
-- **UI Components**: Fixed-position floating button (top-right) with Bootstrap Icons (bi-sun/bi-moon)
+- **UI Components**: Native header button positioned next to view mode toggle, no hover effects
+- **Button Integration**: Both dark mode and view mode buttons in responsive header container
 - **CSS Implementation**: Comprehensive light/dark color schemes with 0.3s smooth transitions
-- **Future Enhancement**: Markdown editor components need dark mode styling integration
+- **Mobile Optimization**: Responsive button sizing and positioning for mobile devices
 
 ### Data Backup System
 **Complete JSON export/import functionality:**

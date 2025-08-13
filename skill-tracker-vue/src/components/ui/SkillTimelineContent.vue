@@ -10,55 +10,17 @@
 
     <!-- Timeline Content -->
     <div class="timeline-content">
-      <!-- Error state when skill cannot be found in store -->
-      <div v-if="!currentSkill" class="text-center text-muted py-4">
-        <i class="bi bi-exclamation-triangle"></i>
-        <p class="mb-0 mt-2">Unable to load skill data</p>
-      </div>
-      
-      <div v-else-if="filteredEntries.length === 0" class="text-center text-muted py-4">
-        <i class="bi bi-clock-history"></i>
-        <p class="mb-0 mt-2">No activities to show</p>
-      </div>
-      
-      <!-- Compact Timeline for Sidebar -->
-      <div v-else-if="!isModalView" class="timeline-compact">
-        <TimelineEventCard
-          v-for="entry in filteredEntries" 
-          :key="entry.id"
-          :event="entry"
-          :is-modal-view="false"
-          :is-transferred="getTransferredToNotes(entry)"
-          :format-event-date="formatEventDate"
-          :format-event-date-time="formatEventDateTime"
-          :get-event-type-info="(type) => getEventTypeInfo(type as TimelineEvent['type'])"
-          @edit-levelup="editLevelUpComment"
-          @edit-practice="editPracticeNote"
-          @edit-quicknote="editQuickNote"
-          @delete-quicknote="deleteQuickNote"
-          @add-to-notes="addToNotes"
-          @toggle-transferred="toggleTransferredToNotes"
-        />
-      </div>
-      
-      <!-- Full Timeline for Modal -->
-      <div v-else class="timeline">
-        <TimelineEventCard
-          v-for="event in filteredEntries" 
-          :key="event.id"
-          :event="event"
-          :is-modal-view="true"
-          :is-transferred="getTransferredToNotes(event)"
-          :format-event-date="formatEventDate"
-          :format-event-date-time="formatEventDateTime"
-          :get-event-type-info="(type) => getEventTypeInfo(type as TimelineEvent['type'])"
-          @edit-levelup="editLevelUpComment"
-          @edit-practice="editPracticeNote"
-          @edit-quicknote="editQuickNote"
-          @delete-quicknote="deleteQuickNote"
-          @toggle-transferred="toggleTransferredToNotes"
-        />
-      </div>
+      <TimelineGroupedView
+        :skill="skill"
+        :filters="filters"
+        :is-modal-view="isModalView"
+        @edit-levelup="editLevelUpComment"
+        @edit-practice="editPracticeNote"
+        @edit-quicknote="editQuickNote"
+        @delete-quicknote="deleteQuickNote"
+        @add-to-notes="addToNotes"
+        @toggle-transferred="toggleTransferredToNotes"
+      />
     </div>
   </div>
 </template>
@@ -69,7 +31,7 @@ import type { SkillData, ProgressionEntry, PracticeSession, QuickNote } from '@/
 import { useSkillTimeline, type TimelineEvent } from '@/composables/useSkillTimeline'
 import { useSkillStore } from '@/stores/skillStore'
 import TimelineFilters from './TimelineFilters.vue'
-import TimelineEventCard from './TimelineEventCard.vue'
+import TimelineGroupedView from './TimelineGroupedView.vue'
 
 interface TimelineFilters {
   showLevelUps: boolean
@@ -111,15 +73,8 @@ const filters = ref<TimelineFilters>({
   markedNotesFilter: 'all'
 })
 
-// Use unified timeline logic with reactive skill data
-const { timelineEvents, getFilteredEvents, eventCounts, formatEventDate, formatEventDateTime, getEventTypeInfo } = useSkillTimeline(currentSkill)
-
-
-// Filter entries based on toggles and view mode
-const filteredEntries = computed(() => {
-  const limit = props.isModalView ? 50 : undefined
-  return getFilteredEvents(timelineEvents.value, filters.value, limit)
-})
+// Use unified timeline logic for event counts only
+const { eventCounts } = useSkillTimeline(currentSkill)
 
 // Update filters from child component
 const updateFilters = (newFilters: TimelineFilters) => {
@@ -127,8 +82,7 @@ const updateFilters = (newFilters: TimelineFilters) => {
 }
 
 // Add entry content to notes
-const addToNotes = (entry: { title: string; date: string; description: string }) => {
-  const content = `**${entry.title}** (${formatEventDate(entry.date)})\n${entry.description}\n\n`
+const addToNotes = (content: string) => {
   emit('add-to-notes', content)
 }
 
@@ -156,75 +110,10 @@ const toggleTransferredToNotes = (event: TimelineEvent) => {
   const entryDate = event.date
   emit('toggle-transferred-to-notes', props.skill.id, entryType, entryDate)
 }
-
-// Create a computed map for transferred states for better reactivity
-const transferredStates = computed(() => {
-  const skill = currentSkill.value
-  if (!skill) return new Map<string, boolean>()
-  
-  const states = new Map<string, boolean>()
-  
-  // Add levelup states
-  skill.progressionHistory?.forEach(entry => {
-    const key = `levelup-${entry.date}`
-    states.set(key, Boolean(entry.transferredToNotes))
-  })
-  
-  // Add practice states  
-  skill.practiceLog?.forEach(entry => {
-    const key = `practice-${entry.date}`
-    states.set(key, Boolean(entry.transferredToNotes))
-  })
-  
-  // Add quicknote states
-  skill.quickNotes?.forEach(entry => {
-    const key = `quicknote-${entry.date}`
-    states.set(key, Boolean(entry.transferredToNotes))
-  })
-  
-  return states
-})
-
-// Helper function to get transferred status using computed map
-const getTransferredToNotes = (event: TimelineEvent): boolean => {
-  const key = `${event.type}-${event.date}`
-  const result = transferredStates.value.get(key) || false
-  return result
-}
 </script>
 
 <style scoped>
 .skill-timeline-content {
   height: 100%;
-}
-
-.timeline-compact {
-  position: relative;
-}
-
-.timeline-compact::before {
-  content: '';
-  position: absolute;
-  left: 8px;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: #dee2e6;
-}
-
-/* Modal timeline styles */
-.timeline-modal-view .timeline {
-  position: relative;
-  padding-left: 2rem;
-}
-
-.timeline-modal-view .timeline::before {
-  content: '';
-  position: absolute;
-  left: 1rem;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: #dee2e6;
 }
 </style>

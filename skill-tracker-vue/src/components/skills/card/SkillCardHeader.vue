@@ -13,7 +13,7 @@
         >
           <i class="bi bi-three-dots-vertical"></i>
         </button>
-        <ul :class="['dropdown-menu', 'dropdown-menu-end', { 'show': dropdownOpen }]">
+        <ul :class="['dropdown-menu', 'dropdown-menu-sm-end', { 'show': dropdownOpen }]">
           <li>
             <a class="dropdown-item" href="#" @click.prevent="handleEdit">
               <i class="bi bi-pencil me-2"></i>Edit

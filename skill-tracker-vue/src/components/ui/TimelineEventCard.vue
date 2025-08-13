@@ -18,29 +18,19 @@
                 {{ event.description }}
               </template>
             </p>
-            <small class="text-muted">{{ formatEventDate(event.date) }}</small>
           </div>
           <TimelineEventActions
             :event-type="event.type"
             :has-description="!!event.description"
             :is-modal-view="false"
+            :is-transferred="isTransferred"
             @edit-levelup="() => $emit('edit-levelup', event.data as ProgressionEntry)"
             @edit-practice="() => $emit('edit-practice', event.data as PracticeSession)"
             @edit-quicknote="() => $emit('edit-quicknote', event.data as QuickNote)"
             @delete-quicknote="() => $emit('delete-quicknote', event.data as QuickNote)"
             @add-to-notes="() => $emit('add-to-notes', event)"
+            @toggle-transferred="() => $emit('toggle-transferred', event)"
           />
-        </div>
-        <div class="timeline-checkbox">
-          <button
-            type="button"
-            class="btn btn-sm"
-            :class="isTransferred ? 'btn-success' : 'btn-outline-success'"
-            @click="$emit('toggle-transferred', event)"
-            title="Mark as transferred to notes"
-          >
-            <i class="bi bi-check-circle" :class="{ 'text-white': isTransferred }"></i>
-          </button>
         </div>
       </div>
     </template>
@@ -49,41 +39,31 @@
     <template v-else>
       <!-- Level Up Event -->
       <template v-if="event.type === 'levelup'">
-        <div class="timeline-marker bg-success">
+        <div class="timeline-marker bg-primary">
           <i class="bi bi-arrow-up-circle text-white"></i>
         </div>
         <div class="timeline-content">
-          <div class="card border-success">
+          <div class="card border-primary">
             <div class="card-body">
               <div class="d-flex justify-content-between align-items-start mb-2">
                 <h6 class="card-title mb-0">
-                  <span class="badge bg-success me-2">
+                  <span class="badge bg-primary me-2">
                     <i class="bi bi-arrow-up-circle me-1"></i>
                     Level {{ (event.data as ProgressionEntry).level }}
                   </span>
                   <small class="text-muted">from Level {{ (event.data as ProgressionEntry).previousLevel || (event.data as ProgressionEntry).level - 1 }}</small>
                 </h6>
                 <div class="d-flex align-items-center gap-2">
-                  <small class="text-muted">{{ formatEventDateTime(event.date) }}</small>
                   <TimelineEventActions
                     event-type="levelup"
                     :is-modal-view="true"
+                    :is-transferred="isTransferred"
                     @edit-levelup="() => $emit('edit-levelup', event.data as ProgressionEntry)"
+                    @toggle-transferred="() => $emit('toggle-transferred', event)"
                   />
                 </div>
               </div>
               <p class="card-text">{{ (event.data as ProgressionEntry).comment }}</p>
-              <div class="timeline-checkbox-modal">
-                <button
-                  type="button"
-                  class="btn btn-sm"
-                  :class="isTransferred ? 'btn-success' : 'btn-outline-success'"
-                  @click="$emit('toggle-transferred', event)"
-                  title="Mark as transferred to notes"
-                >
-                  <i class="bi bi-check-circle" :class="{ 'text-white': isTransferred }"></i>
-                </button>
-              </div>
             </div>
           </div>
         </div>
@@ -111,31 +91,17 @@
                   </span>
                 </h6>
                 <div class="d-flex align-items-center gap-2">
-                  <small class="text-muted">{{ formatEventDateTime(event.date) }}</small>
                   <TimelineEventActions
                     event-type="practice"
                     :is-modal-view="true"
+                    :is-transferred="isTransferred"
                     @edit-practice="() => $emit('edit-practice', event.data as PracticeSession)"
+                    @toggle-transferred="() => $emit('toggle-transferred', event)"
                   />
                 </div>
               </div>
               <p v-if="(event.data as PracticeSession).note" class="card-text">{{ (event.data as PracticeSession).note }}</p>
               <p v-else class="card-text text-muted fst-italic">No notes</p>
-              <small class="text-muted">
-                <i class="bi bi-star me-1"></i>
-                +{{ getQualityXP((event.data as PracticeSession).quality) }} XP
-              </small>
-              <div class="timeline-checkbox-modal">
-                <button
-                  type="button"
-                  class="btn btn-sm"
-                  :class="isTransferred ? 'btn-success' : 'btn-outline-success'"
-                  @click="$emit('toggle-transferred', event)"
-                  title="Mark as transferred to notes"
-                >
-                  <i class="bi bi-check-circle" :class="{ 'text-white': isTransferred }"></i>
-                </button>
-              </div>
             </div>
           </div>
         </div>
@@ -157,27 +123,17 @@
                   </span>
                 </h6>
                 <div class="d-flex align-items-center gap-2">
-                  <small class="text-muted">{{ formatEventDateTime(event.date) }}</small>
                   <TimelineEventActions
                     event-type="quicknote"
                     :is-modal-view="true"
+                    :is-transferred="isTransferred"
                     @edit-quicknote="() => $emit('edit-quicknote', event.data as QuickNote)"
                     @delete-quicknote="() => $emit('delete-quicknote', event.data as QuickNote)"
+                    @toggle-transferred="() => $emit('toggle-transferred', event)"
                   />
                 </div>
               </div>
               <p class="card-text">{{ (event.data as QuickNote).note }}</p>
-              <div class="timeline-checkbox-modal">
-                <button
-                  type="button"
-                  class="btn btn-sm"
-                  :class="isTransferred ? 'btn-success' : 'btn-outline-success'"
-                  @click="$emit('toggle-transferred', event)"
-                  title="Mark as transferred to notes"
-                >
-                  <i class="bi bi-check-circle" :class="{ 'text-white': isTransferred }"></i>
-                </button>
-              </div>
             </div>
           </div>
         </div>
@@ -228,17 +184,13 @@ const getQualityIcon = (quality: number): string => {
   return icons[quality] || 'bi-circle'
 }
 
-const getQualityXP = (quality: number): number => {
-  const xpValues = [0, 1, 2, 3]
-  return xpValues[quality] || 0
-}
 </script>
 
 <style scoped>
 .timeline-item {
   position: relative;
-  padding-left: 2rem;
-  margin-bottom: 1rem;
+  padding-left: 0 rem;
+  margin-bottom: 0.5rem;
 }
 
 .timeline-marker {
@@ -263,8 +215,6 @@ const getQualityXP = (quality: number): number => {
   border-radius: 0.375rem;
   border: 1px solid #dee2e6;
   transition: all 0.2s ease-in-out;
-  position: relative;
-  padding-bottom: 2.5rem;
 }
 
 .timeline-content-item:hover {
@@ -282,20 +232,6 @@ const getQualityXP = (quality: number): number => {
   margin: 0;
 }
 
-/* Checkbox button styling for compact timeline */
-.timeline-checkbox {
-  position: absolute;
-  bottom: 0.5rem;
-  right: 0.75rem;
-}
-
-.timeline-checkbox .btn {
-  transition: all 0.2s ease-in-out;
-}
-
-.timeline-checkbox .btn:hover {
-  transform: translateY(-1px);
-}
 
 /* Modal timeline styles */
 .timeline-content {
@@ -304,7 +240,7 @@ const getQualityXP = (quality: number): number => {
 
 .timeline .timeline-marker {
   position: absolute;
-  left: -2rem;
+  left: -1.5rem;
   top: 0.5rem;
   width: 2rem;
   height: 2rem;
@@ -316,7 +252,7 @@ const getQualityXP = (quality: number): number => {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.card.border-success {
+.card.border-primary {
   border-left-width: 4px !important;
 }
 
@@ -324,8 +260,6 @@ const getQualityXP = (quality: number): number => {
   border: none;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease-in-out;
-  position: relative;
-  padding-bottom: 2.5rem;
 }
 
 .card:hover {
@@ -336,18 +270,4 @@ const getQualityXP = (quality: number): number => {
   position: relative;
 }
 
-/* Checkbox button styling for modal timeline */
-.timeline-checkbox-modal {
-  position: absolute;
-  bottom: 0.75rem;
-  right: 0.75rem;
-}
-
-.timeline-checkbox-modal .btn {
-  transition: all 0.2s ease-in-out;
-}
-
-.timeline-checkbox-modal .btn:hover {
-  transform: translateY(-1px);
-}
 </style>

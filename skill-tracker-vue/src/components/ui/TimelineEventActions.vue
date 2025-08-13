@@ -1,5 +1,16 @@
 <template>
   <div class="timeline-event-actions d-flex gap-1">
+    <!-- Mark as Transferred Checkbox -->
+    <button
+      type="button"
+      class="btn btn-sm"
+      :class="isTransferred ? 'btn-success' : 'btn-outline-success'"
+      @click="$emit('toggle-transferred')"
+      title="Mark as transferred to notes"
+    >
+      <i class="bi bi-check-circle" :class="{ 'text-white': isTransferred }"></i>
+    </button>
+    
     <!-- Edit Actions Based on Event Type -->
     <button
       v-if="eventType === 'levelup'"
@@ -42,9 +53,8 @@
       <i class="bi bi-trash"></i>
     </button>
     
-    <!-- Add to Notes Action (Compact View Only) -->
+    <!-- Add to Notes Action (All Views) -->
     <button
-      v-if="hasDescription && !isModalView"
       type="button"
       class="btn btn-sm btn-outline-primary"
       @click="$emit('add-to-notes')"
@@ -60,6 +70,7 @@ interface Props {
   eventType: 'levelup' | 'practice' | 'quicknote'
   hasDescription?: boolean
   isModalView?: boolean
+  isTransferred: boolean
 }
 
 interface Emits {
@@ -68,6 +79,7 @@ interface Emits {
   (e: 'edit-quicknote'): void
   (e: 'delete-quicknote'): void
   (e: 'add-to-notes'): void
+  (e: 'toggle-transferred'): void
 }
 
 defineProps<Props>()

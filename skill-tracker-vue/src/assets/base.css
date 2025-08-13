@@ -110,3 +110,27 @@ body {
   background-color: var(--btn-bg) !important;
   color: var(--text-primary) !important;
 }
+
+/* Responsive improvements */
+@media (max-width: 575.98px) {
+  /* Prevent dropdowns from overflowing on mobile */
+  .dropdown-menu {
+    min-width: auto !important;
+    max-width: calc(100vw - 2rem) !important;
+    left: auto !important;
+    right: 0 !important;
+  }
+  
+  /* Ensure dropdown items are readable on small screens */
+  .dropdown-item {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* Add some padding to prevent content from touching screen edges */
+  .container-fluid {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+}

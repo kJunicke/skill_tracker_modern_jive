@@ -1,7 +1,7 @@
 <template>
-  <div class="d-flex justify-content-between align-items-center mb-4">
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
     <h2 class="card-title mb-0">My Skills</h2>
-    <div class="d-flex gap-2">
+    <div class="d-flex flex-wrap gap-2 w-100 w-md-auto justify-content-start justify-content-md-end">
       <BaseButton
         variant="info"
         icon="bi-journal-text"
@@ -68,5 +68,18 @@ defineEmits<Emits>()
 </script>
 
 <style scoped>
+/* Responsive action bar improvements */
+@media (max-width: 575.98px) {
+  .d-flex.flex-wrap {
+    gap: 0.5rem !important;
+  }
+  
+  /* Ensure buttons don't get too small on mobile */
+  .d-flex.flex-wrap > * {
+    min-width: fit-content;
+    flex-shrink: 0;
+  }
+}
+
 /* Button hover effects already handled by BaseButton */
 </style>

@@ -17,6 +17,12 @@ export interface TimelineFilters {
   markedNotesFilter: 'all' | 'marked' | 'unmarked'
 }
 
+export interface TimelineGroup {
+  date: string
+  displayDate: string
+  events: TimelineEvent[]
+}
+
 export function useSkillTimeline(skill: Ref<SkillData | null>) {
   
   const createTimelineEvents = computed((): TimelineEvent[] => {
@@ -102,6 +108,50 @@ export function useSkillTimeline(skill: Ref<SkillData | null>) {
     return limit ? filtered.slice(0, limit) : filtered
   }
 
+  const groupEventsByDate = (events: TimelineEvent[]): TimelineGroup[] => {
+    const groups = new Map<string, TimelineEvent[]>()
+    
+    // Group events by date (YYYY-MM-DD format)
+    events.forEach(event => {
+      const date = new Date(event.date)
+      const dateKey = date.toISOString().split('T')[0] // YYYY-MM-DD
+      
+      if (!groups.has(dateKey)) {
+        groups.set(dateKey, [])
+      }
+      groups.get(dateKey)!.push(event)
+    })
+    
+    // Convert to array and sort by date (newest first)
+    const groupArray: TimelineGroup[] = Array.from(groups.entries()).map(([dateKey, events]) => {
+      return {
+        date: dateKey,
+        displayDate: formatGroupDate(dateKey),
+        events: events.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      }
+    })
+    
+    return groupArray.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  }
+
+  const formatGroupDate = (dateString: string): string => {
+    const date = new Date(dateString)
+    const now = new Date()
+    const diffTime = now.getTime() - date.getTime()
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
+    
+    if (diffDays === 0) return 'Today'
+    if (diffDays === 1) return 'Yesterday'
+    if (diffDays < 7) return `${diffDays} days ago`
+    
+    return date.toLocaleDateString('de-DE', {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    })
+  }
+
   const getEventCounts = computed(() => {
     if (!skill.value) return { levelUps: 0, practices: 0, quickNotes: 0, markedNotes: 0, unmarkedNotes: 0, total: 0 }
     
@@ -157,9 +207,9 @@ export function useSkillTimeline(skill: Ref<SkillData | null>) {
     const typeMapping = {
       levelup: {
         icon: 'bi-arrow-up-circle',
-        color: 'warning',
-        bgColor: 'bg-warning',
-        borderColor: 'border-warning'
+        color: 'primary',
+        bgColor: 'bg-primary',
+        borderColor: 'border-primary'
       },
       practice: {
         icon: 'bi-play-circle',
@@ -181,6 +231,7 @@ export function useSkillTimeline(skill: Ref<SkillData | null>) {
   return {
     timelineEvents: createTimelineEvents,
     getFilteredEvents,
+    groupEventsByDate,
     eventCounts: getEventCounts,
     formatEventDate,
     formatEventDateTime,

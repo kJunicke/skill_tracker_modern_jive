@@ -1,0 +1,45 @@
+Meine lieben,
+
+es ist soweit! Ich starte die erste Testphase für mein neues Trainingstool :) Die Seite ist jetzt online und für euch erreichbar:
+https://kjunicke.github.io/skill_tracker_modern_jive/
+
+Lasst mich euch kurz die grundlegenden Funktionen erklären und wie ihr die App benutzen solltet:
+
+1. Skills hinzufügen: Klickt auf "Add New Skill" und tragt eure Moves/skills ein
+2. Trainieren: Klickt auf "Practice" bei einem Skill und bewertet euer Training
+3. Fortschritt verfolgen: Das System schlägt euch automatisch vor, welche Skills ihr als nächstes üben solltet
+4. Timeline: Seht euren Trainingsfortschritt in der Timeline
+
+Skills können einen von 5 Modi haben:
+- BACKLOG (Level 0): Skill-Sammlung - hier sammelt ihr Moves und Skills, die ihr irgendwann lernen wollt
+- ACQUISITION (Level 1-4): Aktive Lernphase - Sachen die ihr gerade erst lernt
+- MAINTENANCE (Level 5+): Erhaltungsphase - intelligente vorhersage, wann ihr sachen wieder üben solltet um euer können zu behalten :)
+- FOCUS: Intensivtraining - für Skills, die ihr verbessern wollt (funktioniert wie ein XP-System)
+- ARCHIVED: Pausierte Skills - Skills, die ihr aktuell nicht trainieren wollt oder schon perfekt könnt.
+
+Startet neue Moves/skills in BACKLOG, verschiebt sie zu ACQUISITION wenn ihr anfangt zu üben, und lasst das System automatisch zu MAINTENANCE wechseln. Nutzt FOCUS für Skills, die ihr aktiv verbessern wollt
+
+Reflexionszyklus:
+Das System ist auf bewusstes Lernen ausgelegt:
+- Practice Notes: Bei jedem Training könnt ihr Notizen hinterlassen ("was lief gut/schlecht")
+- Level-Up Notes: Bei manuellen Level-Ups MÜSST ihr eine Begründung eingeben. Warum könnt ihr den Skill jetzt besser als vorher? Was hat besser funktioniert?
+- Reflektion: Ihr sollt periodisch eure Hinterlassenen Notizen in die Hauptnotiz des entsprechenden skills übertragen
+- Markieren: Übertragene Notizen aus der timeline könnt ihr dann abhaken :)
+- Timeline: Verfolgt euren gesamten Lernprozess chronologisch
+
+Beispiel Level-Up:
+Ihr übt das "Catapult" und merkt, dass ihr der move endlich flüssig mit verschiedenen Partnern tanzen könnt. Ihr erhöht das Level manuell und schreibt als Begründung: "Kann Catapult jetzt sauber mit verschiedenen Partnern - Timing sitzt, Körperspannung stimmt." Diese Note wird in eurer Timeline und in den Hauptnotizen des Skills gespeichert.
+
+Wichtige Features:
+- Dark Mode: Toggle oben rechts
+- Quick Notes: Für allgemeine Trainingserkenntnisse oder feedback dass man schnell wo hin schreiben muss.
+
+WICHTIG - Datensicherheit:
+Da sich das Tool noch in der Testphase befindet und im Hintergrund noch kein Server läuft, werden eure Daten nur lokal gespeichert. Wenn ihr eure Daten behalten wollt, empfehle ich euch regelmäßige Backups mit der "Export Data" Funktion zu machen. Das ist aktuell auch der einzige Weg, um eure Daten auf mehreren Geräten zu haben (Server-Synchronisation kommt später, wenn der Rest steht).
+
+Feedback erwünscht:
+Benutzt es gerne, wie ihr wollt, und schreibt mir alles, was euch auffällt! Bugs, Verbesserungsvorschläge, Unklarheiten - alles ist hilfreich für die Weiterentwicklung.
+
+P.S. Theoretisch sollte auch mobil alles funktionieren, aber das hab ich noch gar nicht ausgiebig getestet.
+
+Viel Spaß beim Testen und vielen Dank fürs Mitmachen!

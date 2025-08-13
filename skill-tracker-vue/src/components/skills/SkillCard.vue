@@ -7,11 +7,52 @@
       `skill-card-${skill.status}`,
       {
         'skill-due': isDue,
-        'skill-almost-due': isAlmostDue && !isDue
+        'skill-almost-due': isAlmostDue && !isDue,
+        'skill-card-compact': isCompactView,
+        'skill-card-expanded': isExpanded
       }
     ]"
   >
-    <div class="card-body d-flex flex-column">
+    <!-- Compact mobile view -->
+    <div 
+      v-if="isCompactView && !isExpanded" 
+      class="compact-card-body p-2"
+      @click="toggleExpanded"
+      role="button"
+      tabindex="0"
+      @keydown.enter="toggleExpanded"
+      @keydown.space.prevent="toggleExpanded"
+    >
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="flex-grow-1 me-2">
+          <div class="skill-name text-truncate fw-semibold">{{ skill.name }}</div>
+          <div class="skill-meta d-flex align-items-center gap-2 small text-muted">
+            <span>Level {{ skill.level }}</span>
+            <span v-if="nextReviewDate" class="text-truncate">{{ nextReviewDate }}</span>
+            <span v-else>Kein Review</span>
+          </div>
+        </div>
+        <div class="compact-status-indicator">
+          <span 
+            :class="[
+              'badge',
+              `badge-${skill.status}`,
+              'rounded-pill'
+            ]"
+          >
+            {{ skill.status.charAt(0).toUpperCase() }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Full view (default on desktop, expanded on mobile) -->
+    <div 
+      v-else 
+      class="card-body d-flex flex-column"
+      :class="{ 'clickable-expanded': isCompactView && isExpanded }"
+      @click="handleCardClick"
+    >
       <!-- Header with name, dropdown, and timeline -->
       <SkillCardHeader 
         :skill="skill"
@@ -47,14 +88,16 @@
         @move-to-acquisition="handleMoveToAcquisition"
         @quick-note="handleQuickNote"
       />
+
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import type { SkillData } from '@/types/skill'
 import { getDaysUntilReview } from '@/utils/spacedRepetition'
+import { useViewModeStore } from '@/stores/viewModeStore'
 
 // Import child components
 import SkillCardHeader from './card/SkillCardHeader.vue'
@@ -82,6 +125,60 @@ interface Emits {
 
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
+
+// View mode management
+const viewModeStore = useViewModeStore()
+const isCompactView = computed(() => viewModeStore.viewMode === 'compact')
+const isExpanded = ref(false)
+
+// Toggle expanded state for compact view
+const toggleExpanded = () => {
+  isExpanded.value = !isExpanded.value
+}
+
+// Handle card click - only collapse if clicking on safe area
+const handleCardClick = (event: MouseEvent) => {
+  if (!isCompactView.value || !isExpanded.value) return
+  
+  const target = event.target as HTMLElement
+  
+  // Don't collapse if clicking on interactive elements
+  const interactiveSelectors = [
+    'button',
+    'a',
+    'input',
+    'textarea',
+    'select',
+    '[role="button"]',
+    '.btn',
+    '.dropdown-item',
+    '.badge',
+    '.star-rating',
+    '.bi'
+  ]
+  
+  // Check if clicked element or any parent is interactive
+  for (const selector of interactiveSelectors) {
+    if (target.closest(selector)) {
+      return
+    }
+  }
+  
+  // Safe to collapse
+  toggleExpanded()
+}
+
+// Next review date computation
+const nextReviewDate = computed(() => {
+  if (!props.skill.nextReview) return null
+  
+  const date = new Date(props.skill.nextReview)
+  return date.toLocaleDateString('de-DE', { 
+    day: '2-digit', 
+    month: '2-digit',
+    year: '2-digit'
+  })
+})
 
 // Due status computations for card styling
 const daysUntilReview = computed(() => {
@@ -151,5 +248,91 @@ const handleQuickNote = (skillId: string, note: string) => emit('quick-note', sk
 
 .card:hover {
   transform: translateY(-2px);
+}
+
+/* Compact view styling */
+.skill-card-compact {
+  height: auto !important;
+}
+
+.compact-card-body {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.compact-card-body:hover {
+  background-color: var(--bs-light);
+}
+
+.compact-card-body:focus {
+  outline: 2px solid var(--bs-primary);
+  outline-offset: 2px;
+}
+
+.skill-name {
+  font-size: 0.95rem;
+  line-height: 1.2;
+}
+
+.skill-meta {
+  font-size: 0.8rem;
+  line-height: 1.1;
+}
+
+.compact-status-indicator {
+  flex-shrink: 0;
+}
+
+/* Status badge colors */
+.badge-backlog {
+  background-color: #6c757d;
+  color: white;
+}
+
+.badge-acquisition {
+  background-color: #fd7e14;
+  color: white;
+}
+
+.badge-maintenance {
+  background-color: #20c997;
+  color: white;
+}
+
+.badge-focus {
+  background-color: #dc3545;
+  color: white;
+}
+
+.badge-archived {
+  background-color: #adb5bd;
+  color: white;
+}
+
+/* Clickable expanded state */
+.clickable-expanded {
+  cursor: pointer;
+  position: relative;
+}
+
+.clickable-expanded::after {
+  content: "Klicken zum Einklappen";
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  font-size: 0.7rem;
+  color: var(--bs-secondary);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.clickable-expanded:hover::after {
+  opacity: 0.7;
+}
+
+/* Dark mode compatibility */
+[data-bs-theme="dark"] .compact-card-body:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 </style>
