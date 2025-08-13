@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount, VueWrapper } from '@vue/test-utils'
+import { createPinia, setActivePinia } from 'pinia'
 import SkillCard from '../SkillCard.vue'
 import type { SkillData } from '@/types/skill'
 import { createMockSkill } from '@/services/__tests__/testHelpers'
@@ -60,6 +61,9 @@ describe('SkillCard', () => {
   let mockSkill: SkillData
 
   beforeEach(() => {
+    // Set up Pinia for each test
+    setActivePinia(createPinia())
+    
     mockSkill = createMockSkill({
       id: 'test-skill',
       name: 'Test Skill',
