@@ -58,7 +58,18 @@ Want to learn salsa techniques that could enhance my **Modern Jive** dancing.
       repetitions: 0,
       progressionHistory: [],
       practiceLog: [],
-      quickNotes: []
+      quickNotes: [
+        {
+          date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+          note: '💡 Found great salsa tutorial on YouTube - bookmarked for later',
+          transferredToNotes: false
+        },
+        {
+          date: yesterday.toISOString(),
+          note: 'Watched Modern Jive dancers with salsa background - notice how they move their hips',
+          transferredToNotes: false
+        }
+      ]
     },
 
     // ACQUISITION STATUS - Currently learning
@@ -146,7 +157,30 @@ Week 3: Polish and styling (planned)
           date: yesterday.toISOString(),
           quality: 2,
           qualityText: 'Good',
-          note: 'Consistent execution, ready to add styling'
+          note: 'Consistent execution, ready to add styling',
+          transferredToNotes: true
+        }
+      ],
+      quickNotes: [
+        {
+          date: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+          note: 'Instructor tip: Keep the rotation compact and controlled',
+          transferredToNotes: true
+        },
+        {
+          date: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+          note: 'Practice partner Emma said the timing feels much more natural now',
+          transferredToNotes: false
+        },
+        {
+          date: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+          note: 'Need to practice with different height partners to master the adjustment',
+          transferredToNotes: false
+        },
+        {
+          date: yesterday.toISOString(),
+          note: '🎯 Ready to add subtle styling - maybe a small pause on the rotation?',
+          transferredToNotes: false
         }
       ]
     },
@@ -227,7 +261,8 @@ Next Review: ${new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().spli
           level: 4,
           date: monthAgo.toISOString(),
           comment: 'Achieved mastery level - can now help teach beginners',
-          previousLevel: 3
+          previousLevel: 3,
+          transferredToNotes: true
         }
       ],
       practiceLog: [
@@ -248,6 +283,28 @@ Next Review: ${new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().spli
           quality: 3,
           qualityText: 'Very Easy',
           note: 'Maintenance practice - still perfect, ready for next level goals'
+        }
+      ],
+      quickNotes: [
+        {
+          date: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000).toISOString(),
+          note: 'Sarah struggled with timing - showed her the counting technique',
+          transferredToNotes: true
+        },
+        {
+          date: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+          note: 'Beginners class went well - 8 new students learned the basic move',
+          transferredToNotes: false
+        },
+        {
+          date: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+          note: 'Mike asked me to demonstrate for intermediate class - felt honored! 🏆',
+          transferredToNotes: false
+        },
+        {
+          date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+          note: 'Could teach this move in my sleep now - perfect foundation for everything else',
+          transferredToNotes: false
         }
       ]
     },
@@ -380,6 +437,38 @@ Ready for Level Up: Almost! (15 XP needed)
           qualityText: 'Very Easy',
           note: 'Competition-ready level! Ready for level 6 soon!'
         }
+      ],
+      quickNotes: [
+        {
+          date: new Date(Date.now() - 18 * 24 * 60 * 60 * 1000).toISOString(),
+          note: 'First week of focus mode - setting up daily practice routine',
+          transferredToNotes: true
+        },
+        {
+          date: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+          note: 'Breakthrough! Finally understood the momentum transfer technique',
+          transferredToNotes: true
+        },
+        {
+          date: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString(),
+          note: 'Emma: "That felt amazing! You can tell you\'ve been practicing intensively"',
+          transferredToNotes: true
+        },
+        {
+          date: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
+          note: 'XP system really motivating - love seeing the progress numbers! 📈',
+          transferredToNotes: false
+        },
+        {
+          date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+          note: 'Competition team invited me to practice with them - big confidence boost!',
+          transferredToNotes: false
+        },
+        {
+          date: now,
+          note: '🔥 Almost ready for level 6! Just need a few more XP points',
+          transferredToNotes: false
+        }
       ]
     },
 
@@ -476,7 +565,24 @@ Next Review: Never (Permanent Skill)
           previousLevel: 5
         }
       ],
-      practiceLog: []
+      practiceLog: [],
+      quickNotes: [
+        {
+          date: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString(),
+          note: 'Remember when this felt impossible? Now it\'s automatic! 🎉',
+          transferredToNotes: true
+        },
+        {
+          date: new Date(Date.now() - 70 * 24 * 60 * 60 * 1000).toISOString(),
+          note: 'Teaching moment: Student clicked when I broke it down to "step-together-step"',
+          transferredToNotes: true
+        },
+        {
+          date: new Date(Date.now() - 80 * 24 * 60 * 60 * 1000).toISOString(),
+          note: 'Mastery feels amazing - can focus on helping others instead of my own technique',
+          transferredToNotes: false
+        }
+      ]
     },
 
     // HIGH-LEVEL MAINTENANCE - Advanced skill
@@ -585,6 +691,28 @@ Listen → Analyze → Feel → Express
           quality: 3,
           qualityText: 'Very Easy',
           note: 'Social dance night - effortless adaptation to all musical styles'
+        }
+      ],
+      quickNotes: [
+        {
+          date: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString(),
+          note: 'Latin workshop revelation - completely different hip movement approach! 💃',
+          transferredToNotes: true
+        },
+        {
+          date: new Date(Date.now() - 18 * 24 * 60 * 60 * 1000).toISOString(),
+          note: 'Guest instructor Maria showed amazing syncopation techniques from Brazil',
+          transferredToNotes: false
+        },
+        {
+          date: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+          note: 'Students asking for musicality workshops - maybe I should start teaching them?',
+          transferredToNotes: false
+        },
+        {
+          date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+          note: 'DJ tonight played perfect mix - could express every musical change! 🎵',
+          transferredToNotes: false
         }
       ]
     },
@@ -717,13 +845,219 @@ Sunday: Competition simulation (1 hour)
           date: yesterday.toISOString(),
           quality: 3,
           qualityText: 'Very Easy',
-          note: 'Competition simulation with judges - scored 9.2/10 average'
+          note: 'Competition simulation with judges - scored 9.2/10 average',
+          transferredToNotes: true
         },
         {
           date: now,
           quality: 3,
           qualityText: 'Very Easy',
           note: 'Peak performance achieved! Feeling ready for championship level'
+        }
+      ],
+      quickNotes: [
+        {
+          date: new Date(Date.now() - 200 * 24 * 60 * 60 * 1000).toISOString(),
+          note: 'Started this journey as intermediate dancer - now training for nationals!',
+          transferredToNotes: true
+        },
+        {
+          date: new Date(Date.now() - 120 * 24 * 60 * 60 * 1000).toISOString(),
+          note: 'Coach feedback: "You have the technical skill, now develop your artistry"',
+          transferredToNotes: true
+        },
+        {
+          date: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
+          note: 'First competition placement! 3rd place felt like winning gold 🥉➡️🥇',
+          transferredToNotes: true
+        },
+        {
+          date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+          note: 'Regional qualifier WIN! 🏆 Nationals here we come!',
+          transferredToNotes: false
+        },
+        {
+          date: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+          note: 'Pressure training session - learned to love the adrenaline rush',
+          transferredToNotes: false
+        },
+        {
+          date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+          note: 'Judge workshop feedback: "Championship potential - consistency is key"',
+          transferredToNotes: false
+        },
+        {
+          date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+          note: '🎯 3 weeks until nationals - feeling confident and prepared!',
+          transferredToNotes: false
+        }
+      ]
+    },
+
+    // TEST SKILL - DUE TODAY for spaced repetition
+    {
+      id: 'skill_test_due_today',
+      name: 'Windmill Turn',
+      tags: ['Move', 'Leading'],
+      level: 6,
+      status: 'maintenance',
+      notes: `# Windmill Turn - Maintenance Practice
+
+A **smooth turning** move that creates beautiful flow on the dance floor.
+
+## Current Status: Due for Review ⏰
+
+This skill is **due today** for spaced repetition practice to maintain proficiency.
+
+### Technique Points
+- **Entry**: Clean setup from basic position
+- **Execution**: Smooth rotation with proper leading
+- **Exit**: Return to flow seamlessly
+
+### Last Practice Notes
+> Previous session went well - maintained good timing and connection
+
+**Review Goal**: Ensure skill retention and smooth execution`,
+      dateCreated: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString(),
+      dateModified: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+      easeFactor: 2.6,
+      interval: 7,
+      repetitions: 8,
+      lastPracticed: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+      nextReview: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(), // Due today (1 hour ago to ensure it shows as due)
+      progressionHistory: [
+        {
+          level: 5,
+          date: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString(),
+          comment: 'Transitioned to maintenance status',
+          previousLevel: 4
+        },
+        {
+          level: 6,
+          date: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(),
+          comment: 'Improved flow and styling consistency',
+          previousLevel: 5
+        }
+      ],
+      practiceLog: [
+        {
+          date: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+          quality: 3,
+          qualityText: 'Very Easy',
+          note: 'Smooth execution, good partner feedback'
+        },
+        {
+          date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+          quality: 2,
+          qualityText: 'Good',
+          note: 'Solid practice session, maintained good timing'
+        }
+      ],
+      quickNotes: [
+        {
+          date: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+          note: 'Due for review today - should be straightforward maintenance practice',
+          transferredToNotes: false
+        },
+        {
+          date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+          note: 'Partner feedback: "Your leading on this move is so clear and confident"',
+          transferredToNotes: false
+        },
+        {
+          date: yesterday.toISOString(),
+          note: '⏰ Don\'t forget - practice session scheduled for today!',
+          transferredToNotes: false
+        }
+      ]
+    },
+
+    // TEST SKILL - OVERDUE for spaced repetition
+    {
+      id: 'skill_test_overdue',
+      name: 'Reverse Catapult',
+      tags: ['Move', 'Control', 'Following'],
+      level: 7,
+      status: 'maintenance',
+      notes: `# Reverse Catapult - OVERDUE Practice! ⚠️
+
+An **advanced variation** of the catapult with follower-initiated momentum.
+
+## Status: OVERDUE ⚠️
+
+This skill is **3 days overdue** for spaced repetition practice - may need refresher work.
+
+### Complexity Notes
+- **Follower Initiation**: Requires strong follower communication
+- **Leader Response**: Quick adaptation to follower's momentum
+- **Timing Critical**: More complex than standard catapult
+
+### Potential Issues to Check
+⚠️ **Risk**: May have forgotten subtle timing cues
+⚠️ **Check**: Ensure safety positioning is still secure
+⚠️ **Verify**: Partner comfort level with move complexity
+
+### Overdue Concerns
+> It's been 3 days past due date - may need to drop back to easier variations first
+> Recommend gentle practice to assess current skill retention
+
+**Priority**: Practice soon to prevent skill degradation`,
+      dateCreated: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
+      dateModified: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+      easeFactor: 2.3,
+      interval: 10,
+      repetitions: 12,
+      lastPracticed: new Date(Date.now() - 13 * 24 * 60 * 60 * 1000).toISOString(),
+      nextReview: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days overdue
+      progressionHistory: [
+        {
+          level: 6,
+          date: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
+          comment: 'First successful execution of reverse variation',
+          previousLevel: 5
+        },
+        {
+          level: 7,
+          date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+          comment: 'Consistent execution, partners feel secure with move',
+          previousLevel: 6
+        }
+      ],
+      practiceLog: [
+        {
+          date: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(),
+          quality: 2,
+          qualityText: 'Good',
+          note: 'Good session, timing felt natural'
+        },
+        {
+          date: new Date(Date.now() - 13 * 24 * 60 * 60 * 1000).toISOString(),
+          quality: 3,
+          qualityText: 'Very Easy',
+          note: 'Excellent execution, very smooth and controlled',
+          transferredToNotes: true
+        }
+      ],
+      quickNotes: [
+        {
+          date: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+          note: 'Complex move but so satisfying when executed perfectly! 💫',
+          transferredToNotes: true
+        },
+        {
+          date: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+          note: '⚠️ Getting close to due date - need to schedule practice soon',
+          transferredToNotes: false
+        },
+        {
+          date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+          note: 'OVERDUE! Risk of skill degradation - must practice ASAP 🚨',
+          transferredToNotes: false
+        },
+        {
+          date: now,
+          note: 'Still overdue... need to assess if I can still do this safely',
+          transferredToNotes: false
         }
       ]
     }
