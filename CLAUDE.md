@@ -18,19 +18,10 @@ This file provides guidance to Claude Code when working with the Modern Jive Ski
 **Key Transitions**: ACQUISITION → MAINTENANCE at Level 5, FOCUS → MAINTENANCE after 7 days without practice
 
 ### Current Status (2025-08-13)
-- **Production-Ready**: Complete 5-status learning system with PWA functionality ✅
-- **DEPLOYED**: GitHub Pages PWA deployment LIVE 🚀
-- **Repository**: Public release at https://github.com/kJunicke/skill_tracker_modern_jive
-- **Testing**: All 230+ unit tests passing ✅ (Enhanced: Toast system, validation, error handling, export/import)
-- **Quality**: TypeScript strict mode, ESLint clean, 90%+ test coverage
-- **UX Enhanced**: Comprehensive toast notification system for optimal user feedback ✅
-- **Bug Fixed**: Bootstrap Modal + Vue 3 integration issue - Practice Modal buttons now work on repeated openings ✅
-- **ALL BOOTSTRAP MODAL BUGS ELIMINATED (2025-08-12)**: Comprehensive codebase audit completed - ALL 5 modals with dynamic data fixed with destroyModal() + modalKey++ pattern ✅
-- **ROBUSTNESS**: System now immune to Bootstrap Modal instance caching bugs - comprehensive prevention pattern documented ✅
-- **Timeline Filtering IMPLEMENTED (2025-08-12)**: Universal marked/unmarked filter for all timeline entries (Level-Ups, Practice, Quick Notes) ✅
-- **XP SYSTEM CENTRALIZED (2025-08-12)**: Focus mode XP logic fully centralized in single function - eliminates hardcoded values throughout codebase ✅
-- **DARK MODE IMPLEMENTED (2025-08-12)**: Complete dark theme with floating toggle button, CSS variables, localStorage persistence ✅
-- **DATA BACKUP SYSTEM IMPLEMENTED (2025-08-13)**: Complete JSON export/import functionality with validation and automatic backup ✅
+- **Production-Ready**: Complete 5-status learning system deployed as PWA
+- **Live Deployment**: https://github.com/kJunicke/skill_tracker_modern_jive
+- **Quality Assured**: 230+ unit tests passing, TypeScript strict mode, ESLint clean, 90%+ coverage
+- **Feature Complete**: Dark mode, data backup, toast notifications, timeline filtering, centralized XP system
 
 ## Documentation Index
 
@@ -38,22 +29,13 @@ This file provides guidance to Claude Code when working with the Modern Jive Ski
 - **[TODO.md](./TODO.md)** - Primary source for project status, priorities, and roadmap
 - **[docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)** - Component structure and service layer details
 
-**🔧 Development Guidelines:**
-- **[docs/DEVELOPMENT_WORKFLOW.md](./docs/DEVELOPMENT_WORKFLOW.md)** - Mandatory TDD workflow and testing requirements
-- **[docs/BUG_PATTERNS.md](./docs/BUG_PATTERNS.md)** - Common Vue.js reactivity and event handling bugs
-- **[docs/XP_SYSTEM.md](./docs/XP_SYSTEM.md)** - Centralized XP calculation system architecture and usage
-
-**🔒 Privacy & Security:**
-- **[docs/PRIVACY_SETUP.md](./docs/PRIVACY_SETUP.md)** - Email privacy configuration and security audit results
-
-## Core Development Guidelines
+## Development Guidelines
 
 ### Essential Rules
-- **TODO.md Management**: MUST be kept current for all development priorities
 - **TDD Mandatory**: Write tests BEFORE implementing changes (90%+ coverage requirement)
-- **Pre-Development**: Always run `npm run test:unit`, `npm run type-check`, `npm run dev` first
 - **Post-Development**: Tests, type-check, lint, and functional verification MUST pass
 - **Bug Investigation**: ALWAYS consult `docs/BUG_PATTERNS.md` first when debugging - contains proven solutions for common Vue.js/Bootstrap integration issues
+- **Reference Docs**: `docs/DEVELOPMENT_WORKFLOW.md` for TDD workflow, `docs/BUG_PATTERNS.md` for common patterns
 
 ### Critical Patterns
 **Vue.js Reactivity**: Use `toRef(props, 'propName')` when passing props to composables
@@ -88,60 +70,28 @@ showModalName: (skill: SkillData) => {
 // Handler: handler: (data: {param1: type, param2: type}) => { ... }
 ```
 
-### Service Layer Architecture
-- **SkillService.ts**: Business logic for CRUD operations, practice sessions, level progression
-- **SpacedRepetitionService.ts**: SM2 algorithm implementation with 5-status logic
-- **StorageService.ts**: Data persistence abstraction with LocalStorageAdapter, JSON export/import with validation
-- **focusDataHelpers.ts**: Centralized XP calculation logic for Focus mode
-- **Dependency Injection**: Centralized DI container for testable architecture
+### Architecture Overview
+**Service Layer**: SkillService (CRUD), SpacedRepetitionService (SM2 algorithm), StorageService (persistence), focusDataHelpers (XP calculation)  
+**Key Components**: App.vue (4 layout sub-components), SkillCard.vue (5 focused sub-components), ModalManager.vue, ToastManager.vue  
+**Base Components**: BaseModal.vue, BaseButton.vue, BaseToast.vue for UI consistency  
+**Dependency Injection**: Centralized DI container for testable architecture
 
-### Key Components
-- **App.vue**: Main orchestration with 4 layout sub-components
-- **SkillCard.vue**: Modular display with 5 focused sub-components
-- **ModalManager.vue**: Centralized modal management
-- **ToastManager.vue**: Centralized toast notification system with auto-dismiss
-- **Base Components**: BaseModal.vue, BaseButton.vue, BaseToast.vue for UI consistency
+### Toast System
+**Complete notification system** with 4 variants (success/error/warning/info):
+- **Components**: BaseToast.vue, ToastManager.vue with auto-dismiss and positioning
+- **Store Integration**: useToasts() composable with Pinia store for state management
+- **App Integration**: Connected to skill operations, data backup, form validation, and auto-save confirmations
 
-### Toast System (IMPLEMENTED)
-**Complete notification system** with 4 variants and full test coverage:
-- **BaseToast.vue**: Individual toast component with animations and auto-dismiss
-- **ToastManager.vue**: Global toast container with positioning
-- **useToasts()**: Composable for creating and managing toasts
-- **toastStore**: Pinia store for centralized toast state management
-
-**Toast Types**:
-- `showSuccess()` - Green success notifications (3s default)
-- `showError()` - Red error notifications (8s default) 
-- `showWarning()` - Yellow warning notifications (5s default)
-- `showInfo()` - Blue info notifications (5s default)
-
-**Current Integrations**:
-- **Storage Operations**: Data load/save error notifications in skillStore
-- **Form Validation**: Enhanced validation in SkillModal with specific error messages
-- **CSV Export**: Success/failure notifications in TrainingLogExport with data counts
-- **Auto-save**: Confirmation toasts for inline markdown editors (notes, comments)
-- **Skill Operations**: Save confirmations, practice completions with level-up detection
-- **Level & Deletion**: Manual level updates and skill deletion confirmations
-- **Status Transitions**: Warning toasts for potential progress loss (SkillModal)
-- **Quick Notes**: Success notifications for quick note creation with timeline feedback
-- **Data Backup**: Export/import success/failure notifications with skill counts
-
-### Timeline Filtering System (NEW - 2025-08-12)
+### Timeline Filtering System
 **Universal marked/unmarked filter for complete timeline control:**
-- **All Entry Types**: Filters Level-Ups, Practice Sessions, and Quick Notes uniformly
-- **Overlay Filter Design**: Works as secondary filter on top of main category toggles
-- **Cycle Button UI**: Simple click-to-cycle through All → Unmarked → Marked → All
-- **Smart Counts**: Shows accurate counts for marked/unmarked entries across all types
-- **Dual View Support**: Works in both compact sidebar and full modal timeline views
-- **Vue-native Implementation**: No Bootstrap dependencies, pure Vue reactivity
+- **Filter Types**: All → Unmarked → Marked cycle button for Level-Ups, Practice Sessions, and Quick Notes
+- **Dual View Support**: Works in both compact sidebar and full modal timeline views with smart counts
+- **Vue-native Implementation**: Pure Vue reactivity without Bootstrap dependencies
 
-### XP System Architecture (NEW - 2025-08-12)
-**Centralized Focus Mode XP calculation eliminates maintenance overhead:**
-- **Central Function**: `calculateTargetXP(level)` in `focusDataHelpers.ts` - single source of truth
-- **Formula**: `Math.floor(3 * 2 + level / 3)` - optimized for faster level-up suggestions
-- **Automatic Propagation**: All services, tests, and mock data use central function
-- **Zero Hardcoding**: No XP values hardcoded anywhere - formula changes apply universally
-- **Maintainable**: Change formula once, entire system updates automatically
+### XP System Architecture
+**Centralized Focus Mode XP calculation:**
+- **Central Function**: `calculateTargetXP(level)` in `focusDataHelpers.ts` with formula `Math.floor(3 * 2 + level / 3)`
+- **Zero Hardcoding**: All services and 230+ tests use central function - change formula once, entire system updates
 
 ## Development Environment
 
@@ -163,11 +113,17 @@ src/
 ### Git Workflow & Privacy
 **IMPORTANT**: Always commit ALL modified files with `git add .` to preserve parallel user changes.
 
-**Privacy Configuration** (configured 2025-08-11):
+**Privacy & Security Status** (configured 2025-08-11):
 - **✅ FULLY PROTECTED**: Clean Git-History mit `git checkout --orphan` erstellt
 - **Private Email**: Git configured to use `132850162+kJunicke@users.noreply.github.com` für alle Commits
-- **Mailmap**: `.mailmap` file masks any remaining email references in public displays  
+- **Email Masking**: `.mailmap` file masks any remaining email references in public displays  
+- **Security Audit**: No API keys, credentials, or vulnerabilities - `npm audit` clean
 - **Public Repository**: https://github.com/kJunicke/skill_tracker_modern_jive - sicher für öffentliche Veröffentlichung
+
+**Documentation Privacy Rules**:
+- **NO personal information** in any documentation files (CLAUDE.md, TODO.md, docs/)
+- **NO personal email addresses, local paths with usernames, private notes**
+- **ONLY technical project information** - keep all content "public repository ready"
 
 ## Vue 3 Development Guidelines
 
@@ -178,7 +134,7 @@ src/
 - **Reactive Props**: Use `toRef()` for composable integration
 - **Computed Over Watchers**: Prefer computed properties for derived state
 
-### Testing with Vitest (216 tests passing ✅)
+### Testing with Vitest (230+ tests passing)
 - **Structure**: Arrange-Act-Assert pattern
 - **Mocking**: Use vi.fn() for dependency isolation
 - **Coverage**: 90%+ for service layer, component interaction testing
@@ -186,46 +142,19 @@ src/
 - **Test IDs**: Use `data-testid` attributes for reliable component testing
 - **Modal Testing**: Ensure components use `v-if` for conditional rendering in tests
 
-### Dark Mode System (NEW - 2025-08-12)
-**Complete dark theme implementation with user preference persistence:**
-- **DarkModeStore**: Pinia store for theme state management with toggle functionality
-- **CSS Variables**: Comprehensive light/dark color schemes in `base.css` with smooth transitions
-- **DarkModeToggle**: Fixed-position floating button (top-right) with Bootstrap Icons (bi-sun/bi-moon)
-- **Theme Persistence**: User preference saved in localStorage and restored on app load
-- **Component Integration**: Added to App.vue with onMounted initialization
-- **Comprehensive Coverage**: Dark theme styles for cards, modals, forms, dropdowns, and all UI components
-- **Accessibility**: Proper ARIA labels, tooltips, and keyboard navigation support
-- **Smooth Transitions**: 0.3s ease transitions for all theme changes
+### Dark Mode System
+**Complete dark theme with user preference persistence:**
+- **DarkModeStore**: Pinia store with toggle functionality and localStorage persistence
+- **UI Components**: Fixed-position floating button (top-right) with Bootstrap Icons (bi-sun/bi-moon)
+- **CSS Implementation**: Comprehensive light/dark color schemes with 0.3s smooth transitions
 - **Future Enhancement**: Markdown editor components need dark mode styling integration
 
-**Usage**:
-```typescript
-// Store usage
-const darkModeStore = useDarkModeStore()
-darkModeStore.toggleDarkMode() // Toggle between themes
-darkModeStore.isDarkMode // Reactive theme state
-```
-
-### Data Backup System (NEW - 2025-08-13)
-**Complete JSON export/import functionality for launch-ready data backup:**
-- **Export Features**: Structured JSON with metadata (version, date, skill count), automatic filename with date
-- **Import Features**: Full validation, automatic backup before import, error reporting with partial import support
-- **UI Integration**: Export/Import buttons in main action bar with intuitive icons (download/upload)
-- **Validation**: Comprehensive skill data validation with detailed error messages
-- **User Experience**: Toast notifications for all operations, double-confirmation for destructive actions
-- **Test Coverage**: 14 comprehensive unit tests covering all export/import scenarios
-- **Safety Features**: "Delete All Skills" button with double confirmation for testing purposes
-
-**Usage**:
-```typescript
-// Export all data
-const jsonData = await skillStore.exportData()
-// Automatically downloads as: skill-tracker-backup-YYYY-MM-DD.json
-
-// Import data with validation
-const result = await skillStore.importData(jsonData)
-// Returns: { success: boolean, skillsImported: number, errors?: string[] }
-```
+### Data Backup System
+**Complete JSON export/import functionality:**
+- **Export/Import**: Structured JSON with metadata, validation, and automatic backup before import
+- **UI Integration**: Export/Import buttons in main action bar with toast notifications
+- **Safety Features**: Double confirmation for destructive actions, comprehensive error reporting
+- **Test Coverage**: 14 unit tests covering all export/import scenarios
 
 ## Environment
 - **Platform**: Windows development

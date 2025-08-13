@@ -4,11 +4,6 @@
 
 **⚠️ IMPORTANT**: To prevent regressions and broken functionality, ALL development work MUST follow this workflow:
 
-### Pre-Development Phase
-1. **ALWAYS run existing tests first**: `npm run test:unit` to verify current state
-2. **ALWAYS check type safety**: `npm run type-check` to ensure no existing type errors
-3. **ALWAYS verify app runs**: `npm run dev` to confirm functionality before changes
-
 ### During Development Phase  
 1. **Test-Driven Development MANDATORY**: Write failing tests BEFORE implementing changes
 2. **Incremental Testing**: Run tests after each significant change, not just at the end
