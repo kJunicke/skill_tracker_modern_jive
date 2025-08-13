@@ -11,6 +11,9 @@
         :filters="filters"
         :sorting="sorting"
         @show-training-log="showTrainingLogModal"
+        @export-data="handleExportData"
+        @import-data="handleImportData"
+        @delete-all-skills="handleDeleteAllSkills"
         @reset-test-environment="appEventHandlers.resetTestEnvironment"
         @add-skill="showAddSkillModal"
         @filter-change="handleFilterChange"
@@ -69,6 +72,7 @@
 import { computed, onMounted } from 'vue'
 import { useSkillStore } from '@/stores/skillStore'
 import { useDarkModeStore } from '@/stores/darkModeStore'
+import { useToasts } from '@/composables/useToasts'
 import { useModals } from '@/composables/useModals'
 import { useModalEventHandlers } from '@/composables/useModalEventHandlers'
 import { useSkillEventHandlers } from '@/composables/useSkillEventHandlers'
@@ -84,6 +88,7 @@ import DarkModeToggle from '@/components/ui/DarkModeToggle.vue'
 // Stores
 const skillStore = useSkillStore()
 const darkModeStore = useDarkModeStore()
+const { showSuccess, showError } = useToasts()
 
 // Initialize dark mode from localStorage
 onMounted(() => {
@@ -175,6 +180,75 @@ const handleSortChange = (field: string) => {
 // Handle level change event with object parameter (fix for TypeScript error)  
 const handleLevelChangeWrapper = (data: {skillId: string, newLevel: number}) => {
   handleLevelChange(data.skillId, data.newLevel)
+}
+
+// Data export/import handlers
+const handleExportData = async () => {
+  try {
+    const jsonData = await skillStore.exportData()
+    const blob = new Blob([jsonData], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `skill-tracker-backup-${new Date().toISOString().split('T')[0]}.json`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+    
+    showSuccess('Export Complete', `Successfully exported ${skills.value.length} skills to JSON backup file.`)
+  } catch (error) {
+    console.error('Export failed:', error)
+    showError('Export Failed', 'Unable to export your skill data. Please try again.')
+  }
+}
+
+const handleImportData = () => {
+  const input = document.createElement('input')
+  input.type = 'file'
+  input.accept = '.json'
+  input.onchange = async (event) => {
+    const file = (event.target as HTMLInputElement).files?.[0]
+    if (!file) return
+    
+    try {
+      const text = await file.text()
+      const result = await skillStore.importData(text)
+      
+      if (result.success) {
+        let message = `Successfully imported ${result.skillsImported} skills.`
+        if (result.errors && result.errors.length > 0) {
+          message += ` ${result.errors.length} skills had validation errors and were skipped.`
+        }
+        showSuccess('Import Complete', message)
+      }
+    } catch (error) {
+      console.error('Import failed:', error)
+      showError('Import Failed', error instanceof Error ? error.message : 'Unable to import skill data.')
+    }
+  }
+  input.click()
+}
+
+const handleDeleteAllSkills = async () => {
+  // Confirmation dialog
+  if (!confirm('⚠️ WARNING: This will permanently delete ALL skills and cannot be undone!\n\nAre you absolutely sure you want to continue?')) {
+    return
+  }
+  
+  // Second confirmation
+  if (!confirm('This is your final warning. ALL DATA WILL BE LOST.\n\nClick OK to proceed with deletion.')) {
+    return
+  }
+  
+  try {
+    await skillStore.deleteAllSkills()
+    showSuccess('All Skills Deleted', 'Successfully deleted all skills from storage.')
+  } catch (error) {
+    console.error('Delete all failed:', error)
+    showError('Delete Failed', 'Unable to delete all skills. Please try again.')
+  }
 }
 </script>
 

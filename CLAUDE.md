@@ -17,11 +17,11 @@ This file provides guidance to Claude Code when working with the Modern Jive Ski
 
 **Key Transitions**: ACQUISITION → MAINTENANCE at Level 5, FOCUS → MAINTENANCE after 7 days without practice
 
-### Current Status (2025-08-12)
+### Current Status (2025-08-13)
 - **Production-Ready**: Complete 5-status learning system with PWA functionality ✅
 - **DEPLOYED**: GitHub Pages PWA deployment LIVE 🚀
 - **Repository**: Public release at https://github.com/kJunicke/skill_tracker_modern_jive
-- **Testing**: All 216 unit tests passing ✅ (Enhanced: Toast system, validation, error handling)
+- **Testing**: All 230+ unit tests passing ✅ (Enhanced: Toast system, validation, error handling, export/import)
 - **Quality**: TypeScript strict mode, ESLint clean, 90%+ test coverage
 - **UX Enhanced**: Comprehensive toast notification system for optimal user feedback ✅
 - **Bug Fixed**: Bootstrap Modal + Vue 3 integration issue - Practice Modal buttons now work on repeated openings ✅
@@ -30,6 +30,7 @@ This file provides guidance to Claude Code when working with the Modern Jive Ski
 - **Timeline Filtering IMPLEMENTED (2025-08-12)**: Universal marked/unmarked filter for all timeline entries (Level-Ups, Practice, Quick Notes) ✅
 - **XP SYSTEM CENTRALIZED (2025-08-12)**: Focus mode XP logic fully centralized in single function - eliminates hardcoded values throughout codebase ✅
 - **DARK MODE IMPLEMENTED (2025-08-12)**: Complete dark theme with floating toggle button, CSS variables, localStorage persistence ✅
+- **DATA BACKUP SYSTEM IMPLEMENTED (2025-08-13)**: Complete JSON export/import functionality with validation and automatic backup ✅
 
 ## Documentation Index
 
@@ -90,7 +91,7 @@ showModalName: (skill: SkillData) => {
 ### Service Layer Architecture
 - **SkillService.ts**: Business logic for CRUD operations, practice sessions, level progression
 - **SpacedRepetitionService.ts**: SM2 algorithm implementation with 5-status logic
-- **StorageService.ts**: Data persistence abstraction with LocalStorageAdapter
+- **StorageService.ts**: Data persistence abstraction with LocalStorageAdapter, JSON export/import with validation
 - **focusDataHelpers.ts**: Centralized XP calculation logic for Focus mode
 - **Dependency Injection**: Centralized DI container for testable architecture
 
@@ -101,7 +102,7 @@ showModalName: (skill: SkillData) => {
 - **ToastManager.vue**: Centralized toast notification system with auto-dismiss
 - **Base Components**: BaseModal.vue, BaseButton.vue, BaseToast.vue for UI consistency
 
-### Toast System (NEW)
+### Toast System (IMPLEMENTED)
 **Complete notification system** with 4 variants and full test coverage:
 - **BaseToast.vue**: Individual toast component with animations and auto-dismiss
 - **ToastManager.vue**: Global toast container with positioning
@@ -123,6 +124,7 @@ showModalName: (skill: SkillData) => {
 - **Level & Deletion**: Manual level updates and skill deletion confirmations
 - **Status Transitions**: Warning toasts for potential progress loss (SkillModal)
 - **Quick Notes**: Success notifications for quick note creation with timeline feedback
+- **Data Backup**: Export/import success/failure notifications with skill counts
 
 ### Timeline Filtering System (NEW - 2025-08-12)
 **Universal marked/unmarked filter for complete timeline control:**
@@ -202,6 +204,27 @@ src/
 const darkModeStore = useDarkModeStore()
 darkModeStore.toggleDarkMode() // Toggle between themes
 darkModeStore.isDarkMode // Reactive theme state
+```
+
+### Data Backup System (NEW - 2025-08-13)
+**Complete JSON export/import functionality for launch-ready data backup:**
+- **Export Features**: Structured JSON with metadata (version, date, skill count), automatic filename with date
+- **Import Features**: Full validation, automatic backup before import, error reporting with partial import support
+- **UI Integration**: Export/Import buttons in main action bar with intuitive icons (download/upload)
+- **Validation**: Comprehensive skill data validation with detailed error messages
+- **User Experience**: Toast notifications for all operations, double-confirmation for destructive actions
+- **Test Coverage**: 14 comprehensive unit tests covering all export/import scenarios
+- **Safety Features**: "Delete All Skills" button with double confirmation for testing purposes
+
+**Usage**:
+```typescript
+// Export all data
+const jsonData = await skillStore.exportData()
+// Automatically downloads as: skill-tracker-backup-YYYY-MM-DD.json
+
+// Import data with validation
+const result = await skillStore.importData(jsonData)
+// Returns: { success: boolean, skillsImported: number, errors?: string[] }
 ```
 
 ## Environment

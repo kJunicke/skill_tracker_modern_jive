@@ -244,6 +244,29 @@ export const useSkillStore = defineStore('skills', () => {
     }
   }
 
+  async function exportData(): Promise<string> {
+    try {
+      return await storageService.exportAllData()
+    } catch (error) {
+      console.error('Error exporting data:', error)
+      showError('Export Failed', 'Unable to export your skill data.')
+      throw error
+    }
+  }
+
+  async function importData(jsonData: string): Promise<{ success: boolean; skillsImported: number; errors?: string[] }> {
+    try {
+      const result = await storageService.importAllData(jsonData)
+      // Reload skills to reflect changes
+      await loadSkills()
+      return result
+    } catch (error) {
+      console.error('Error importing data:', error)
+      showError('Import Failed', error instanceof Error ? error.message : 'Unable to import skill data.')
+      throw error
+    }
+  }
+
   // UI-specific actions
   function setFilter(key: keyof typeof filters.value, value: SkillStatus | SkillTag | 'all' | string): void {
     (filters.value as Record<string, unknown>)[key] = value
@@ -293,6 +316,8 @@ export const useSkillStore = defineStore('skills', () => {
     resetTestEnvironment,
     updateLevelUpComment,
     updatePracticeNote,
+    exportData,
+    importData,
     setFilter,
     resetFilters,
     setSorting,

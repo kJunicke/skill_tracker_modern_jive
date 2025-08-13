@@ -10,6 +10,29 @@
         @click="$emit('show-training-log')"
       />
       <BaseButton
+        variant="success"
+        icon="bi-download"
+        text="Export Data"
+        title="Export all skill data as JSON backup"
+        @click="$emit('export-data')"
+      />
+      <BaseButton
+        variant="secondary"
+        icon="bi-upload"
+        text="Import Data"
+        title="Import skill data from JSON backup"
+        @click="$emit('import-data')"
+      />
+      <BaseButton
+        variant="danger"
+        outline
+        size="sm"
+        icon="bi-trash3"
+        text="Delete All"
+        title="Delete all skills (cannot be undone)"
+        @click="$emit('delete-all-skills')"
+      />
+      <BaseButton
         variant="warning"
         outline
         size="sm"
@@ -34,6 +57,9 @@ import BaseButton from '@/components/base/BaseButton.vue'
 
 interface Emits {
   (e: 'show-training-log'): void
+  (e: 'export-data'): void
+  (e: 'import-data'): void
+  (e: 'delete-all-skills'): void
   (e: 'reset-test-environment'): void
   (e: 'add-skill'): void
 }
