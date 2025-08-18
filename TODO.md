@@ -15,6 +15,7 @@
   - [x] Consolidated SkillStore with `updateSkillInArray()` helper (DRY principle)
   - [x] Streamlined ToastStore with shared creation patterns
   - [x] Enhanced type safety across all refactored components
+- [x] **Status Transition Modal Fix**: Fixed missing user choice modal when skills reach level 5 in acquisition mode, ensuring users maintain control over their learning progression
 
 ### **Next Priority Features**
 - [ ] **Markdown Notes Dark Mode**: Add dark mode support for markdown editor and notes components

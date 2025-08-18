@@ -208,11 +208,22 @@ export class SkillService {
       ...levelUpUpdates // Apply level changes before checking transitions
     })
     
+    // Filter out user-facing transitions (acquisition → maintenance at level 5)
+    // These should be suggested to user rather than applied automatically
+    const currentLevel = ('level' in levelUpUpdates ? levelUpUpdates.level : skill.level) as number
+    const shouldApplyTransition = !(
+      skill.status === 'acquisition' && 
+      automaticTransitions.status === 'maintenance' &&
+      currentLevel >= 5
+    )
+    
+    const transitionsToApply = shouldApplyTransition ? automaticTransitions : {}
+    
     // Update SM2 parameters (respects status-specific logic)
     const sm2Updates = this.spacedRepetition.updateSM2Parameters({
       ...skill,
       ...levelUpUpdates, // Apply level changes
-      ...automaticTransitions // Apply transitions before SM2 calculation
+      ...transitionsToApply // Apply only non-user-facing transitions before SM2 calculation
     }, session.quality)
     
     // Handle focus progression if in focus mode
@@ -224,7 +235,7 @@ export class SkillService {
     // Update skill with all changes
     const updates: UpdateSkillDto = {
       ...levelUpUpdates, // Apply level-up changes first
-      ...automaticTransitions, // Apply status transitions
+      ...transitionsToApply, // Apply only non-user-facing status transitions
       ...sm2Updates,
       ...focusUpdates,
       lastPracticed: now,

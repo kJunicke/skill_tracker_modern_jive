@@ -8,9 +8,11 @@ import type {
 } from '@/types/modals'
 import { showModal, hideModal, destroyModal } from '@/utils/modalManager'
 import { useToasts } from './useToasts'
+import { useSkillStore } from '@/stores/skillStore'
 
 export function useModals(handlers: ModalEventHandlers) {
   const { showSuccess } = useToasts()
+  const skillStore = useSkillStore()
   
   // Modal key for forcing re-render
   const modalKey = ref(0)
@@ -166,14 +168,30 @@ export function useModals(handlers: ModalEventHandlers) {
       showSuccess('Skill Saved', `${skillData.name || 'Skill'} has been saved successfully`)
     },
 
-    handlePracticeComplete: (skillId: string, quality: number, notes: string, isLevelUp?: boolean) => {
-      handlers.onPracticeComplete(skillId, quality, notes, isLevelUp)
+    handlePracticeComplete: async (skillId: string, quality: number, notes: string, isLevelUp?: boolean) => {
+      await handlers.onPracticeComplete(skillId, quality, notes, isLevelUp)
       modalActions.closePracticeModal()
       
       const skill = modalStates.practice.selectedSkill
       if (skill) {
         const qualityText = ['Forgotten', 'Hard', 'Good', 'Very Easy'][quality - 1]
         showSuccess('Practice Complete', `${skill.name} - ${qualityText}${isLevelUp ? ' (Level Up!)' : ''}`)
+      }
+
+      // Check if status transition should be suggested after practice session
+      const transitionSuggestion = await skillStore.shouldSuggestStatusTransition(skillId)
+      
+      if (transitionSuggestion.shouldSuggest && transitionSuggestion.suggestedStatus) {
+        // Get the updated skill data
+        const updatedSkill = skillStore.skills.find(s => s.id === skillId)
+        
+        if (updatedSkill) {
+          modalActions.showStatusTransitionModal(
+            updatedSkill, 
+            transitionSuggestion.suggestedStatus,
+            transitionSuggestion.reason || ''
+          )
+        }
       }
     },
 
