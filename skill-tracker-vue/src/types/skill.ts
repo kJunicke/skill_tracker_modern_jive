@@ -53,6 +53,10 @@ export interface PracticeSession {
   qualityText: string
   note: string
   transferredToNotes?: boolean
+  levelUpInfo?: {
+    newLevel: number
+    comment: string
+  }
 }
 
 export interface QuickNote {

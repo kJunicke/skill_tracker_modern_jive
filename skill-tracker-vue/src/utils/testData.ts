@@ -15,6 +15,103 @@ export function createTestSkills(): SkillData[] {
   threeMonthsAgo.setDate(threeMonthsAgo.getDate() - 90)
 
   return [
+    // DEMO SKILL - Shows New Unified Practice + Level-Up System
+    {
+      id: 'skill_demo_unified',
+      name: '🆕 Unified System Demo',
+      tags: ['Demo', 'System'],
+      level: 3,
+      status: 'acquisition',
+      notes: `# 🎉 New Unified Practice + Level-Up System
+
+This skill demonstrates the **new unified system** where practice sessions and level-ups are combined!
+
+## ✨ What's New
+- **Single Practice Dialog**: One unified interface for practice + level-up
+- **Combined Timeline**: Practice sessions show level-up indicators  
+- **Streamlined UX**: No more separate level-up dialogs
+
+## 📊 Check the Timeline Below
+Look for practice sessions with **"+ Level Up (X)"** indicators!
+
+### 🔍 How to Test
+1. Click **Practice** button
+2. Choose quality rating
+3. Toggle **Level-Up** button 
+4. Notes become required for level-ups
+5. Submit to see unified timeline entry
+
+> 💡 **New Feature**: Timeline now shows both practice quality AND level-up in one entry!`,
+      dateCreated: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+      dateModified: now,
+      easeFactor: 2.5,
+      interval: 2,
+      repetitions: 3,
+      lastPracticed: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+      nextReview: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString(),
+      progressionHistory: [
+        {
+          level: 1,
+          date: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+          comment: 'Started learning the new system basics (old separate system)',
+          previousLevel: 0
+        }
+        // Level 2 and 3 are now in practiceLog with levelUpInfo - no duplicates!
+      ],
+      practiceLog: [
+        {
+          date: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+          quality: 2,
+          qualityText: 'Good',
+          note: 'Regular practice session - understanding the interface better'
+        },
+        {
+          date: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+          quality: 3,
+          qualityText: 'Very Easy',
+          note: 'Excellent practice session where I mastered the unified approach and leveled up!',
+          levelUpInfo: {
+            newLevel: 2,
+            comment: 'Excellent practice session where I mastered the unified approach and leveled up!'
+          }
+        },
+        {
+          date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+          quality: 2,
+          qualityText: 'Good',
+          note: 'Building consistency with the new system'
+        },
+        {
+          date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+          quality: 4,
+          qualityText: 'Very Easy',
+          note: 'Perfect execution! Ready for master level - combining practice with level-up in one session.',
+          levelUpInfo: {
+            newLevel: 3,
+            comment: 'Perfect execution! Ready for master level - combining practice with level-up in one session.'
+          }
+        },
+        {
+          date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+          quality: 3,
+          qualityText: 'Very Easy',
+          note: 'Demonstrating unified system to others - works perfectly!'
+        }
+      ],
+      quickNotes: [
+        {
+          date: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
+          note: '🚀 New unified system is much cleaner - no more dual dialogs!',
+          transferredToNotes: false
+        },
+        {
+          date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+          note: '✅ Timeline looks great with level-up indicators in practice sessions',
+          transferredToNotes: false
+        }
+      ]
+    },
+
     // BACKLOG STATUS - Future learning goals
     {
       id: 'skill_test_1',

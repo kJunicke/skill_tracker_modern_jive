@@ -40,6 +40,10 @@ export interface UpdateSkillDto {
 export interface PracticeSessionDto {
   quality: number
   note: string
+  levelUpInfo?: {
+    newLevel: number
+    comment: string
+  }
 }
 
 /**
@@ -145,7 +149,7 @@ export class SkillService {
   }
 
   /**
-   * Record a practice session with new learning system logic
+   * Record a practice session with optional level-up in unified system
    */
   async recordPracticeSession(skillId: string, session: PracticeSessionDto): Promise<SkillData> {
     const skills = await this.storage.loadSkills()
@@ -163,7 +167,8 @@ export class SkillService {
       date: now,
       quality: session.quality,
       qualityText: qualityTexts[session.quality - 1], // Adjust for 1-based indexing
-      note: session.note
+      note: session.note,
+      levelUpInfo: session.levelUpInfo
     }
 
     if (!skill.practiceLog) {
@@ -171,12 +176,42 @@ export class SkillService {
     }
     skill.practiceLog.push(practiceSession)
 
+    // Handle level-up if provided
+    let levelUpUpdates = {}
+    if (session.levelUpInfo) {
+      // Add progression entry for level-up
+      const progressionEntry: ProgressionEntry = {
+        level: session.levelUpInfo.newLevel,
+        date: now,
+        comment: session.levelUpInfo.comment,
+        previousLevel: skill.level
+      }
+
+      if (!skill.progressionHistory) {
+        skill.progressionHistory = []
+      }
+      skill.progressionHistory.push(progressionEntry)
+
+      // Reset focus data if leveling up from focus mode
+      const focusDataUpdate = this.spacedRepetition.resetFocusDataForLevelUp(skill, session.levelUpInfo.newLevel)
+
+      levelUpUpdates = {
+        level: session.levelUpInfo.newLevel,
+        progressionHistory: skill.progressionHistory,
+        ...focusDataUpdate
+      }
+    }
+
     // Check for automatic status transitions
-    const automaticTransitions = this.spacedRepetition.checkAutomaticStatusTransitions(skill)
+    const automaticTransitions = this.spacedRepetition.checkAutomaticStatusTransitions({
+      ...skill,
+      ...levelUpUpdates // Apply level changes before checking transitions
+    })
     
     // Update SM2 parameters (respects status-specific logic)
     const sm2Updates = this.spacedRepetition.updateSM2Parameters({
       ...skill,
+      ...levelUpUpdates, // Apply level changes
       ...automaticTransitions // Apply transitions before SM2 calculation
     }, session.quality)
     
@@ -188,6 +223,7 @@ export class SkillService {
 
     // Update skill with all changes
     const updates: UpdateSkillDto = {
+      ...levelUpUpdates, // Apply level-up changes first
       ...automaticTransitions, // Apply status transitions
       ...sm2Updates,
       ...focusUpdates,

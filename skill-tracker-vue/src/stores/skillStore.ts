@@ -159,6 +159,23 @@ export const useSkillStore = defineStore('skills', () => {
     }
   }
 
+  async function recordPracticeSessionWithLevelUp(skillId: string, quality: number, note: string, levelUpInfo?: { newLevel: number; comment: string }): Promise<SkillData | null> {
+    try {
+      const session: PracticeSessionDto = { quality, note, levelUpInfo }
+      const updatedSkill = await skillService.recordPracticeSession(skillId, session)
+      
+      const index = skills.value.findIndex(s => s.id === skillId)
+      if (index !== -1) {
+        skills.value[index] = updatedSkill
+      }
+      
+      return updatedSkill
+    } catch (error) {
+      console.error('Error recording practice session with level-up:', error)
+      return null
+    }
+  }
+
   async function levelUpSkill(skillId: string, newLevel: number, comment: string): Promise<SkillData | null> {
     try {
       const updatedSkill = await skillService.levelUpSkill(skillId, newLevel, comment)
@@ -309,6 +326,7 @@ export const useSkillStore = defineStore('skills', () => {
     updateSkill,
     deleteSkill,
     recordPracticeSession,
+    recordPracticeSessionWithLevelUp,
     levelUpSkill,
     shouldSuggestStatusTransition,
     loadSkills,

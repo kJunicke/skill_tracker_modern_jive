@@ -284,9 +284,9 @@ describe('ModalManager', () => {
 
     it('emits practice-complete event with all parameters', async () => {
       const practiceRating = wrapper.findComponent({ name: 'PracticeRating' })
-      await practiceRating.vm.$emit('practice-complete', 'skill-1', 3, 'Great practice', true, 'Level up!')
+      await practiceRating.vm.$emit('practice-complete', 'skill-1', 3, 'Great practice', true)
       
-      expect(wrapper.emitted('practice-complete')).toEqual([['skill-1', 3, 'Great practice', true, 'Level up!']])
+      expect(wrapper.emitted('practice-complete')).toEqual([['skill-1', 3, 'Great practice', true]])
     })
 
     it('emits status-changed event with correct structure', async () => {

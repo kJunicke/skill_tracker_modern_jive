@@ -87,7 +87,7 @@
                     `bg-${getQualityColorName((event.data as PracticeSession).quality)}`
                   ]">
                     <i class="bi bi-play-circle me-1"></i>
-                    {{ (event.data as PracticeSession).qualityText }}
+                    {{ event.title }}
                   </span>
                 </h6>
                 <div class="d-flex align-items-center gap-2">

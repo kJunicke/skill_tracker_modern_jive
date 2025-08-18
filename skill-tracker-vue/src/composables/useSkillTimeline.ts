@@ -30,16 +30,26 @@ export function useSkillTimeline(skill: Ref<SkillData | null>) {
     
     const events: TimelineEvent[] = []
     
-    // Add level-up events from progression history
+    // Collect dates of practice sessions that include level-ups
+    const practiceSessionLevelUpDates = new Set(
+      skill.value.practiceLog
+        ?.filter(session => session.levelUpInfo)
+        .map(session => session.date) || []
+    )
+    
+    // Add level-up events from progression history ONLY if not already in practice sessions
     skill.value.progressionHistory?.forEach((progression) => {
-      events.push({
-        id: `levelup-${progression.level}-${progression.date}`,
-        type: 'levelup',
-        date: progression.date,
-        title: `Level ${progression.level}`,
-        description: progression.comment || `Reached level ${progression.level}`,
-        data: { ...progression } // Spread to create fresh object reference
-      })
+      // Skip level-ups that are already included in practice sessions
+      if (!practiceSessionLevelUpDates.has(progression.date)) {
+        events.push({
+          id: `levelup-${progression.level}-${progression.date}`,
+          type: 'levelup',
+          date: progression.date,
+          title: `Level ${progression.level}`,
+          description: progression.comment || `Reached level ${progression.level}`,
+          data: { ...progression } // Spread to create fresh object reference
+        })
+      }
     })
 
     // Add practice sessions
@@ -51,12 +61,23 @@ export function useSkillTimeline(skill: Ref<SkillData | null>) {
         3: 'Very Easy'
       }
       
+      // Create title with level-up indicator if present
+      const title = session.levelUpInfo 
+        ? `Practice Session + Level Up → Level ${session.levelUpInfo.newLevel}`
+        : 'Practice Session'
+      
+      // Create description with level-up info if present
+      let description = `Quality: ${qualityLabels[session.quality as keyof typeof qualityLabels] || 'Unknown'}`
+      if (session.note) {
+        description += ` - ${session.note}`
+      }
+      
       events.push({
         id: `practice-${index}-${session.date}`,
         type: 'practice',
         date: session.date,
-        title: 'Practice Session',
-        description: `Quality: ${qualityLabels[session.quality as keyof typeof qualityLabels] || 'Unknown'}${session.note ? ` - ${session.note}` : ''}`,
+        title,
+        description,
         data: { ...session } // Spread to create fresh object reference
       })
     })
@@ -203,7 +224,7 @@ export function useSkillTimeline(skill: Ref<SkillData | null>) {
     })
   }
 
-  const getEventTypeInfo = (type: TimelineEvent['type']) => {
+  const getEventTypeInfo = (type: TimelineEvent['type'], eventData?: ProgressionEntry | PracticeSession | QuickNote) => {
     const typeMapping = {
       levelup: {
         icon: 'bi-arrow-up-circle',
@@ -222,6 +243,17 @@ export function useSkillTimeline(skill: Ref<SkillData | null>) {
         color: 'info',
         bgColor: 'bg-info',
         borderColor: 'border-info'
+      }
+    }
+    
+    // If practice session includes level-up, use special styling
+    if (type === 'practice' && (eventData as PracticeSession)?.levelUpInfo) {
+      return {
+        icon: 'bi-play-circle',
+        color: 'success',
+        bgColor: 'bg-success',
+        borderColor: 'border-success',
+        hasLevelUp: true
       }
     }
     

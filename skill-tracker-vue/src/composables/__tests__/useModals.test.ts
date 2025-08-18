@@ -87,14 +87,13 @@ describe('useModals', () => {
   it('handles practice complete event correctly', () => {
     const { handlePracticeComplete } = useModals(mockHandlers)
 
-    handlePracticeComplete('skill-id', 3, 'practice notes', true, 'level up comment')
+    handlePracticeComplete('skill-id', 3, 'practice notes', true)
 
     expect(mockHandlers.onPracticeComplete).toHaveBeenCalledWith(
       'skill-id', 
       3, 
       'practice notes', 
-      true, 
-      'level up comment'
+      true
     )
   })
 

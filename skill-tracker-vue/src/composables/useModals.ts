@@ -166,8 +166,8 @@ export function useModals(handlers: ModalEventHandlers) {
       showSuccess('Skill Saved', `${skillData.name || 'Skill'} has been saved successfully`)
     },
 
-    handlePracticeComplete: (skillId: string, quality: number, notes: string, isLevelUp?: boolean, levelUpComment?: string) => {
-      handlers.onPracticeComplete(skillId, quality, notes, isLevelUp, levelUpComment)
+    handlePracticeComplete: (skillId: string, quality: number, notes: string, isLevelUp?: boolean) => {
+      handlers.onPracticeComplete(skillId, quality, notes, isLevelUp)
       modalActions.closePracticeModal()
       
       const skill = modalStates.practice.selectedSkill

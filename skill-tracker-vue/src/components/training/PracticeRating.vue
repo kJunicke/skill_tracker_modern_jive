@@ -8,7 +8,7 @@
     centered
     :confirm-text="isLevelUp ? 'Submit Practice & Level Up' : 'Submit Rating'"
     confirm-icon="bi-check-circle"
-    :confirm-disabled="selectedQuality === null || (isLevelUp && !levelUpComment.trim())"
+    :confirm-disabled="selectedQuality === null || (isLevelUp && !sessionNotes.trim())"
     data-testid="practice-rating"
     :is-visible="isVisible"
     @close="$emit('close')"
@@ -48,19 +48,25 @@
         </BaseButton>
       </div>
 
-            <!-- Session Notes -->
+            <!-- Session Notes (becomes required when level-up is checked) -->
             <div class="mb-4">
               <label for="sessionNotes" class="form-label">
                 <i class="bi bi-journal-text me-1"></i>
-                Session Notes (Optional)
+                Session Notes 
+                <span v-if="isLevelUp" class="text-danger">*</span>
+                <span v-else>(Optional)</span>
               </label>
               <textarea
                 id="sessionNotes"
                 v-model="sessionNotes"
                 class="form-control"
                 rows="3"
-                placeholder="What did you work on? Any insights or challenges?"
+                :placeholder="isLevelUp ? 'Describe your practice and what you mastered for this level-up...' : 'What did you work on? Any insights or challenges?'"
+                :required="isLevelUp"
               ></textarea>
+              <small v-if="isLevelUp" class="text-muted">
+                When leveling up, describe both your practice session and what you've mastered.
+              </small>
             </div>
 
       <!-- Level-Up Toggle Button -->
@@ -86,21 +92,6 @@
               </p>
             </div>
 
-            <!-- Level-Up Comment (Required when level-up is checked) -->
-            <div v-if="isLevelUp" class="mb-4">
-              <label for="levelUpComment" class="form-label">
-                <i class="bi bi-star me-1"></i>
-                Level-Up Comment <span class="text-danger">*</span>
-              </label>
-              <textarea
-                id="levelUpComment"
-                v-model="levelUpComment"
-                class="form-control"
-                rows="3"
-                placeholder="Describe what you've mastered and why you're ready to level up..."
-                required
-              ></textarea>
-            </div>
 
             <!-- Next Review Preview -->
             <div v-if="selectedQuality !== null" class="alert alert-info">
@@ -128,7 +119,7 @@ interface Props {
 }
 
 interface Emits {
-  (e: 'practice-complete', skillId: string, quality: number, notes: string, isLevelUp?: boolean, levelUpComment?: string): void
+  (e: 'practice-complete', skillId: string, quality: number, notes: string, isLevelUp?: boolean): void
   (e: 'close'): void
 }
 
@@ -138,7 +129,6 @@ const emit = defineEmits<Emits>()
 const selectedQuality = ref<number | null>(null)
 const sessionNotes = ref('')
 const isLevelUp = ref(false)
-const levelUpComment = ref('')
 
 const qualityOptions = [
   {
@@ -204,22 +194,20 @@ const getNextReviewDate = (quality: number): string => {
 
 const submitRating = () => {
   if (!props.skill || selectedQuality.value === null) return
-  if (isLevelUp.value && !levelUpComment.value.trim()) return
+  if (isLevelUp.value && !sessionNotes.value.trim()) return
   
   emit(
     'practice-complete', 
     props.skill.id, 
     selectedQuality.value, 
     sessionNotes.value,
-    isLevelUp.value,
-    isLevelUp.value ? levelUpComment.value : undefined
+    isLevelUp.value
   )
   
   // Reset form
   selectedQuality.value = null
   sessionNotes.value = ''
   isLevelUp.value = false
-  levelUpComment.value = ''
 }
 
 // Reset form function
@@ -227,7 +215,6 @@ const resetForm = () => {
   selectedQuality.value = null
   sessionNotes.value = ''
   isLevelUp.value = false
-  levelUpComment.value = ''
 }
 
 // Watch for modal visibility changes to reset form when modal opens

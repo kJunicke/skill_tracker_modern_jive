@@ -19,14 +19,19 @@ export function useModalEventHandlers(): ModalEventHandlers {
       }
     },
 
-    onPracticeComplete: async (skillId: string, quality: number, notes: string, isLevelUp?: boolean, levelUpComment?: string) => {
-      // Use SkillService through skillStore for consistent spaced repetition logic
-      const updatedSkill = await skillStore.recordPracticeSession(skillId, quality, notes)
-      
-      if (updatedSkill && isLevelUp && levelUpComment) {
-        // Record level-up separately if needed
-        await skillStore.levelUpSkill(skillId, updatedSkill.level + 1, levelUpComment)
-      }
+    onPracticeComplete: async (skillId: string, quality: number, notes: string, isLevelUp?: boolean) => {
+      // Find current skill to get level for level-up calculation
+      const currentSkill = skillStore.skills.find(s => s.id === skillId)
+      if (!currentSkill) return
+
+      // Prepare level-up info if this is a level-up session
+      const levelUpInfo = isLevelUp ? {
+        newLevel: currentSkill.level + 1,
+        comment: notes // Use the same notes for level-up comment
+      } : undefined
+
+      // Use unified practice session recording with optional level-up
+      await skillStore.recordPracticeSessionWithLevelUp(skillId, quality, notes, levelUpInfo)
     },
 
     onStatusChanged: (skillId: string, newStatus: string) => {

@@ -16,7 +16,7 @@
       data-testid="practice-rating"
       :skill="modalStates.practice.selectedSkill"
       :is-visible="modalStates.practice.isVisible"
-      @practice-complete="(skillId, quality, notes, isLevelUp, levelUpComment) => $emit('practice-complete', skillId, quality, notes, isLevelUp, levelUpComment)"
+      @practice-complete="(skillId, quality, notes, isLevelUp) => $emit('practice-complete', skillId, quality, notes, isLevelUp)"
       @close="$emit('close-practice-modal')"
     />
 
@@ -127,7 +127,7 @@ interface Props {
 interface Emits {
   (e: 'save-skill', value: SkillData): void
   (e: 'close-skill-modal'): void
-  (e: 'practice-complete', skillId: string, quality: number, notes: string, isLevelUp?: boolean, levelUpComment?: string): void
+  (e: 'practice-complete', skillId: string, quality: number, notes: string, isLevelUp?: boolean): void
   (e: 'close-practice-modal'): void
   (e: 'close-timeline-modal'): void
   (e: 'edit-notes', value: string): void
