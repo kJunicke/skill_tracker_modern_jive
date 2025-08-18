@@ -3,6 +3,7 @@ import type { SkillTag, SkillStatus } from '@/utils/constants'
 import type { StorageService } from './StorageService'
 import type { SpacedRepetitionService } from './SpacedRepetitionService'
 import type { AnalyticsService } from './AnalyticsService'
+import { QualityHelpers } from '@/utils/qualityUtils'
 
 /**
  * DTO for creating new skills
@@ -160,13 +161,12 @@ export class SkillService {
     }
 
     const now = new Date().toISOString()
-    const qualityTexts = ['Forgotten', 'Hard', 'Good', 'Very Easy'] // Updated for 1-4 scale
     
     // Add practice session to log
     const practiceSession: PracticeSession = {
       date: now,
       quality: session.quality,
-      qualityText: qualityTexts[session.quality - 1], // Adjust for 1-based indexing
+      qualityText: QualityHelpers.getText(session.quality),
       note: session.note,
       levelUpInfo: session.levelUpInfo
     }

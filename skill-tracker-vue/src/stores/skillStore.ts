@@ -100,6 +100,14 @@ export const useSkillStore = defineStore('skills', () => {
     return analyticsService.calculateTrainingStats(skills.value)
   })
 
+  // Helper function to update skill in reactive array - DRY principle
+  function updateSkillInArray(skillId: string, updatedSkill: SkillData): void {
+    const index = skills.value.findIndex(s => s.id === skillId)
+    if (index !== -1) {
+      skills.value[index] = updatedSkill
+    }
+  }
+
   // Actions (delegate to service layer)
   async function addSkill(skillData: Omit<CreateSkillDto, 'id' | 'dateCreated' | 'dateModified'>): Promise<SkillData> {
     try {
@@ -115,10 +123,7 @@ export const useSkillStore = defineStore('skills', () => {
   async function updateSkill(id: string, updates: Partial<SkillData>): Promise<SkillData | null> {
     try {
       const updatedSkill = await skillService.updateSkill(id, updates)
-      const index = skills.value.findIndex(s => s.id === id)
-      if (index !== -1) {
-        skills.value[index] = updatedSkill
-      }
+      updateSkillInArray(id, updatedSkill)
       return updatedSkill
     } catch (error) {
       console.error('Error updating skill:', error)
@@ -142,16 +147,11 @@ export const useSkillStore = defineStore('skills', () => {
     }
   }
 
-  async function recordPracticeSession(skillId: string, quality: number, note: string = ''): Promise<SkillData | null> {
+  async function recordPracticeSession(skillId: string, quality: number, note: string = '', levelUpInfo?: { newLevel: number; comment: string }): Promise<SkillData | null> {
     try {
-      const session: PracticeSessionDto = { quality, note }
+      const session: PracticeSessionDto = { quality, note, levelUpInfo }
       const updatedSkill = await skillService.recordPracticeSession(skillId, session)
-      
-      const index = skills.value.findIndex(s => s.id === skillId)
-      if (index !== -1) {
-        skills.value[index] = updatedSkill
-      }
-      
+      updateSkillInArray(skillId, updatedSkill)
       return updatedSkill
     } catch (error) {
       console.error('Error recording practice session:', error)
@@ -159,32 +159,15 @@ export const useSkillStore = defineStore('skills', () => {
     }
   }
 
+  // Legacy function maintained for backward compatibility
   async function recordPracticeSessionWithLevelUp(skillId: string, quality: number, note: string, levelUpInfo?: { newLevel: number; comment: string }): Promise<SkillData | null> {
-    try {
-      const session: PracticeSessionDto = { quality, note, levelUpInfo }
-      const updatedSkill = await skillService.recordPracticeSession(skillId, session)
-      
-      const index = skills.value.findIndex(s => s.id === skillId)
-      if (index !== -1) {
-        skills.value[index] = updatedSkill
-      }
-      
-      return updatedSkill
-    } catch (error) {
-      console.error('Error recording practice session with level-up:', error)
-      return null
-    }
+    return recordPracticeSession(skillId, quality, note, levelUpInfo)
   }
 
   async function levelUpSkill(skillId: string, newLevel: number, comment: string): Promise<SkillData | null> {
     try {
       const updatedSkill = await skillService.levelUpSkill(skillId, newLevel, comment)
-      
-      const index = skills.value.findIndex(s => s.id === skillId)
-      if (index !== -1) {
-        skills.value[index] = updatedSkill
-      }
-      
+      updateSkillInArray(skillId, updatedSkill)
       return updatedSkill
     } catch (error) {
       console.error('Error leveling up skill:', error)

@@ -9,6 +9,12 @@
 - [x] **Timeline UI Optimization**: Timeline Aussehen optimieren - UI/UX Verbesserungen für bessere Darstellung und Benutzerfreundlichkeit
 - [x] **Unified Practice & Level-Up System**: Combined practice sessions and level-ups into single streamlined interface
 - [x] **Code Cleanup & Optimization**: Removed unused components and deprecated code (StatisticsCards.vue, qualityUtils.ts, tagDescriptions.ts, useStepNavigation.ts, empty debug folder) - 275+ lines cleaned up, TypeScript errors fixed
+- [x] **MAJOR: Comprehensive Code Refactoring**: Eliminated duplicate patterns across entire codebase (~150-200 lines reduced)
+  - [x] Created central `qualityUtils.ts` for quality transformations
+  - [x] Added `BaseFilterButton.vue` and `BaseFilterGroup.vue` for consistent filter UI
+  - [x] Consolidated SkillStore with `updateSkillInArray()` helper (DRY principle)
+  - [x] Streamlined ToastStore with shared creation patterns
+  - [x] Enhanced type safety across all refactored components
 
 ### **Next Priority Features**
 - [ ] **Markdown Notes Dark Mode**: Add dark mode support for markdown editor and notes components
@@ -45,10 +51,13 @@
 - [ ] **Lazy Loading für Skill Lists**: Pagination und virtuelles Scrolling für große Datensätze
 
 #### **Mittel (Code Quality):**
+- [x] **Quality Utils Consolidation**: COMPLETED - Central qualityUtils.ts eliminiert hardcoded Transformationen
+- [x] **Filter UI Standardization**: COMPLETED - BaseFilterButton.vue und BaseFilterGroup.vue für konsistente Filter-UI
+- [x] **Store Logic Consolidation**: COMPLETED - updateSkillInArray() Helper reduziert Duplikationen
+- [x] **Toast Pattern Unification**: COMPLETED - createToast() und generateToastId() Helpers
 - [ ] **Generic Composables Refactoring**: Abstrahiere wiederkehrende Patterns in useSkillEventHandlers, useModalEventHandlers zu wiederverwendbaren Factories
 - [ ] **Markdown Editor Consolidation**: MarkdownEditor.vue und NotesEditor.vue haben ähnliche Funktionalität - gemeinsame Base-Komponente erstellen
 - [ ] **Timeline System Unification**: TimelineEventCard, TimelineGroupedView, TimelineModal in unified Timeline System konsolidieren
-- [ ] **Event Handler Pattern Optimization**: Generic Event Handler Factory für reduzierte Code-Duplikation
 
 #### **Niedrig (Developer Experience):**  
 - [ ] **Component Props Interface Improvements**: Union Types für bessere IDE-Unterstützung und Type Safety

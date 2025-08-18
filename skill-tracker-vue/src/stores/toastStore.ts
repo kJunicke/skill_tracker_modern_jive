@@ -90,53 +90,45 @@ export const useToastStore = defineStore('toast', () => {
     }
   }
 
-  // Utility actions for common toast patterns
-  const showSuccess = (title: string, message?: string, duration?: number): string => {
+  // Helper function to generate unique toast ID - DRY principle
+  const generateToastId = (): string => {
+    return `toast-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+  }
+
+  // Helper function for common toast creation pattern
+  const createToast = (
+    title: string, 
+    variant: ToastVariant, 
+    defaultDuration: number,
+    message?: string, 
+    duration?: number
+  ): string => {
     return addToast({
-      id: `toast-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: generateToastId(),
       title,
       message,
-      variant: 'success',
-      duration: duration ?? 4000,
+      variant,
+      duration: duration ?? defaultDuration,
       visible: true,
       createdAt: new Date()
     })
+  }
+
+  // Utility actions for common toast patterns
+  const showSuccess = (title: string, message?: string, duration?: number): string => {
+    return createToast(title, 'success', 4000, message, duration)
   }
 
   const showError = (title: string, message?: string, duration?: number): string => {
-    return addToast({
-      id: `toast-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      title,
-      message,
-      variant: 'error',
-      duration: duration ?? 8000, // Errors stay longer
-      visible: true,
-      createdAt: new Date()
-    })
+    return createToast(title, 'error', 8000, message, duration) // Errors stay longer
   }
 
   const showWarning = (title: string, message?: string, duration?: number): string => {
-    return addToast({
-      id: `toast-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      title,
-      message,
-      variant: 'warning',
-      duration: duration ?? 6000,
-      visible: true,
-      createdAt: new Date()
-    })
+    return createToast(title, 'warning', 6000, message, duration)
   }
 
   const showInfo = (title: string, message?: string, duration?: number): string => {
-    return addToast({
-      id: `toast-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      title,
-      message,
-      variant: 'info',
-      duration: duration ?? 5000,
-      visible: true,
-      createdAt: new Date()
-    })
+    return createToast(title, 'info', 5000, message, duration)
   }
 
   return {
