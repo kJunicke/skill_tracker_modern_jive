@@ -42,7 +42,9 @@
       "Bash(gh run list:*)",
       "Bash(git pull:*)",
       "Bash(git merge:*)",
-      "Bash(sed:*)"
+      "Bash(sed:*)",
+      "Bash(start http://localhost:5173/skill_tracker_modern_jive/)",
+      "Bash(start http://localhost:5174/skill_tracker_modern_jive/)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

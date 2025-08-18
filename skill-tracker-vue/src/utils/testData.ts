@@ -19,7 +19,7 @@ export function createTestSkills(): SkillData[] {
     {
       id: 'skill_demo_unified',
       name: '🆕 Unified System Demo',
-      tags: ['Demo', 'System'],
+      tags: ['Move', 'Communication'],
       level: 3,
       status: 'acquisition',
       notes: `# 🎉 New Unified Practice + Level-Up System
