@@ -114,31 +114,29 @@ describe('SkillCard', () => {
       vi.clearAllMocks()
     })
 
-    it('applies due styling when skill is overdue', async () => {
-      const { getDaysUntilReview } = await import('@/utils/spacedRepetition')
-      vi.mocked(getDaysUntilReview).mockReturnValue(-2)
-      
+    it('applies due styling when skill is overdue', () => {
+      // Mock negative days (overdue) by setting past nextReview date
       wrapper = createWrapper(createMockSkill({ nextReview: '2023-01-01T00:00:00.000Z' }))
       
       expect(wrapper.classes()).toContain('skill-due')
       expect(wrapper.classes()).not.toContain('skill-almost-due')
     })
 
-    it('applies almost-due styling when skill is due soon', async () => {
-      const { getDaysUntilReview } = await import('@/utils/spacedRepetition')
-      vi.mocked(getDaysUntilReview).mockReturnValue(0.5)
-      
-      wrapper = createWrapper(createMockSkill({ nextReview: '2023-01-01T00:00:00.000Z' }))
+    it('applies almost-due styling when skill is due soon', () => {
+      // Set nextReview to tomorrow (within 1 day = almost due)
+      const tomorrow = new Date()
+      tomorrow.setDate(tomorrow.getDate() + 1)
+      wrapper = createWrapper(createMockSkill({ nextReview: tomorrow.toISOString() }))
       
       expect(wrapper.classes()).toContain('skill-almost-due')
       expect(wrapper.classes()).not.toContain('skill-due')
     })
 
-    it('does not apply due styling when skill is not due', async () => {
-      const { getDaysUntilReview } = await import('@/utils/spacedRepetition')
-      vi.mocked(getDaysUntilReview).mockReturnValue(5)
-      
-      wrapper = createWrapper(createMockSkill({ nextReview: '2023-01-01T00:00:00.000Z' }))
+    it('does not apply due styling when skill is not due', () => {
+      // Set nextReview to future date (more than 1 day away)
+      const futureDate = new Date()
+      futureDate.setDate(futureDate.getDate() + 5)
+      wrapper = createWrapper(createMockSkill({ nextReview: futureDate.toISOString() }))
       
       expect(wrapper.classes()).not.toContain('skill-due')
       expect(wrapper.classes()).not.toContain('skill-almost-due')
@@ -257,22 +255,23 @@ describe('SkillCard', () => {
   })
 
   describe('Computed Properties', () => {
-    it('correctly calculates due status based on days until review', async () => {
-      const { getDaysUntilReview } = await import('@/utils/spacedRepetition')
-      
-      // Test overdue
-      vi.mocked(getDaysUntilReview).mockReturnValue(-1)
-      wrapper = createWrapper(createMockSkill({ nextReview: '2023-01-01T00:00:00.000Z' }))
+    it('correctly calculates due status based on real dates', () => {
+      // Test overdue (yesterday)
+      const yesterday = new Date()
+      yesterday.setDate(yesterday.getDate() - 1)
+      wrapper = createWrapper(createMockSkill({ nextReview: yesterday.toISOString() }))
       expect(wrapper.classes()).toContain('skill-due')
       
-      // Test almost due
-      vi.mocked(getDaysUntilReview).mockReturnValue(0.5)
-      wrapper = createWrapper(createMockSkill({ nextReview: '2023-01-01T00:00:00.000Z' }))
+      // Test almost due (tomorrow)  
+      const tomorrow = new Date()
+      tomorrow.setDate(tomorrow.getDate() + 1)
+      wrapper = createWrapper(createMockSkill({ nextReview: tomorrow.toISOString() }))
       expect(wrapper.classes()).toContain('skill-almost-due')
       
-      // Test not due
-      vi.mocked(getDaysUntilReview).mockReturnValue(5)
-      wrapper = createWrapper(createMockSkill({ nextReview: '2023-01-01T00:00:00.000Z' }))
+      // Test not due (next week)
+      const nextWeek = new Date()
+      nextWeek.setDate(nextWeek.getDate() + 7)
+      wrapper = createWrapper(createMockSkill({ nextReview: nextWeek.toISOString() }))
       expect(wrapper.classes()).not.toContain('skill-due')
       expect(wrapper.classes()).not.toContain('skill-almost-due')
     })

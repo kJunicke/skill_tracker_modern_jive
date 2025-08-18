@@ -53,7 +53,7 @@
 import { computed } from 'vue'
 import type { SkillData } from '@/types/skill'
 import { STATUS_CONFIG } from '@/utils/constants'
-import { getDaysUntilReview } from '@/utils/spacedRepetition'
+import { SpacedRepetitionService } from '@/services/core/SpacedRepetitionService'
 
 interface Props {
   skill: SkillData
@@ -78,10 +78,11 @@ const safeStatusConfig = computed(() => {
   return statusConfig[props.skill.status]
 })
 
-// Review timing computations
+// Review timing computations  
 const daysUntilReview = computed(() => {
   if (!props.skill.nextReview) return null
-  return getDaysUntilReview(props.skill)
+  const service = new SpacedRepetitionService()
+  return service.getDaysUntilReview(props.skill)
 })
 
 const isDue = computed(() => {

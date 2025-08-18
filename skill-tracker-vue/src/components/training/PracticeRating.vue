@@ -118,7 +118,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import type { SkillData } from '@/types/skill'
-import { calculateNextReview } from '@/utils/spacedRepetition'
+import { SpacedRepetitionService } from '@/services/core/SpacedRepetitionService'
 import BaseModal from '@/components/base/BaseModal.vue'
 import BaseButton from '@/components/base/BaseButton.vue'
 
@@ -179,11 +179,12 @@ const selectQuality = (quality: number) => {
   selectedQuality.value = quality
 }
 
+const spacedRepetitionService = new SpacedRepetitionService()
+
 const getNextReviewDays = (quality: number): number => {
   if (!props.skill) return 0
   
-  // Use quality directly since it's now 1-4 scale
-  const nextReview = calculateNextReview(props.skill, quality)
+  const nextReview = spacedRepetitionService.calculateNextReview(props.skill, quality)
   const today = new Date()
   const reviewDate = new Date(nextReview)
   const diffTime = reviewDate.getTime() - today.getTime()
@@ -193,8 +194,7 @@ const getNextReviewDays = (quality: number): number => {
 const getNextReviewDate = (quality: number): string => {
   if (!props.skill) return ''
   
-  // Use quality directly since it's now 1-4 scale
-  const nextReview = calculateNextReview(props.skill, quality)
+  const nextReview = spacedRepetitionService.calculateNextReview(props.skill, quality)
   return new Date(nextReview).toLocaleDateString('de-DE', {
     weekday: 'short',
     day: 'numeric',

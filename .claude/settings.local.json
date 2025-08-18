@@ -44,6 +44,7 @@
       "Bash(git merge:*)",
       "Bash(sed:*)"
     ],
-    "deny": []
+    "deny": [],
+    "defaultMode": "acceptEdits"
   }
 }

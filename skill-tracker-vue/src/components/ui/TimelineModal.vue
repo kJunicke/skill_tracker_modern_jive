@@ -68,7 +68,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { SkillData, ProgressionEntry, PracticeSession } from '@/types/skill'
-import { getDaysUntilReview } from '@/utils/spacedRepetition'
+import { SpacedRepetitionService } from '@/services/core/SpacedRepetitionService'
 import { useSkillStore } from '@/stores/skillStore'
 import SkillTimelineContent from './SkillTimelineContent.vue'
 import BaseModal from '@/components/base/BaseModal.vue'
@@ -102,7 +102,8 @@ const currentSkill = computed(() => {
 
 const nextReviewDays = computed(() => {
   if (!currentSkill.value) return 0
-  const days = getDaysUntilReview(currentSkill.value)
+  const service = new SpacedRepetitionService()
+  const days = service.getDaysUntilReview(currentSkill.value)
   return days > 0 ? `${days} days` : 'Today'
 })
 

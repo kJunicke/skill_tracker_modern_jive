@@ -135,8 +135,12 @@ describe('SkillCardStatus', () => {
   })
 
   it('displays review date information correctly', () => {
+    // Set future date to ensure "Due in X days" display
+    const futureDate = new Date()
+    futureDate.setDate(futureDate.getDate() + 5)
+    
     const skill = createSkillMock({ 
-      nextReview: '2025-08-15T00:00:00.000Z',
+      nextReview: futureDate.toISOString(),
       status: 'acquisition'
     })
     const wrapper = mount(SkillCardStatus, {

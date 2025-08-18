@@ -96,7 +96,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import type { SkillData } from '@/types/skill'
-import { getDaysUntilReview } from '@/utils/spacedRepetition'
+import { SpacedRepetitionService } from '@/services/core/SpacedRepetitionService'
 import { useViewModeStore } from '@/stores/viewModeStore'
 
 // Import child components
@@ -183,7 +183,8 @@ const nextReviewDate = computed(() => {
 // Due status computations for card styling
 const daysUntilReview = computed(() => {
   if (!props.skill.nextReview) return null
-  return getDaysUntilReview(props.skill)
+  const service = new SpacedRepetitionService()
+  return service.getDaysUntilReview(props.skill)
 })
 
 const isDue = computed(() => {

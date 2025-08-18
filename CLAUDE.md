@@ -17,12 +17,13 @@ This file provides guidance to Claude Code when working with the Modern Jive Ski
 
 **Key Transitions**: ACQUISITION → MAINTENANCE at Level 5, FOCUS → MAINTENANCE after 7 days without practice
 
-### Current Status (2025-08-13)
+### Current Status (2025-08-18)
 - **Production-Ready**: Complete 5-status learning system deployed as PWA
 - **Live Deployment**: https://github.com/kJunicke/skill_tracker_modern_jive
-- **Quality Assured**: 230+ unit tests passing, TypeScript strict mode, ESLint clean, 90%+ coverage
+- **Quality Assured**: 232+ unit tests passing, TypeScript strict mode, ESLint clean, 90%+ coverage
 - **Feature Complete**: Dark mode, data backup, toast notifications, timeline filtering, centralized XP system
-- **Bug Fixes**: Spaced repetition due/overdue display corrected (daysBetween function fix)
+- **Major Refactoring**: Unified spaced repetition system - ACQUISITION mode now correctly shows 1-2-3 day intervals
+- **Bug Fixes**: Fixed inconsistent interval calculations between UI components and modal displays
 
 ## Documentation Index
 

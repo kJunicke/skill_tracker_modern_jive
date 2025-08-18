@@ -89,6 +89,7 @@ export class SpacedRepetitionService {
       }
     } else if (skill.status === 'acquisition') {
       // For acquisition, just increment repetitions for interval cycling
+      // Do NOT update interval - calculateAcquisitionInterval handles this
       repetitions += 1
     }
     // For other statuses (backlog, focus, archived), don't update SM2 parameters
@@ -138,8 +139,12 @@ export class SpacedRepetitionService {
   private calculateAcquisitionInterval(skill: SkillData, quality: number, lastPracticedDate: string): string {
     // For acquisition, use fixed short intervals regardless of quality
     // Cycle through 1-2-3 day intervals to build familiarity
+    // repetitions is already incremented by updateSM2Parameters, so:
+    // repetitions=1 → use interval[0]=1 day (after 1st session)
+    // repetitions=2 → use interval[1]=2 days (after 2nd session)  
+    // repetitions=3 → use interval[2]=3 days (after 3rd session)
     const repetitions = skill.repetitions || 0
-    const intervalIndex = repetitions % SpacedRepetitionService.ACQUISITION_INTERVALS.length
+    const intervalIndex = Math.max(0, (repetitions - 1)) % SpacedRepetitionService.ACQUISITION_INTERVALS.length
     const interval = SpacedRepetitionService.ACQUISITION_INTERVALS[intervalIndex]
     
     return dateUtils.addDays(lastPracticedDate, interval)

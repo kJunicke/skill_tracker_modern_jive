@@ -1,7 +1,5 @@
-// import { computed } from 'vue'
 import { useSkillStore } from '@/stores/skillStore'
 import { useSkillActions } from './useSkillActions'
-import { updateSM2Parameters, handleFocusProgression } from '@/utils/spacedRepetition'
 import { dateUtils } from '@/utils/dateHelpers'
 import { initializeFocusData, calculateTargetXP } from '@/utils/focusDataHelpers'
 import type { SkillData } from '@/types/skill'
@@ -21,36 +19,14 @@ export function useModalEventHandlers(): ModalEventHandlers {
       }
     },
 
-    onPracticeComplete: (skillId: string, quality: number, notes: string, isLevelUp?: boolean, levelUpComment?: string) => {
-      withSkill(skillId, (skill) => {
-        // Always record the practice session first
-        const sm2Updates = updateSM2Parameters(skill, quality)
-        const focusUpdates = skill.status === 'focus' 
-          ? handleFocusProgression(skill, quality) 
-          : {}
-
-        const practiceEntry = {
-          date: dateUtils.now(),
-          quality,
-          qualityText: ['Completely Forgotten', 'Hard', 'Good', 'Very Easy'][quality],
-          note: notes
-        }
-
-        const updates = {
-          ...sm2Updates,
-          ...focusUpdates,
-          lastPracticed: dateUtils.now(),
-          practiceLog: [...(skill.practiceLog || []), practiceEntry],
-          dateModified: dateUtils.now()
-        }
-
-        skillStore.updateSkill(skillId, updates)
-
-        // If this is also a level-up, record that separately
-        if (isLevelUp && levelUpComment) {
-          skillStore.levelUpSkill(skillId, skill.level + 1, levelUpComment)
-        }
-      })
+    onPracticeComplete: async (skillId: string, quality: number, notes: string, isLevelUp?: boolean, levelUpComment?: string) => {
+      // Use SkillService through skillStore for consistent spaced repetition logic
+      const updatedSkill = await skillStore.recordPracticeSession(skillId, quality, notes)
+      
+      if (updatedSkill && isLevelUp && levelUpComment) {
+        // Record level-up separately if needed
+        await skillStore.levelUpSkill(skillId, updatedSkill.level + 1, levelUpComment)
+      }
     },
 
     onStatusChanged: (skillId: string, newStatus: string) => {
