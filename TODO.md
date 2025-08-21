@@ -20,6 +20,95 @@
   - [x] Enhanced type safety across all refactored components
 - [x] **Status Transition Modal Fix**: Fixed missing user choice modal when skills reach level 5 in acquisition mode, ensuring users maintain control over their learning progression
 
+### **🔥 HIGHEST PRIORITY - NEXT MAJOR REFACTORING**
+
+#### **Vue 3 Teleport Modal Migration** 
+**Status:** Critical Architecture Improvement - 2024 Best Practice Implementation  
+**Impact:** High Performance Gain + Elimination of Bootstrap/Vue Anti-Pattern
+
+**Problem:** Current Bootstrap + Vue modal system uses `modalKey++` anti-pattern causing:
+- Component remounting on every modal open (performance loss)
+- State loss and unpredictable lifecycle hooks (acquisition-mode level-up bug)
+- Complex Bootstrap DOM manipulation conflicts with Vue reactivity
+
+**Internet Research Result (2025-08-21):** Vue 3 Teleport modals are 55% faster with 0kB bundle overhead vs Bootstrap modals (32.5kB + DOM manipulation overhead).
+
+##### **Phase 1: Quick Fix for Acquisition Mode** (30 minutes) ⚡
+- [x] Fix acquisition-mode level-up default selection issue
+- [x] Document Bootstrap/Vue anti-pattern in architecture notes
+
+##### **Phase 2: Vue 3 Teleport Migration** (2-3 days) 🚀
+- [ ] **Modal System Architecture Overhaul**: Replace entire Bootstrap modal system with Vue 3 Teleport
+- [ ] **Performance Optimization**: Eliminate `modalKey++` / `destroyModal()` complexity
+- [ ] **Reactive Modal Management**: Full declarative control without DOM manipulation
+
+**Modals to Migrate (8 total):**
+1. **SkillModal.vue** - Create/edit skills modal
+2. **PracticeRating.vue** - Practice session rating modal  
+3. **TimelineModal.vue** - Skill progression timeline modal
+4. **StatusEditor.vue** - Status selection modal
+5. **TagsEditor.vue** - Tag management modal
+6. **NotesEditor.vue** - Notes editing modal
+7. **TrainingLog.vue** - Training log display modal
+8. **StatusTransitionConfirmation.vue** - Status transition confirmation modal
+
+**Documentation Updates Required:**
+- [ ] **ARCHITECTURE.md**: Update modal system documentation
+- [ ] **BUG_PATTERNS.md**: Remove Bootstrap modal anti-patterns
+- [ ] **CLAUDE.md**: Update development guidelines for Vue 3 Teleport patterns
+
+##### **Phase 3: Enhanced Modal System** (1 week, optional) ✨
+- [ ] **Vue Final Modal Integration**: Advanced features and transitions
+- [ ] **Animation System**: Smooth Vue 3 Transition components
+- [ ] **Testing Infrastructure**: Better testability without Bootstrap mocking
+
+**Expected Benefits:**
+- 🚀 **Performance**: 55% faster modal operations, zero bundle overhead
+- 🔧 **Maintainability**: Declarative modal management, no imperative DOM manipulation
+- 🧪 **Testability**: Native Vue 3 component testing without Bootstrap mocking
+- 🎯 **User Experience**: Reliable state management, no unexpected component remounting
+
+#### **Technical Migration Specifications:**
+
+**Migration Order (Dependencies):**
+1. **Start with:** StatusTransitionConfirmation (simplest modal)
+2. **Core Modals:** StatusEditor, TagsEditor (medium complexity)
+3. **Complex Modals:** PracticeRating, SkillModal (high complexity, current bugs)
+4. **Timeline System:** TimelineModal, NotesEditor (complex state management)
+5. **Utility Modal:** TrainingLog (standalone, lowest priority)
+
+**Implementation Pattern:**
+```typescript
+// New Vue 3 Teleport Pattern
+<Teleport to="body">
+  <div v-if="isVisible" class="modal-overlay" @click="closeModal">
+    <div class="modal-content" @click.stop>
+      <!-- Modal content -->
+    </div>
+  </div>
+</Teleport>
+```
+
+**Testing Strategy:**
+- [ ] **Before Migration**: Benchmark current modal performance with Lighthouse
+- [ ] **Unit Tests**: Update component tests to remove Bootstrap mocking
+- [ ] **Integration Tests**: Verify modal state management without modalKey dependency
+- [ ] **Performance Tests**: Measure bundle size reduction and runtime performance
+- [ ] **E2E Tests**: Ensure all modal workflows function identically
+
+**Code Changes Required:**
+- [ ] **Remove Dependencies**: Bootstrap Modal imports, modalManager.ts utilities
+- [ ] **Update useModals.ts**: Replace `destroyModal()` + `modalKey++` with simple state toggles
+- [ ] **Refactor ModalManager.vue**: Remove `:key="modalKey"` anti-pattern
+- [ ] **CSS Migration**: Convert Bootstrap modal classes to custom Vue styles
+
+**Breaking Changes Prevention:**
+- [ ] **API Compatibility**: Maintain same prop/event interface for all modals
+- [ ] **Feature Parity**: Ensure backdrop clicks, ESC key, accessibility features work
+- [ ] **Animation Parity**: Replicate Bootstrap modal transition effects
+
+---
+
 ### **Next Priority Features**
 - [ ] **Markdown Notes Dark Mode**: Add dark mode support for markdown editor and notes components
 

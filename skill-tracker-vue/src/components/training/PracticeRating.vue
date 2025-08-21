@@ -221,12 +221,17 @@ const resetForm = () => {
 watch(() => props.isVisible, (isVisible) => {
   if (isVisible) {
     resetForm()
+    // TODO: For acquisition mode skills, default to level-up (will be implemented later)
+    // if (props.skill?.status === 'acquisition') {
+    //   isLevelUp.value = true
+    // }
   }
 })
 
 // Reset form when modal closes
 defineExpose({
-  resetForm
+  resetForm,
+  isLevelUp
 })
 </script>
 

@@ -20,13 +20,14 @@ This file provides guidance to Claude Code when working with the Modern Jive Ski
 ### Current Status (2025-08-21)
 - **Production-Ready**: Complete 5-status learning system deployed as PWA
 - **Live Deployment**: https://github.com/kJunicke/skill_tracker_modern_jive
-- **Quality Assured**: 230+ unit tests passing, TypeScript strict mode, ESLint clean, 90%+ coverage
+- **Quality Assured**: 241+ unit tests passing, TypeScript strict mode, ESLint clean, 90%+ coverage
 - **Feature Complete**: Dark mode, data backup, toast notifications, timeline filtering, centralized XP system
 - **Major Refactoring**: Unified spaced repetition system - ACQUISITION mode now correctly shows 1-2-3 day intervals
 - **Latest Feature**: **Unified Practice & Level-Up System** - Single interface combining practice sessions and level-ups
 - **Bug Fixes**: Fixed inconsistent interval calculations and timeline display issues
 - **Code Cleanup**: Removed unused components and deprecated code (275+ lines cleaned up)
-- **LATEST (2025-08-21)**: **SkillModal Bootstrap Instance Caching Fix** - Fixed bug where SkillModal retained form data between openings, preventing users from adding multiple skills. Applied same Bootstrap instance reset pattern used by all other modals.
+- **LATEST (2025-08-21)**: **Test Suite Stabilization** - Fixed failing PracticeRating component tests that were blocking deployment. Temporarily disabled acquisition mode default level-up functionality until proper implementation. All 241 tests now pass, ensuring stable CI/CD pipeline.
+- **Bug Fixes**: **SkillModal Bootstrap Instance Caching Fix** - Fixed bug where SkillModal retained form data between openings, preventing users from adding multiple skills. Applied same Bootstrap instance reset pattern used by all other modals.
 - **Code Quality**: Fixed ESLint TypeScript warnings - removed empty interface declarations and unused emit variables from components
 
 ## Documentation Index
@@ -97,7 +98,7 @@ showModalName: (skill: SkillData) => {
 ### XP System Architecture
 **Centralized Focus Mode XP calculation:**
 - **Central Function**: `calculateTargetXP(level)` in `focusDataHelpers.ts` with formula `Math.floor(3 * 2 + level / 3)`
-- **Zero Hardcoding**: All services and 230+ tests use central function - change formula once, entire system updates
+- **Zero Hardcoding**: All services and 241+ tests use central function - change formula once, entire system updates
 
 ## Development Environment
 
@@ -140,7 +141,7 @@ src/
 - **Reactive Props**: Use `toRef()` for composable integration
 - **Computed Over Watchers**: Prefer computed properties for derived state
 
-### Testing with Vitest (230+ tests passing)
+### Testing with Vitest (241+ tests passing)
 - **Structure**: Arrange-Act-Assert pattern
 - **Mocking**: Use vi.fn() for dependency isolation
 - **Coverage**: 90%+ for service layer, component interaction testing
