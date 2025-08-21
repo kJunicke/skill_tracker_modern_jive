@@ -1,19 +1,24 @@
-# CHANGELOG
+# Changelog - Session 2025-08-21
 
-## 2025-08-18 - Status Transition Modal Fix
+## Bug Fixes
 
-### = Bug Fixes
-- **Fixed missing status transition modal at level 5**: Skills no longer automatically transition from acquisition to maintenance mode without user choice
-- **Practice session flow**: Added status transition check after practice sessions to show user choice modal
-- **Service layer filtering**: Modified automatic transition logic to be suggestion-based for user-facing transitions
+### Fixed SkillModal Bootstrap Instance Caching Bug
+**Issue**: SkillModal retained form data between openings - when adding a second skill, the modal showed data from the first skill instead of a clean form.
 
-### =' Technical Changes
-- **useModals.ts**: Added async status transition check in `handlePracticeComplete` function
-- **SkillService.ts**: Filtered out user-facing transitions (acquisition ’ maintenance at level 5) from automatic application
-- **Quality assurance**: All 230 unit tests passing, TypeScript and ESLint clean
+**Root Cause**: SkillModal was not using the Bootstrap Modal instance caching fix pattern that was already implemented for all other modals (Practice, Timeline, Status, Tags, Notes).
 
-### <¯ User Experience
-- Users now get a choice modal when reaching level 5 in acquisition mode
-- Can choose to stay in acquisition mode or transition to maintenance mode
-- Manual level-ups continue to work as expected
-- Background transitions (focus timeout) still work automatically
+**Solution Applied**:
+1. **useModals.ts** (Lines 104-112): Added `destroyModal('skillModal')` + `modalKey.value++` pattern to both `showAddSkillModal()` and `showEditSkillModal()` functions
+2. **ModalManager.vue** (Line 6): Added `:key="modalKey"` to SkillModal component to enable force re-rendering
+
+**Pattern Consistency**: All modals now use the same proven Bootstrap Modal + Vue 3 integration pattern documented in BUG_PATTERNS.md.
+
+**Verification**: Manual testing confirmed - adding multiple skills now works correctly with clean form on each opening.
+
+## Files Modified
+- `src/composables/useModals.ts` - Applied Bootstrap instance reset pattern
+- `src/components/layout/ModalManager.vue` - Added key-based re-rendering
+
+## Related Documentation
+- Bug pattern documented in `docs/BUG_PATTERNS.md` (Lines 226-361)
+- Fix follows established pattern used by all other modals since 2025-08-11

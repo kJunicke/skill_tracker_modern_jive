@@ -26,7 +26,7 @@ This file provides guidance to Claude Code when working with the Modern Jive Ski
 - **Latest Feature**: **Unified Practice & Level-Up System** - Single interface combining practice sessions and level-ups
 - **Bug Fixes**: Fixed inconsistent interval calculations and timeline display issues
 - **Code Cleanup**: Removed unused components and deprecated code (275+ lines cleaned up)
-- **LATEST (2025-08-18)**: **Status Transition Modal Fix** - Fixed missing user choice modal when skills reach level 5 in acquisition mode, ensuring users maintain control over their learning progression
+- **LATEST (2025-08-21)**: **SkillModal Bootstrap Instance Caching Fix** - Fixed bug where SkillModal retained form data between openings, preventing users from adding multiple skills. Applied same Bootstrap instance reset pattern used by all other modals.
 
 ## Documentation Index
 

@@ -5,7 +5,10 @@
 
 ## 🚧 Current Development Priorities
 
-### **Recently Completed (2025-08-18)**
+### **Recently Completed (2025-08-21)**
+- [x] **SkillModal Bootstrap Instance Caching Fix**: Fixed critical bug where SkillModal retained form data between openings, preventing users from adding multiple skills. Applied same Bootstrap instance reset pattern (`destroyModal()` + `modalKey++`) used by all other modals. All modals now follow consistent pattern.
+
+### **Previously Completed (2025-08-18)**
 - [x] **Timeline UI Optimization**: Timeline Aussehen optimieren - UI/UX Verbesserungen für bessere Darstellung und Benutzerfreundlichkeit
 - [x] **Unified Practice & Level-Up System**: Combined practice sessions and level-ups into single streamlined interface
 - [x] **Code Cleanup & Optimization**: Removed unused components and deprecated code (StatisticsCards.vue, qualityUtils.ts, tagDescriptions.ts, useStepNavigation.ts, empty debug folder) - 275+ lines cleaned up, TypeScript errors fixed

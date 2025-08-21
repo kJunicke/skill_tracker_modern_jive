@@ -3,6 +3,7 @@
   <div>
     <SkillModal
       v-if="modalStates.skill.isVisible"
+      :key="modalKey"
       data-testid="skill-modal"
       :skill="modalStates.skill.selectedSkill"
       :is-visible="modalStates.skill.isVisible"

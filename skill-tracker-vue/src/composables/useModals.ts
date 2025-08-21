@@ -101,8 +101,16 @@ export function useModals(handlers: ModalEventHandlers) {
   // Specific modal actions
   const modalActions = {
     // Skill Modal
-    showAddSkillModal: () => openModal('skill', null),
-    showEditSkillModal: (skill: SkillData) => openModal('skill', skill),
+    showAddSkillModal: () => {
+      destroyModal('skillModal') // Destroy old Bootstrap instance
+      modalKey.value++ // Force component re-render
+      openModal('skill', null)
+    },
+    showEditSkillModal: (skill: SkillData) => {
+      destroyModal('skillModal') // Destroy old Bootstrap instance
+      modalKey.value++ // Force component re-render
+      openModal('skill', skill)
+    },
     closeSkillModal: () => closeModal('skill'),
     
     // Practice Rating Modal
