@@ -16,14 +16,15 @@
         getLevelClass(),
         skillId ? 'clickable-level' : ''
       ]"
-      @click="skillId ? handleLevelClick() : null"
+      @click="skillId ? handleLevelAnimation($event) : null"
       :style="skillId ? 'cursor: pointer;' : ''"
       :title="getLevelTitle()"
+      :data-skill-id="skillId"
     >
       <span class="level-number">{{ level }}</span>
-      <!-- Hover arrow for level up -->
-      <div v-if="skillId" class="level-up-arrow">
-        <i class="bi bi-caret-up-fill"></i>
+      <!-- Animation indicator on hover -->
+      <div v-if="skillId" class="animation-indicator">
+        <i class="bi bi-magic"></i>
       </div>
     </div>
 
@@ -47,12 +48,7 @@ interface Props {
   skillId?: string
 }
 
-interface Emits {
-  (e: 'level-up'): void
-}
-
 const props = defineProps<Props>()
-const emit = defineEmits<Emits>()
 
 // Get CSS class for level styling based on level ranges
 const getLevelClass = () => {
@@ -179,13 +175,58 @@ const getLevelTitle = () => {
     }
   })()
   
-  return props.skillId ? `${baseText} - Click to level up!` : baseText
+  return props.skillId ? `${baseText} - Click for animation!` : baseText
 }
 
-// Handle level click - opens level up modal with comment requirement
-const handleLevelClick = () => {
+// Handle level click - plays level-based animation
+const handleLevelAnimation = (event: Event) => {
   if (props.skillId) {
-    emit('level-up')
+    playLevelAnimation(event.target as HTMLElement)
+  }
+}
+
+// Play animation based on current level
+const playLevelAnimation = (clickedElement: HTMLElement) => {
+  // Find the level badge element - either the clicked element or its parent
+  const container = clickedElement.closest('.level-badge') as HTMLElement
+  if (!container) return
+
+  // Remove any existing animation classes
+  container.classList.remove(
+    'animate-pulse', 'animate-bounce', 'animate-glow', 'animate-star-flash',
+    'animate-diamond-sparkle', 'animate-fire-effect', 'animate-legend-magic'
+  )
+
+  // Add appropriate animation class based on level
+  const animationClass = getLevelAnimationClass()
+  if (animationClass) {
+    container.classList.add(animationClass)
+    
+    // Remove animation class after animation completes
+    setTimeout(() => {
+      container.classList.remove(animationClass)
+    }, 1500) // Increased duration for better visibility
+  }
+}
+
+// Get animation class based on level range
+const getLevelAnimationClass = () => {
+  const level = props.level
+  
+  if (level === 0) {
+    return 'animate-pulse'
+  } else if (level <= 4) {
+    return 'animate-bounce'
+  } else if (level === 5) {
+    return 'animate-glow'
+  } else if (level <= 9) {
+    return 'animate-star-flash'
+  } else if (level <= 19) {
+    return 'animate-diamond-sparkle'
+  } else if (level <= 49) {
+    return 'animate-fire-effect'
+  } else {
+    return 'animate-legend-magic'
   }
 }
 </script>
@@ -354,8 +395,8 @@ const handleLevelClick = () => {
   filter: brightness(1.1);
 }
 
-/* Level up arrow that appears on hover */
-.level-up-arrow {
+/* Animation indicator that appears on hover */
+.animation-indicator {
   position: absolute;
   top: -25px;
   right: -8px;
@@ -367,28 +408,31 @@ const handleLevelClick = () => {
   pointer-events: none;
 }
 
-.level-up-arrow i {
-  color: #198754;
-  font-size: 2rem;
+.animation-indicator i {
+  color: #6f42c1;
+  font-size: 1.5rem;
   font-weight: 900;
 }
 
-.clickable-level:hover .level-up-arrow {
+.clickable-level:hover .animation-indicator {
   opacity: 1;
   visibility: visible;
   transform: translateY(0) scale(1);
-  animation: levelUpBounce 0.6s ease-out;
+  animation: magicSparkle 0.8s ease-out infinite;
 }
 
-@keyframes levelUpBounce {
-  0% {
-    transform: translateY(0) scale(1);
+@keyframes magicSparkle {
+  0%, 100% {
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-2px) scale(1.1) rotate(5deg);
   }
   50% {
-    transform: translateY(-3px) scale(1.1);
+    transform: translateY(-4px) scale(1.2) rotate(0deg);
   }
-  100% {
-    transform: translateY(0) scale(1);
+  75% {
+    transform: translateY(-2px) scale(1.1) rotate(-5deg);
   }
 }
 
@@ -396,5 +440,152 @@ const handleLevelClick = () => {
 .level-badge-container:hover .decorative-element {
   opacity: 1;
   transform: scale(1.1);
+}
+
+/* Level-based Animation Classes */
+.animate-pulse {
+  animation: levelPulse 0.8s ease-in-out 2;
+}
+
+.animate-bounce {
+  animation: levelBounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 2;
+}
+
+.animate-glow {
+  animation: levelGlow 1s ease-in-out 1;
+}
+
+.animate-star-flash {
+  animation: starFlash 0.8s ease-in-out 1;
+}
+
+.animate-diamond-sparkle {
+  animation: diamondSparkle 1.2s ease-in-out 1;
+}
+
+.animate-fire-effect {
+  animation: fireEffect 1s ease-in-out 1;
+}
+
+.animate-legend-magic {
+  animation: legendMagic 1.5s ease-in-out 1;
+}
+
+/* Animation Keyframes */
+@keyframes levelPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.15); opacity: 0.8; }
+}
+
+@keyframes levelBounce {
+  0% { transform: scale(1) translateY(0); }
+  30% { transform: scale(1.2) translateY(-8px); }
+  60% { transform: scale(0.95) translateY(2px); }
+  100% { transform: scale(1) translateY(0); }
+}
+
+@keyframes levelGlow {
+  0%, 100% { 
+    box-shadow: 0 2px 6px rgba(108, 117, 125, 0.4);
+    filter: brightness(1);
+  }
+  50% { 
+    box-shadow: 0 4px 20px rgba(108, 117, 125, 0.8);
+    filter: brightness(1.3);
+  }
+}
+
+@keyframes starFlash {
+  0%, 100% { 
+    transform: scale(1) rotate(0deg);
+    filter: brightness(1);
+  }
+  25% { 
+    transform: scale(1.1) rotate(5deg);
+    filter: brightness(1.4) saturate(1.5);
+  }
+  75% { 
+    transform: scale(1.05) rotate(-5deg);
+    filter: brightness(1.2) saturate(1.3);
+  }
+}
+
+@keyframes diamondSparkle {
+  0%, 100% { 
+    transform: scale(1);
+    filter: brightness(1);
+    box-shadow: 0 2px 6px rgba(0, 123, 255, 0.3);
+  }
+  33% { 
+    transform: scale(1.15);
+    filter: brightness(1.5) hue-rotate(30deg);
+    box-shadow: 0 6px 25px rgba(0, 123, 255, 0.6);
+  }
+  66% { 
+    transform: scale(0.95);
+    filter: brightness(1.3) hue-rotate(-15deg);
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.5);
+  }
+}
+
+@keyframes fireEffect {
+  0%, 100% { 
+    transform: scale(1);
+    filter: brightness(1);
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.4);
+  }
+  20% { 
+    transform: scale(1.1) rotate(2deg);
+    filter: brightness(1.4) hue-rotate(10deg);
+    box-shadow: 0 6px 30px rgba(255, 69, 0, 0.7);
+  }
+  40% { 
+    transform: scale(1.05) rotate(-1deg);
+    filter: brightness(1.6) hue-rotate(-5deg);
+    box-shadow: 0 8px 35px rgba(255, 140, 0, 0.6);
+  }
+  60% { 
+    transform: scale(1.15) rotate(1deg);
+    filter: brightness(1.3) hue-rotate(15deg);
+    box-shadow: 0 5px 25px rgba(255, 69, 0, 0.8);
+  }
+  80% { 
+    transform: scale(0.95) rotate(-2deg);
+    filter: brightness(1.5) hue-rotate(-10deg);
+    box-shadow: 0 7px 30px rgba(255, 140, 0, 0.5);
+  }
+}
+
+@keyframes legendMagic {
+  0%, 100% { 
+    transform: scale(1) rotate(0deg);
+    filter: brightness(1);
+    box-shadow: 0 3px 12px rgba(111, 66, 193, 0.5);
+  }
+  16% { 
+    transform: scale(1.1) rotate(60deg);
+    filter: brightness(1.3) hue-rotate(60deg) saturate(1.5);
+    box-shadow: 0 6px 25px rgba(255, 0, 255, 0.6);
+  }
+  33% { 
+    transform: scale(0.9) rotate(120deg);
+    filter: brightness(1.6) hue-rotate(120deg) saturate(2);
+    box-shadow: 0 8px 30px rgba(0, 255, 255, 0.7);
+  }
+  50% { 
+    transform: scale(1.2) rotate(180deg);
+    filter: brightness(1.4) hue-rotate(180deg) saturate(1.8);
+    box-shadow: 0 10px 40px rgba(255, 255, 0, 0.8);
+  }
+  66% { 
+    transform: scale(0.95) rotate(240deg);
+    filter: brightness(1.7) hue-rotate(240deg) saturate(2.2);
+    box-shadow: 0 7px 35px rgba(0, 255, 0, 0.6);
+  }
+  83% { 
+    transform: scale(1.05) rotate(300deg);
+    filter: brightness(1.5) hue-rotate(300deg) saturate(1.7);
+    box-shadow: 0 9px 38px rgba(255, 0, 128, 0.7);
+  }
 }
 </style>

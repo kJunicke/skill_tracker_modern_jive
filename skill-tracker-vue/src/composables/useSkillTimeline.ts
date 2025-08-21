@@ -1,13 +1,14 @@
 import { computed, type Ref } from 'vue'
-import type { SkillData, ProgressionEntry, PracticeSession, QuickNote } from '@/types/skill'
+import type { SkillData, PracticeSession, QuickNote } from '@/types/skill'
 
 export interface TimelineEvent {
   id: string
-  type: 'levelup' | 'practice' | 'quicknote'
+  type: 'practice' | 'quicknote'
+  hasLevelUp?: boolean
   date: string
   title: string
   description: string
-  data: ProgressionEntry | PracticeSession | QuickNote
+  data: PracticeSession | QuickNote
 }
 
 export interface TimelineFilters {
@@ -29,28 +30,6 @@ export function useSkillTimeline(skill: Ref<SkillData | null>) {
     if (!skill.value) return []
     
     const events: TimelineEvent[] = []
-    
-    // Collect dates of practice sessions that include level-ups
-    const practiceSessionLevelUpDates = new Set(
-      skill.value.practiceLog
-        ?.filter(session => session.levelUpInfo)
-        .map(session => session.date) || []
-    )
-    
-    // Add level-up events from progression history ONLY if not already in practice sessions
-    skill.value.progressionHistory?.forEach((progression) => {
-      // Skip level-ups that are already included in practice sessions
-      if (!practiceSessionLevelUpDates.has(progression.date)) {
-        events.push({
-          id: `levelup-${progression.level}-${progression.date}`,
-          type: 'levelup',
-          date: progression.date,
-          title: `Level ${progression.level}`,
-          description: progression.comment || `Reached level ${progression.level}`,
-          data: { ...progression } // Spread to create fresh object reference
-        })
-      }
-    })
 
     // Add practice sessions
     skill.value.practiceLog?.forEach((session, index) => {
@@ -75,6 +54,7 @@ export function useSkillTimeline(skill: Ref<SkillData | null>) {
       events.push({
         id: `practice-${index}-${session.date}`,
         type: 'practice',
+        hasLevelUp: Boolean(session.levelUpInfo),
         date: session.date,
         title,
         description,
@@ -100,18 +80,24 @@ export function useSkillTimeline(skill: Ref<SkillData | null>) {
 
   const getFilteredEvents = (events: TimelineEvent[], filters: TimelineFilters, limit?: number): TimelineEvent[] => {
     const filtered = events.filter(event => {
-      // First apply main category filters
-      if (event.type === 'levelup' && !filters.showLevelUps) return false
-      if (event.type === 'practice' && !filters.showPractices) return false
+      // Apply exclusive filter logic for practice sessions
+      if (event.type === 'practice') {
+        // Practice sessions with level-up: show if level-up filter is on
+        if (event.hasLevelUp) {
+          if (!filters.showLevelUps) return false
+        } else {
+          // Practice sessions without level-up: show if practice filter is on
+          if (!filters.showPractices) return false
+        }
+      }
+      
+      // Apply filter for quick notes
       if (event.type === 'quicknote' && !filters.showQuickNotes) return false
       
       // Then apply marked notes overlay filter to all types
       let isMarked = false
       
-      if (event.type === 'levelup') {
-        const levelUp = event.data as ProgressionEntry
-        isMarked = Boolean(levelUp.transferredToNotes)
-      } else if (event.type === 'practice') {
+      if (event.type === 'practice') {
         const practice = event.data as PracticeSession
         isMarked = Boolean(practice.transferredToNotes)
       } else if (event.type === 'quicknote') {
@@ -176,21 +162,22 @@ export function useSkillTimeline(skill: Ref<SkillData | null>) {
   const getEventCounts = computed(() => {
     if (!skill.value) return { levelUps: 0, practices: 0, quickNotes: 0, markedNotes: 0, unmarkedNotes: 0, total: 0 }
     
+    // Count level-ups as practice sessions with levelUpInfo
+    const practiceSessionsWithLevelUps = skill.value.practiceLog?.filter(session => session.levelUpInfo).length || 0
+    
     // Count marked entries across all types
-    const markedLevelUps = skill.value.progressionHistory?.filter(entry => entry.transferredToNotes).length || 0
     const markedPractices = skill.value.practiceLog?.filter(entry => entry.transferredToNotes).length || 0
     const markedQuickNotes = skill.value.quickNotes?.filter(note => note.transferredToNotes).length || 0
-    const totalMarkedEntries = markedLevelUps + markedPractices + markedQuickNotes
+    const totalMarkedEntries = markedPractices + markedQuickNotes
     
     // Count totals
-    const totalLevelUps = skill.value.progressionHistory?.length || 0
     const totalPractices = skill.value.practiceLog?.length || 0
     const totalQuickNotes = skill.value.quickNotes?.length || 0
-    const totalEntries = totalLevelUps + totalPractices + totalQuickNotes
+    const totalEntries = totalPractices + totalQuickNotes
     const totalUnmarkedEntries = totalEntries - totalMarkedEntries
     
     return {
-      levelUps: totalLevelUps,
+      levelUps: practiceSessionsWithLevelUps,
       practices: totalPractices,
       quickNotes: totalQuickNotes,
       markedNotes: totalMarkedEntries,
@@ -224,14 +211,8 @@ export function useSkillTimeline(skill: Ref<SkillData | null>) {
     })
   }
 
-  const getEventTypeInfo = (type: TimelineEvent['type'], eventData?: ProgressionEntry | PracticeSession | QuickNote) => {
+  const getEventTypeInfo = (type: TimelineEvent['type'], eventData?: PracticeSession | QuickNote) => {
     const typeMapping = {
-      levelup: {
-        icon: 'bi-arrow-up-circle',
-        color: 'primary',
-        bgColor: 'bg-primary',
-        borderColor: 'border-primary'
-      },
       practice: {
         icon: 'bi-play-circle',
         color: 'info',

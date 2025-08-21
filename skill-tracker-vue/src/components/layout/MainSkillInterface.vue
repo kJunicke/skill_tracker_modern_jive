@@ -32,7 +32,6 @@
         @status-edit="$emit('status-edit', $event)"
         @tags-edit="$emit('tags-edit', $event)"
         @notes-edit="$emit('notes-edit', $event)"
-        @level-up="$emit('level-up', $event)"
         @move-to-acquisition="$emit('move-to-acquisition', $event)"
         @quick-note="(skillId: string, note: string) => $emit('quick-note', { skillId, note })"
         @add-skill="$emit('add-skill')"
@@ -84,7 +83,6 @@ interface Emits {
   (e: 'status-edit', value: string): void
   (e: 'tags-edit', value: string): void
   (e: 'notes-edit', value: string): void
-  (e: 'level-up', value: string): void
   (e: 'move-to-acquisition', value: string): void
   (e: 'quick-note', value: {skillId: string, note: string}): void
 }

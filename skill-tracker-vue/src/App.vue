@@ -27,7 +27,6 @@
         @status-edit="handleStatusEdit"
         @tags-edit="handleTagsEdit"
         @notes-edit="handleNotesEdit"
-        @level-up="handleLevelUp"
         @move-to-acquisition="handleMoveToAcquisition"
         @quick-note="(event: {skillId: string, note: string}) => handleQuickNote(event.skillId, event.note)"
       />
@@ -153,7 +152,6 @@ const {
   handleStatusEdit,
   handleTagsEdit,
   handleNotesEdit,
-  handleLevelUp,
   handleMoveToAcquisition,
   handleQuickNote,
   handleEditQuickNote,

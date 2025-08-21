@@ -37,7 +37,6 @@
               :format-event-date="() => formatEventTime(event.date)"
               :format-event-date-time="formatEventDateTime"
               :get-event-type-info="(type) => getEventTypeInfo(type as TimelineEvent['type'])"
-              @edit-levelup="(data) => $emit('edit-levelup', data)"
               @edit-practice="(data) => $emit('edit-practice', data)"
               @edit-quicknote="(data) => $emit('edit-quicknote', data)"
               @delete-quicknote="(data) => $emit('delete-quicknote', data)"

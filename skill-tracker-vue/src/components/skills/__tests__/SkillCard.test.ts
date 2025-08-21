@@ -176,12 +176,7 @@ describe('SkillCard', () => {
       expect(wrapper.emitted('progression-timeline')).toEqual([['test-skill']])
     })
 
-    it('emits level-up event from progress', async () => {
-      const progress = wrapper.findComponent({ name: 'SkillCardProgress' })
-      await progress.vm.$emit('level-up', 'test-skill')
-      
-      expect(wrapper.emitted('level-up')).toEqual([['test-skill']])
-    })
+    // Level-up event test removed - functionality now handled through unified practice/level-up system
 
     it('emits status-edit event from status', async () => {
       const status = wrapper.findComponent({ name: 'SkillCardStatus' })

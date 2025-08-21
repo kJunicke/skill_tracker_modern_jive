@@ -5,7 +5,6 @@
       <StarRating 
         :level="skill.level" 
         :skill-id="skill.id"
-        @level-up="handleLevelUp"
       />
     </div>
 
@@ -36,21 +35,14 @@ interface Props {
   skill: SkillData
 }
 
-interface Emits {
-  (e: 'level-up', skillId: string): void
-}
-
 const props = defineProps<Props>()
-const emit = defineEmits<Emits>()
 
 const focusProgress = computed(() => {
   if (!props.skill.focusData) return 0
   return Math.min(100, (props.skill.focusData.currentXP / props.skill.focusData.targetXP) * 100)
 })
 
-const handleLevelUp = () => {
-  emit('level-up', props.skill.id)
-}
+// Level-up functionality removed - now handled through unified practice/level-up system
 </script>
 
 <style scoped>

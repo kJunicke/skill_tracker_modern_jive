@@ -70,7 +70,7 @@
       />
     </div>
 
-    <!-- Level up button for focus mode -->
+    <!-- Level up button for focus mode - part of unified practice/level-up system -->
     <div v-if="skill.status === 'focus' && skill.focusData?.readyForLevelUp" class="mt-2">
       <BaseButton
         variant="success"
@@ -79,7 +79,7 @@
         icon="bi-arrow-up-circle"
         :text="`Level Up to ${skill.level + 1}!`"
         :custom-class="`level-up-btn ${skill.focusData.readyForLevelUp ? 'ready-pulse' : ''}`"
-        @click="handleLevelUp"
+        @click="handlePractice"
       />
     </div>
   </div>
@@ -96,7 +96,6 @@ interface Props {
 
 interface Emits {
   (e: 'practice-rating', skillId: string): void
-  (e: 'level-up', skillId: string): void
   (e: 'move-to-acquisition', skillId: string): void
   (e: 'quick-note', skillId: string, note: string): void
 }
@@ -135,9 +134,7 @@ const handlePractice = () => {
   emit('practice-rating', props.skill.id)
 }
 
-const handleLevelUp = () => {
-  emit('level-up', props.skill.id)
-}
+// Level-up functionality removed - now handled through unified practice/level-up system
 
 const handleMoveToAcquisition = () => {
   emit('move-to-acquisition', props.skill.id)

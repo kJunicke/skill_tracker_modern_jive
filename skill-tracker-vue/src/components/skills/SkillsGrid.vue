@@ -17,7 +17,6 @@
           @status-edit="(skillId: string) => $emit('status-edit', skillId)"
           @tags-edit="(skillId: string) => $emit('tags-edit', skillId)"
           @notes-edit="(skillId: string) => $emit('notes-edit', skillId)"
-          @level-up="(skillId: string) => $emit('level-up', skillId)"
           @move-to-acquisition="(skillId: string) => $emit('move-to-acquisition', skillId)"
           @quick-note="(skillId: string, note: string) => $emit('quick-note', skillId, note)"
         />
@@ -67,7 +66,6 @@ defineEmits<{
   'status-edit': [skillId: string]
   'tags-edit': [skillId: string]
   'notes-edit': [skillId: string]
-  'level-up': [skillId: string]
   'move-to-acquisition': [skillId: string]
   'quick-note': [skillId: string, note: string]
   'add-skill': []

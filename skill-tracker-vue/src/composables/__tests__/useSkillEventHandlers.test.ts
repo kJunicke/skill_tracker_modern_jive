@@ -6,7 +6,6 @@ import type { SkillData } from '@/types/skill'
 const mockSkillStore = {
   updateSkill: vi.fn(),
   deleteSkill: vi.fn(),
-  levelUpSkill: vi.fn(),
   shouldSuggestStatusTransition: vi.fn().mockResolvedValue({ shouldSuggest: false })
 }
 
@@ -154,36 +153,7 @@ describe('useSkillEventHandlers', () => {
     expect(mockSkillStore.deleteSkill).toHaveBeenCalledWith('test-skill')
   })
 
-  it('handles level up with comment', () => {
-    const handlers = useSkillEventHandlers(mockModalActions)
-    
-    vi.mocked(global.prompt).mockReturnValue('Great progress!')
-    
-    mockWithSkill.mockImplementation((skillId, callback) => {
-      callback(mockSkill)
-    })
-
-    handlers.handleLevelUp('test-skill')
-
-    expect(global.prompt).toHaveBeenCalledWith(
-      'Level up "Test Skill" from 2 to 3!\n\nPlease add a comment about your progress:'
-    )
-    expect(mockSkillStore.levelUpSkill).toHaveBeenCalledWith('test-skill', 3, 'Great progress!')
-  })
-
-  it('does not level up when no comment is provided', () => {
-    const handlers = useSkillEventHandlers(mockModalActions)
-    
-    vi.mocked(global.prompt).mockReturnValue(null)
-    
-    mockWithSkill.mockImplementation((skillId, callback) => {
-      callback(mockSkill)
-    })
-
-    handlers.handleLevelUp('test-skill')
-
-    expect(mockSkillStore.levelUpSkill).not.toHaveBeenCalled()
-  })
+  // Tests for handleLevelUp removed - level-up functionality now handled through unified practice/level-up system
 
   it('handles move to acquisition with confirmation', () => {
     const handlers = useSkillEventHandlers(mockModalActions)

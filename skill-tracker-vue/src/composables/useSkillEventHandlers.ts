@@ -60,31 +60,7 @@ export function useSkillEventHandlers(modalActions: {
       withSkill(skillId, modalActions.showNotesModal)
     },
 
-    handleLevelUp: async (skillId: string) => {
-      withSkill(skillId, async (skill) => {
-        const comment = prompt(`Level up "${skill.name}" from ${skill.level} to ${skill.level + 1}!\n\nPlease add a comment about your progress:`)
-        if (comment) {
-          // Level up the skill first
-          await skillStore.levelUpSkill(skillId, skill.level + 1, comment)
-          
-          // Check if status transition should be suggested
-          const transitionSuggestion = await skillStore.shouldSuggestStatusTransition(skillId)
-          
-          if (transitionSuggestion.shouldSuggest && transitionSuggestion.suggestedStatus) {
-            // Get the updated skill data
-            const updatedSkill = skillStore.skills.find(s => s.id === skillId)
-            
-            if (updatedSkill) {
-              modalActions.showStatusTransitionModal(
-                updatedSkill, 
-                transitionSuggestion.suggestedStatus,
-                transitionSuggestion.reason || ''
-              )
-            }
-          }
-        }
-      })
-    },
+    // handleLevelUp: Removed - level-up functionality now handled through unified practice/level-up system
 
     handleMoveToAcquisition: (skillId: string) => {
       withSkill(skillId, (skill) => {

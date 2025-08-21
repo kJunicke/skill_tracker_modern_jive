@@ -24,7 +24,6 @@
             :has-description="!!event.description"
             :is-modal-view="false"
             :is-transferred="isTransferred"
-            @edit-levelup="() => $emit('edit-levelup', event.data as ProgressionEntry)"
             @edit-practice="() => $emit('edit-practice', event.data as PracticeSession)"
             @edit-quicknote="() => $emit('edit-quicknote', event.data as QuickNote)"
             @delete-quicknote="() => $emit('delete-quicknote', event.data as QuickNote)"
@@ -37,45 +36,15 @@
 
     <!-- Full Timeline Item (Modal) -->
     <template v-else>
-      <!-- Level Up Event -->
-      <template v-if="event.type === 'levelup'">
-        <div class="timeline-marker bg-primary">
-          <i class="bi bi-arrow-up-circle text-white"></i>
-        </div>
-        <div class="timeline-content">
-          <div class="card border-primary">
-            <div class="card-body">
-              <div class="d-flex justify-content-between align-items-start mb-2">
-                <h6 class="card-title mb-0">
-                  <span class="badge bg-primary me-2">
-                    <i class="bi bi-arrow-up-circle me-1"></i>
-                    Level {{ (event.data as ProgressionEntry).level }}
-                  </span>
-                  <small class="text-muted">from Level {{ (event.data as ProgressionEntry).previousLevel || (event.data as ProgressionEntry).level - 1 }}</small>
-                </h6>
-                <div class="d-flex align-items-center gap-2">
-                  <TimelineEventActions
-                    event-type="levelup"
-                    :is-modal-view="true"
-                    :is-transferred="isTransferred"
-                    @edit-levelup="() => $emit('edit-levelup', event.data as ProgressionEntry)"
-                    @toggle-transferred="() => $emit('toggle-transferred', event)"
-                  />
-                </div>
-              </div>
-              <p class="card-text">{{ (event.data as ProgressionEntry).comment }}</p>
-            </div>
-          </div>
-        </div>
-      </template>
+      <!-- Legacy Level Up Section Removed - Level-ups are now part of Practice Sessions -->
       
-      <!-- Practice Session Event -->
-      <template v-else-if="event.type === 'practice'">
+      <!-- Practice Session Event (with optional Level-Up) -->
+      <template v-if="event.type === 'practice'">
         <div :class="[
           'timeline-marker',
-          getQualityColor((event.data as PracticeSession).quality)
+          event.hasLevelUp ? 'bg-success' : getQualityColor((event.data as PracticeSession).quality)
         ]">
-          <i :class="`bi ${getQualityIcon((event.data as PracticeSession).quality)} text-white`"></i>
+          <i :class="`bi ${event.hasLevelUp ? 'bi-arrow-up-circle' : getQualityIcon((event.data as PracticeSession).quality)} text-white`"></i>
         </div>
         <div class="timeline-content">
           <div class="card">
@@ -84,9 +53,9 @@
                 <h6 class="card-title mb-0">
                   <span :class="[
                     'badge',
-                    `bg-${getQualityColorName((event.data as PracticeSession).quality)}`
+                    event.hasLevelUp ? 'bg-success' : `bg-${getQualityColorName((event.data as PracticeSession).quality)}`
                   ]">
-                    <i class="bi bi-play-circle me-1"></i>
+                    <i :class="event.hasLevelUp ? 'bi-arrow-up-circle me-1' : 'bi-play-circle me-1'"></i>
                     {{ event.title }}
                   </span>
                 </h6>
@@ -143,7 +112,7 @@
 </template>
 
 <script setup lang="ts">
-import type { ProgressionEntry, PracticeSession, QuickNote } from '@/types/skill'
+import type { PracticeSession, QuickNote } from '@/types/skill'
 import type { TimelineEvent } from '@/composables/useSkillTimeline'
 import TimelineEventActions from './TimelineEventActions.vue'
 
@@ -157,7 +126,6 @@ interface Props {
 }
 
 interface Emits {
-  (e: 'edit-levelup', data: ProgressionEntry): void
   (e: 'edit-practice', data: PracticeSession): void
   (e: 'edit-quicknote', data: QuickNote): void
   (e: 'delete-quicknote', data: QuickNote): void

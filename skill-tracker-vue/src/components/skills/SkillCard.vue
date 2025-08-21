@@ -64,7 +64,6 @@
       <!-- Star rating and focus progress -->
       <SkillCardProgress 
         :skill="skill"
-        @level-up="handleLevelUp"
       />
 
       <!-- Status badge, tags, and next review info -->
@@ -84,7 +83,6 @@
       <SkillCardActions 
         :skill="skill"
         @practice-rating="handlePracticeRating"
-        @level-up="handleLevelUp"
         @move-to-acquisition="handleMoveToAcquisition"
         @quick-note="handleQuickNote"
       />
@@ -118,7 +116,6 @@ interface Emits {
   (e: 'status-edit', skillId: string): void
   (e: 'tags-edit', skillId: string): void
   (e: 'notes-edit', skillId: string): void
-  (e: 'level-up', skillId: string): void
   (e: 'move-to-acquisition', skillId: string): void
   (e: 'quick-note', skillId: string, note: string): void
 }
@@ -199,7 +196,7 @@ const isAlmostDue = computed(() => {
 const handleEditSkill = (skillId: string) => emit('edit-skill', skillId)
 const handleDeleteSkill = (skillId: string) => emit('delete-skill', skillId)
 const handleProgressionTimeline = (skillId: string) => emit('progression-timeline', skillId)
-const handleLevelUp = (skillId: string) => emit('level-up', skillId)
+// Level-up functionality removed - now handled through unified practice/level-up system
 const handleStatusEdit = (skillId: string) => emit('status-edit', skillId)
 const handleTagsEdit = (skillId: string) => emit('tags-edit', skillId)
 const handleNotesEdit = (skillId: string) => emit('notes-edit', skillId)
