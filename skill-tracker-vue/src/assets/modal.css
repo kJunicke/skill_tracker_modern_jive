@@ -1,0 +1,341 @@
+/* Modal CSS Variables and Shared Styles for Vue 3 Teleport Modals */
+
+:root {
+  /* Modal Layout Variables */
+  --modal-z-index: 1055;
+  --modal-overlay-bg: rgba(0, 0, 0, 0.5);
+  --modal-backdrop-filter: blur(2px);
+  --modal-border-radius: 8px;
+  --modal-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  --modal-max-width: 600px;
+  --modal-width: 90%;
+  --modal-max-height: 90vh;
+  
+  /* Modal Colors - Light Mode */
+  --modal-bg: #ffffff;
+  --modal-header-bg: linear-gradient(135deg, #007bff, #0056b3);
+  --modal-header-color: #ffffff;
+  --modal-border: #dee2e6;
+  --modal-footer-border: #dee2e6;
+  
+  /* Modal Typography */
+  --modal-title-size: 1.25rem;
+  --modal-padding: 1.5rem;
+  --modal-header-padding: 1rem 1.5rem;
+  --modal-footer-padding: 1rem 1.5rem;
+  
+  /* Modal Transitions */
+  --modal-transition: all 0.3s ease;
+  --modal-transform-transition: all 0.2s ease-in-out;
+  
+  /* Close Button */
+  --modal-close-opacity: 0.8;
+  --modal-close-hover-opacity: 1;
+  --modal-close-filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* Dark Mode Modal Variables */
+[data-theme="dark"] {
+  --modal-overlay-bg: rgba(0, 0, 0, 0.7);
+  --modal-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  --modal-bg: var(--bg-card);
+  --modal-header-bg: linear-gradient(135deg, #4299e1, #3182ce);
+  --modal-header-color: var(--text-primary);
+  --modal-border: var(--border-color);
+  --modal-footer-border: var(--border-color);
+}
+
+/* Modal Specific Header Colors */
+:root {
+  --modal-skill-header: linear-gradient(135deg, #007bff, #0056b3);
+  --modal-practice-header: linear-gradient(135deg, #007bff, #0056b3);
+  --modal-status-header: linear-gradient(135deg, #6c757d, #545b62);
+  --modal-tags-header: linear-gradient(135deg, #17a2b8, #138496);
+  --modal-notes-header: linear-gradient(135deg, #28a745, #1e7e34);
+  --modal-timeline-header: linear-gradient(135deg, #6f42c1, #5a2d91);
+  --modal-training-header: linear-gradient(135deg, #fd7e14, #e65100);
+  --modal-transition-header: linear-gradient(135deg, #ffc107, #d39e00);
+}
+
+/* Dark Mode Modal Header Colors */
+[data-theme="dark"] {
+  --modal-skill-header: linear-gradient(135deg, #4299e1, #3182ce);
+  --modal-practice-header: linear-gradient(135deg, #4299e1, #3182ce);
+  --modal-status-header: linear-gradient(135deg, #a0aec0, #718096);
+  --modal-tags-header: linear-gradient(135deg, #38b2ac, #2c7a7b);
+  --modal-notes-header: linear-gradient(135deg, #48bb78, #38a169);
+  --modal-timeline-header: linear-gradient(135deg, #9f7aea, #805ad5);
+  --modal-training-header: linear-gradient(135deg, #ed8936, #dd6b20);
+  --modal-transition-header: linear-gradient(135deg, #ecc94b, #d69e2e);
+}
+
+/* Base Modal Styles - Shared by all Vue 3 Teleport Modals */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--modal-overlay-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--modal-z-index);
+  backdrop-filter: var(--modal-backdrop-filter);
+  transition: var(--modal-transition);
+}
+
+.modal-content {
+  background: var(--modal-bg);
+  border-radius: var(--modal-border-radius);
+  box-shadow: var(--modal-shadow);
+  max-width: var(--modal-max-width);
+  width: var(--modal-width);
+  max-height: var(--modal-max-height);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: var(--modal-transition);
+}
+
+.modal-header {
+  background: var(--modal-header-bg);
+  color: var(--modal-header-color);
+  padding: var(--modal-header-padding);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: none;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: var(--modal-title-size);
+  font-weight: 600;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  opacity: var(--modal-close-opacity);
+  cursor: pointer;
+  transition: opacity 0.15s ease-in-out;
+  color: var(--modal-header-color);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-close:hover {
+  opacity: var(--modal-close-hover-opacity);
+}
+
+.btn-close:before {
+  content: "×";
+  font-size: 2rem;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.btn-close-white {
+  filter: var(--modal-close-filter);
+}
+
+.modal-body {
+  padding: var(--modal-padding);
+  overflow-y: auto;
+  flex: 1;
+  color: var(--text-primary);
+}
+
+.modal-footer {
+  padding: var(--modal-footer-padding);
+  border-top: 1px solid var(--modal-footer-border);
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  background: var(--modal-bg);
+}
+
+/* Modal Size Variants */
+.modal-content.modal-sm {
+  max-width: 400px;
+}
+
+.modal-content.modal-lg {
+  max-width: 800px;
+}
+
+.modal-content.modal-xl {
+  max-width: 1200px;
+}
+
+/* Modal Specific Header Classes */
+.modal-header-skill {
+  background: var(--modal-skill-header);
+}
+
+.modal-header-practice {
+  background: var(--modal-practice-header);
+}
+
+.modal-header-status {
+  background: var(--modal-status-header);
+}
+
+.modal-header-tags {
+  background: var(--modal-tags-header);
+}
+
+.modal-header-notes {
+  background: var(--modal-notes-header);
+}
+
+.modal-header-timeline {
+  background: var(--modal-timeline-header);
+}
+
+.modal-header-training {
+  background: var(--modal-training-header);
+}
+
+.modal-header-transition {
+  background: var(--modal-transition-header);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 575.98px) {
+  :root {
+    --modal-padding: 1rem;
+    --modal-header-padding: 0.75rem 1rem;
+    --modal-footer-padding: 0.75rem 1rem;
+    --modal-title-size: 1.1rem;
+    --modal-width: 95%;
+    --modal-max-height: 95vh;
+  }
+  
+  .modal-content {
+    width: var(--modal-width);
+    max-height: var(--modal-max-height);
+    margin: 0.5rem;
+    border-radius: 12px;
+  }
+  
+  .modal-header {
+    padding: var(--modal-header-padding);
+    border-radius: 12px 12px 0 0;
+  }
+  
+  .modal-title {
+    font-size: var(--modal-title-size);
+    line-height: 1.3;
+  }
+  
+  .modal-body {
+    padding: var(--modal-padding);
+  }
+  
+  .modal-footer {
+    padding: var(--modal-footer-padding);
+    flex-direction: column-reverse;
+    gap: 0.75rem;
+    border-radius: 0 0 12px 12px;
+  }
+  
+  .modal-footer .btn {
+    width: 100%;
+    margin: 0;
+    padding: 0.75rem;
+    font-size: 1rem;
+  }
+  
+  /* Improve form elements on mobile */
+  .modal-body .form-control,
+  .modal-body .form-select {
+    font-size: 16px; /* Prevents zoom on iOS */
+    padding: 0.75rem;
+  }
+  
+  .modal-body .form-label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Better spacing for mobile */
+  .modal-body .mb-3 {
+    margin-bottom: 1.5rem !important;
+  }
+  
+  /* Optimize dropdown menus for touch */
+  .modal-body .dropdown-menu {
+    font-size: 16px;
+    min-height: 44px; /* Touch-friendly minimum */
+  }
+  
+  .modal-body .dropdown-item {
+    padding: 0.75rem 1rem;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+}
+
+/* Tablet Responsiveness */
+@media (min-width: 576px) and (max-width: 991.98px) {
+  .modal-content {
+    width: 85%;
+    max-width: 600px;
+  }
+  
+  .modal-footer .btn {
+    min-width: 120px;
+  }
+}
+
+/* Large screens optimization */
+@media (min-width: 1200px) {
+  .modal-content.modal-lg {
+    max-width: 900px;
+  }
+  
+  .modal-content.modal-xl {
+    max-width: 1400px;
+  }
+}
+
+/* Keyboard Navigation Focus Styles */
+.modal-content:focus {
+  outline: 2px solid var(--btn-bg);
+  outline-offset: -2px;
+}
+
+.modal-content [tabindex="-1"]:focus,
+.modal-content .btn:focus,
+.modal-content .form-control:focus,
+.modal-content .form-select:focus {
+  box-shadow: 0 0 0 0.2rem rgba(66, 153, 225, 0.25);
+}
+
+/* Animation for modal entrance/exit */
+.modal-overlay.fade-enter-active,
+.modal-overlay.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.modal-overlay.fade-enter-from,
+.modal-overlay.fade-leave-to {
+  opacity: 0;
+}
+
+.modal-content.zoom-enter-active,
+.modal-content.zoom-leave-active {
+  transition: transform 0.3s ease;
+}
+
+.modal-content.zoom-enter-from,
+.modal-content.zoom-leave-to {
+  transform: scale(0.8);
+}

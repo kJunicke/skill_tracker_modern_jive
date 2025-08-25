@@ -11,16 +11,17 @@
         role="dialog"
         :aria-labelledby="titleId"
         aria-modal="true"
+        style="background: var(--modal-bg);"
       >
         <!-- Header -->
-        <div class="modal-header">
+        <div class="modal-header modal-header-tags">
           <h5 class="modal-title" :id="titleId">
             <i class="bi bi-tags me-2"></i>
             Edit Tags: {{ skill?.name }}
           </h5>
           <button
             type="button"
-            class="btn-close btn-close-white"
+            class="btn-close"
             aria-label="Close"
             @click="$emit('close')"
           ></button>
@@ -246,79 +247,16 @@ defineExpose({
 </script>
 
 <style scoped>
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1055;
-  backdrop-filter: blur(2px);
-}
+/* Modal styles are now defined in /assets/modal.css using CSS variables */
 
+/* Tags Editor specific styles only */
 .modal-content {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  max-width: 700px;
-  width: 90%;
-  max-height: 90vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
+  max-width: 700px; /* Wider than default for tag selection */
 }
 
-.modal-header {
-  background: linear-gradient(135deg, #28a745, #1e7e34);
-  color: white;
-  padding: 1rem 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: none;
-}
-
-.modal-title {
-  margin: 0;
-  font-size: 1.25rem;
-}
-
-.btn-close {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  opacity: 0.8;
-  cursor: pointer;
-}
-
-.btn-close:hover {
-  opacity: 1;
-}
-
-.btn-close-white {
-  filter: invert(1) grayscale(100%) brightness(200%);
-}
-
-.modal-body {
-  padding: 1.5rem;
-  overflow-y: auto;
-  flex: 1;
-}
-
-.modal-footer {
-  padding: 1rem 1.5rem;
-  border-top: 1px solid #dee2e6;
-  display: flex;
-  gap: 1rem;
-  justify-content: flex-end;
-}
-
+/* Tags specific interactive elements */
 .badge {
-  transition: all 0.2s ease-in-out;
+  transition: var(--modal-transform-transition);
 }
 
 .badge:hover {
@@ -326,7 +264,7 @@ defineExpose({
 }
 
 .btn-sm {
-  transition: all 0.2s ease-in-out;
+  transition: var(--modal-transform-transition);
 }
 
 .btn-sm:hover {

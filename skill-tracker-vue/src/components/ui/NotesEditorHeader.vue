@@ -1,5 +1,5 @@
 <template>
-  <div class="modal-header bg-info text-white">
+  <div class="modal-header modal-header-notes">
     <h5 class="modal-title" id="notesEditorModalLabel">
       <i class="bi bi-sticky me-2"></i>
       Edit Notes: {{ skillName }}
@@ -16,7 +16,7 @@
       </button>
       <button 
         type="button" 
-        class="btn-close btn-close-white" 
+        class="btn-close" 
         data-bs-dismiss="modal" 
         aria-label="Close"
         @click="$emit('close')"

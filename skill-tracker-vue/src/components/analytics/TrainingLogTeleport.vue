@@ -13,14 +13,14 @@
         aria-modal="true"
       >
         <!-- Header -->
-        <div class="modal-header">
+        <div class="modal-header modal-header-training">
           <h5 class="modal-title" :id="titleId">
             <i class="bi bi-journal-text me-2"></i>
             Training Log
           </h5>
           <button
             type="button"
-            class="btn-close btn-close-white"
+            class="btn-close"
             aria-label="Close"
             @click="$emit('close')"
           ></button>

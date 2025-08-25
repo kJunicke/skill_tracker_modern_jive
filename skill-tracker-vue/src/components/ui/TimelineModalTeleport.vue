@@ -13,14 +13,14 @@
         aria-modal="true"
       >
         <!-- Header -->
-        <div class="modal-header">
+        <div class="modal-header modal-header-timeline">
           <h5 class="modal-title" :id="titleId">
             <i class="bi bi-clock-history me-2"></i>
             Progression Timeline: {{ skill?.name }}
           </h5>
           <button
             type="button"
-            class="btn-close btn-close-white"
+            class="btn-close"
             aria-label="Close"
             @click="$emit('close')"
           ></button>

@@ -11,16 +11,17 @@
         role="dialog"
         :aria-labelledby="titleId"
         aria-modal="true"
+        style="background: var(--modal-bg);"
       >
         <!-- Header -->
-        <div class="modal-header">
+        <div class="modal-header modal-header-practice">
           <h5 class="modal-title" :id="titleId">
             <i class="bi bi-play-circle me-2"></i>
             Practice Session: {{ skill?.name }}
           </h5>
           <button
             type="button"
-            class="btn-close btn-close-white"
+            class="btn-close"
             aria-label="Close"
             @click="$emit('close')"
           ></button>
@@ -45,17 +46,20 @@
                 :variant="option.color"
                 :outline="selectedQuality !== option.value"
                 size="lg"
-                custom-class="quality-btn"
+                :custom-class="`quality-btn ${selectedQuality === option.value ? 'quality-btn-selected' : ''}`"
                 @click="selectQuality(option.value)"
               >
                 <div class="d-flex align-items-center justify-content-between w-100">
-                  <div>
-                    <i :class="`bi ${option.icon} me-2`"></i>
+                  <div class="d-flex align-items-center">
+                    <i :class="`bi ${option.icon} me-2 quality-icon`"></i>
                     <strong>{{ option.label }}</strong>
+                    <i v-if="selectedQuality === option.value" class="bi bi-check-circle-fill ms-2 text-success"></i>
                   </div>
                   <div class="text-end">
-                    <small class="d-block">{{ option.description }}</small>
-                    <small class="text-muted">+{{ option.xp }} XP</small>
+                    <small class="d-block quality-description">{{ option.description }}</small>
+                    <small class="d-block text-muted mt-1">
+                      {{ getQualityHelperText(option.value) }}
+                    </small>
                   </div>
                 </div>
               </BaseButton>
@@ -171,7 +175,6 @@ const qualityOptions = [
     description: 'Could not perform the skill',
     icon: 'bi-x-circle',
     color: 'danger' as const,
-    xp: 0,
     value: 1
   },
   {
@@ -179,7 +182,6 @@ const qualityOptions = [
     description: 'Struggled but eventually got it',
     icon: 'bi-exclamation-triangle',
     color: 'warning' as const,
-    xp: 1,
     value: 2
   },
   {
@@ -187,7 +189,6 @@ const qualityOptions = [
     description: 'Performed well with minor issues',
     icon: 'bi-check-circle',
     color: 'success' as const,
-    xp: 2,
     value: 3
   },
   {
@@ -195,13 +196,22 @@ const qualityOptions = [
     description: 'Flawless execution, felt natural',
     icon: 'bi-star-fill',
     color: 'primary' as const,
-    xp: 3,
     value: 4
   }
 ] as const
 
 const selectQuality = (quality: number) => {
   selectedQuality.value = quality
+}
+
+const getQualityHelperText = (quality: number): string => {
+  const helperTexts: Record<number, string> = {
+    1: 'Schedule will reset - need more practice',
+    2: 'Shorter interval - keep working on it',
+    3: 'Good progress - standard interval',
+    4: 'Excellent! Longer interval earned'
+  }
+  return helperTexts[quality] || ''
 }
 
 const spacedRepetitionService = new SpacedRepetitionService()
@@ -275,90 +285,59 @@ defineExpose({
 </script>
 
 <style scoped>
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1055;
-  backdrop-filter: blur(2px);
-}
+/* Modal styles are now defined in /assets/modal.css using CSS variables */
 
-.modal-content {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  max-width: 600px;
-  width: 90%;
-  max-height: 90vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.modal-header {
-  background: linear-gradient(135deg, #007bff, #0056b3);
-  color: white;
-  padding: 1rem 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: none;
-}
-
-.modal-title {
-  margin: 0;
-  font-size: 1.25rem;
-}
-
-.btn-close {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  opacity: 0.8;
-  cursor: pointer;
-}
-
-.btn-close:hover {
-  opacity: 1;
-}
-
-.btn-close-white {
-  filter: invert(1) grayscale(100%) brightness(200%);
-}
-
-.modal-body {
-  padding: 1.5rem;
-  overflow-y: auto;
-  flex: 1;
-}
-
-.modal-footer {
-  padding: 1rem 1.5rem;
-  border-top: 1px solid #dee2e6;
-  display: flex;
-  gap: 1rem;
-  justify-content: flex-end;
-}
-
+/* Practice Rating specific styles */
 .quality-btn {
   text-align: left;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
 }
 
 .quality-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
+.quality-btn-selected {
+  transform: scale(1.02);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  border: 2px solid rgba(255, 255, 255, 0.5) !important;
+}
+
+.quality-btn:active {
+  transform: translateY(0);
+}
+
+.quality-icon {
+  font-size: 1.2em;
+  transition: transform 0.2s ease;
+}
+
+.quality-btn:hover .quality-icon {
+  transform: scale(1.1);
+}
+
+.quality-description {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  transition: color 0.2s ease;
+}
+
+.quality-btn:hover .quality-description {
+  color: rgba(255, 255, 255, 1);
+}
+
+/* Enhanced button colors with better gradients */
 .quality-btn.btn-danger {
   background: linear-gradient(135deg, #dc3545, #c82333);
   border: none;
+}
+
+.quality-btn.btn-danger:hover {
+  background: linear-gradient(135deg, #e85667, #dc3545);
 }
 
 .quality-btn.btn-warning {
@@ -367,13 +346,49 @@ defineExpose({
   color: #000;
 }
 
+.quality-btn.btn-warning:hover {
+  background: linear-gradient(135deg, #ffd43a, #ffc107);
+}
+
+.quality-btn.btn-warning .quality-description {
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.quality-btn.btn-warning:hover .quality-description {
+  color: rgba(0, 0, 0, 0.9);
+}
+
 .quality-btn.btn-success {
   background: linear-gradient(135deg, #28a745, #1e7e34);
   border: none;
 }
 
+.quality-btn.btn-success:hover {
+  background: linear-gradient(135deg, #34ce57, #28a745);
+}
+
 .quality-btn.btn-primary {
   background: linear-gradient(135deg, #007bff, #0056b3);
   border: none;
+}
+
+.quality-btn.btn-primary:hover {
+  background: linear-gradient(135deg, #339dff, #007bff);
+}
+
+/* Selection animation */
+.quality-btn-selected::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.quality-btn-selected:hover::before {
+  left: 100%;
 }
 </style>
