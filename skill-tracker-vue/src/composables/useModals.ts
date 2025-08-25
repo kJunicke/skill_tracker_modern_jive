@@ -113,13 +113,15 @@ export function useModals(handlers: ModalEventHandlers) {
     },
     closeSkillModal: () => closeModal('skill'),
     
-    // Practice Rating Modal
+    // Practice Rating Modal (Vue 3 Teleport - no Bootstrap dependency)
     showPracticeModal: (skill: SkillData) => {
-      destroyModal('practiceRatingModal') // Destroy old Bootstrap instance
-      modalKey.value++ // Force component re-render
-      openModal('practice', skill)
+      modalStates.practice.selectedSkill = skill
+      modalStates.practice.isVisible = true
     },
-    closePracticeModal: () => closeModal('practice'),
+    closePracticeModal: () => {
+      modalStates.practice.isVisible = false
+      modalStates.practice.selectedSkill = null
+    },
     
     // Timeline Modal
     showTimelineModal: (skill: SkillData) => {
@@ -129,29 +131,35 @@ export function useModals(handlers: ModalEventHandlers) {
     },
     closeTimelineModal: () => closeModal('timeline'),
     
-    // Status Editor Modal
+    // Status Editor Modal (Vue 3 Teleport - no Bootstrap dependency)
     showStatusModal: (skill: SkillData) => {
-      destroyModal('statusEditorModal') // Destroy old Bootstrap instance
-      modalKey.value++ // Force component re-render
-      openModal('status', skill)
+      modalStates.status.selectedSkill = skill
+      modalStates.status.isVisible = true
     },
-    closeStatusModal: () => closeModal('status'),
+    closeStatusModal: () => {
+      modalStates.status.isVisible = false
+      modalStates.status.selectedSkill = null
+    },
     
-    // Tags Editor Modal
+    // Tags Editor Modal (Vue 3 Teleport - no Bootstrap dependency)
     showTagsModal: (skill: SkillData) => {
-      destroyModal('tagsEditorModal') // Destroy old Bootstrap instance
-      modalKey.value++ // Force component re-render
-      openModal('tags', skill)
+      modalStates.tags.selectedSkill = skill
+      modalStates.tags.isVisible = true
     },
-    closeTagsModal: () => closeModal('tags'),
+    closeTagsModal: () => {
+      modalStates.tags.isVisible = false
+      modalStates.tags.selectedSkill = null
+    },
     
-    // Notes Editor Modal
+    // Notes Editor Modal (Vue 3 Teleport - no Bootstrap dependency)
     showNotesModal: (skill: SkillData) => {
-      destroyModal('notesEditorModal') // Destroy old Bootstrap instance
-      modalKey.value++ // Force component re-render
-      openModal('notes', skill)
+      modalStates.notes.selectedSkill = skill
+      modalStates.notes.isVisible = true
     },
-    closeNotesModal: () => closeModal('notes'),
+    closeNotesModal: () => {
+      modalStates.notes.isVisible = false
+      modalStates.notes.selectedSkill = null
+    },
     
     // Training Log Modal
     showTrainingLogModal: () => openModal('trainingLog'),

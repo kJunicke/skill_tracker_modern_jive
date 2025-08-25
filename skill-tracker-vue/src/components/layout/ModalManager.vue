@@ -12,9 +12,6 @@
     />
 
     <PracticeRating
-      v-if="modalStates.practice.isVisible"
-      :key="modalKey"
-      data-testid="practice-rating"
       :skill="modalStates.practice.selectedSkill"
       :is-visible="modalStates.practice.isVisible"
       @practice-complete="(skillId, quality, notes, isLevelUp) => $emit('practice-complete', skillId, quality, notes, isLevelUp)"
@@ -37,9 +34,6 @@
     />
 
     <StatusEditor
-      v-if="modalStates.status.isVisible"
-      :key="modalKey"
-      data-testid="status-editor"
       :skill="modalStates.status.selectedSkill"
       :is-visible="modalStates.status.isVisible"
       @status-changed="(skillId, newStatus) => $emit('status-changed', {skillId, newStatus})"
@@ -47,9 +41,6 @@
     />
 
     <TagsEditor
-      v-if="modalStates.tags.isVisible"
-      :key="modalKey"
-      data-testid="tags-editor"
       :skill="modalStates.tags.selectedSkill"
       :is-visible="modalStates.tags.isVisible"
       @tags-changed="(skillId, newTags) => $emit('tags-changed', {skillId, newTags})"
@@ -57,9 +48,6 @@
     />
 
     <NotesEditor
-      v-if="modalStates.notes.isVisible"
-      :key="modalKey"
-      data-testid="notes-editor"
       :skill="modalStates.notes.selectedSkill"
       :is-visible="modalStates.notes.isVisible"
       @notes-changed="(skillId, newNotes) => $emit('notes-changed', skillId, newNotes)"
@@ -95,11 +83,11 @@
 import type { SkillData, ProgressionEntry, PracticeSession } from '@/types/skill'
 import type { SkillStatus } from '@/utils/constants'
 import SkillModal from '@/components/skills/SkillModal.vue'
-import PracticeRating from '@/components/training/PracticeRating.vue'
+import PracticeRating from '@/components/training/PracticeRatingTeleport.vue'
 import TimelineModal from '@/components/ui/TimelineModal.vue'
-import StatusEditor from '@/components/ui/StatusEditor.vue'
-import TagsEditor from '@/components/ui/TagsEditor.vue'
-import NotesEditor from '@/components/ui/NotesEditor.vue'
+import StatusEditor from '@/components/ui/StatusEditorTeleport.vue'
+import TagsEditor from '@/components/ui/TagsEditorTeleport.vue'
+import NotesEditor from '@/components/ui/NotesEditorTeleport.vue'
 import TrainingLog from '@/components/analytics/TrainingLog.vue'
 import StatusTransitionConfirmation from '@/components/modals/StatusTransitionConfirmation.vue'
 

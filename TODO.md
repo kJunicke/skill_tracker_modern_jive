@@ -38,19 +38,19 @@
 - [x] Document Bootstrap/Vue anti-pattern in architecture notes
 
 ##### **Phase 2: Vue 3 Teleport Migration** (2-3 days) 🚀
-- [ ] **Modal System Architecture Overhaul**: Replace entire Bootstrap modal system with Vue 3 Teleport
-- [ ] **Performance Optimization**: Eliminate `modalKey++` / `destroyModal()` complexity
-- [ ] **Reactive Modal Management**: Full declarative control without DOM manipulation
+- [x] **Modal System Architecture Overhaul**: Replace entire Bootstrap modal system with Vue 3 Teleport
+- [x] **Performance Optimization**: Eliminate `modalKey++` / `destroyModal()` complexity
+- [x] **Reactive Modal Management**: Full declarative control without DOM manipulation
 
-**Modals to Migrate (8 total):**
-1. **SkillModal.vue** - Create/edit skills modal
-2. **PracticeRating.vue** - Practice session rating modal  
-3. **TimelineModal.vue** - Skill progression timeline modal
-4. **StatusEditor.vue** - Status selection modal
-5. **TagsEditor.vue** - Tag management modal
-6. **NotesEditor.vue** - Notes editing modal
-7. **TrainingLog.vue** - Training log display modal
-8. **StatusTransitionConfirmation.vue** - Status transition confirmation modal
+**Modals Migration Progress (5/8 completed):**
+1. **SkillModal.vue** - Create/edit skills modal (Bootstrap - remaining)
+2. **PracticeRating.vue** - Practice session rating modal ✅ **MIGRATED**
+3. **TimelineModal.vue** - Skill progression timeline modal (Bootstrap - remaining)
+4. **StatusEditor.vue** - Status selection modal ✅ **MIGRATED**
+5. **TagsEditor.vue** - Tag management modal ✅ **MIGRATED**
+6. **NotesEditor.vue** - Notes editing modal ✅ **MIGRATED**
+7. **TrainingLog.vue** - Training log display modal (Bootstrap - remaining)
+8. **StatusTransitionConfirmation.vue** - Status transition confirmation modal ✅ **MIGRATED** (was already Vue 3 Teleport style)
 
 **Documentation Updates Required:**
 - [ ] **ARCHITECTURE.md**: Update modal system documentation
@@ -110,7 +110,7 @@
 ---
 
 ### **Next Priority Features**
-- [ ] **Markdown Notes Dark Mode**: Add dark mode support for markdown editor and notes components
+- [ ] ~~**Markdown Notes Dark Mode**: Add dark mode support for markdown editor and notes components~~ (Dropped - not important)
 
 ## 🚀 Future Features & Enhancements
 
