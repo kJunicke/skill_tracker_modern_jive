@@ -131,7 +131,9 @@ export function useModals(handlers: ModalEventHandlers) {
       modalStates.statusTransition.reason = reason
       modalStates.statusTransition.isVisible = true
     },
-    closeStatusTransitionModal: () => closeModal('statusTransition'),
+    closeStatusTransitionModal: () => {
+      modalStates.statusTransition.isVisible = false
+    },
     
   }
 

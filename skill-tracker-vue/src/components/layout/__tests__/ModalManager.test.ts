@@ -8,7 +8,7 @@ import { createMockSkill } from '@/services/__tests__/testHelpers'
 vi.mock('@/components/skills/SkillModal.vue', () => ({
   default: {
     name: 'SkillModal',
-    template: '<div data-testid="skill-modal" v-if="isVisible">Skill Modal</div>',
+    template: '<div data-testid="skill-modal-component" :class="{ visible: isVisible }">Skill Modal</div>',
     props: ['skill', 'isVisible'],
     emits: ['save', 'close']
   }
@@ -17,7 +17,7 @@ vi.mock('@/components/skills/SkillModal.vue', () => ({
 vi.mock('@/components/training/PracticeRating.vue', () => ({
   default: {
     name: 'PracticeRating',
-    template: '<div data-testid="practice-rating" v-if="isVisible">Practice Rating</div>',
+    template: '<div data-testid="practice-rating-component" :class="{ visible: isVisible }">Practice Rating</div>',
     props: ['skill', 'isVisible'],
     emits: ['practice-complete', 'close']
   }
@@ -26,7 +26,7 @@ vi.mock('@/components/training/PracticeRating.vue', () => ({
 vi.mock('@/components/ui/TimelineModal.vue', () => ({
   default: {
     name: 'TimelineModal',
-    template: '<div data-testid="timeline-modal" v-if="isVisible">Timeline Modal</div>',
+    template: '<div data-testid="timeline-modal-component" :class="{ visible: isVisible }">Timeline Modal</div>',
     props: ['skill', 'isVisible'],
     emits: ['close', 'edit-notes', 'edit-levelup-comment', 'edit-practice-note', 'edit-quick-note', 'delete-quick-note', 'toggle-transferred-to-notes']
   }
@@ -35,7 +35,7 @@ vi.mock('@/components/ui/TimelineModal.vue', () => ({
 vi.mock('@/components/ui/StatusEditor.vue', () => ({
   default: {
     name: 'StatusEditor',
-    template: '<div data-testid="status-editor" v-if="isVisible">Status Editor</div>',
+    template: '<div data-testid="status-editor-component" :class="{ visible: isVisible }">Status Editor</div>',
     props: ['skill', 'isVisible'],
     emits: ['status-changed', 'close']
   }
@@ -44,7 +44,7 @@ vi.mock('@/components/ui/StatusEditor.vue', () => ({
 vi.mock('@/components/ui/TagsEditor.vue', () => ({
   default: {
     name: 'TagsEditor',
-    template: '<div data-testid="tags-editor" v-if="isVisible">Tags Editor</div>',
+    template: '<div data-testid="tags-editor-component" :class="{ visible: isVisible }">Tags Editor</div>',
     props: ['skill', 'isVisible'],
     emits: ['tags-changed', 'close']
   }
@@ -53,7 +53,7 @@ vi.mock('@/components/ui/TagsEditor.vue', () => ({
 vi.mock('@/components/ui/NotesEditor.vue', () => ({
   default: {
     name: 'NotesEditor',
-    template: '<div data-testid="notes-editor" v-if="isVisible">Notes Editor</div>',
+    template: '<div data-testid="notes-editor-component" :class="{ visible: isVisible }">Notes Editor</div>',
     props: ['skill', 'isVisible'],
     emits: ['notes-changed', 'close', 'edit-levelup-comment', 'edit-practice-note', 'edit-quick-note', 'delete-quick-note', 'toggle-transferred-to-notes']
   }
@@ -62,7 +62,7 @@ vi.mock('@/components/ui/NotesEditor.vue', () => ({
 vi.mock('@/components/analytics/TrainingLog.vue', () => ({
   default: {
     name: 'TrainingLog',
-    template: '<div data-testid="training-log" v-if="isVisible">Training Log</div>',
+    template: '<div data-testid="training-log-component" :class="{ visible: isVisible }">Training Log</div>',
     props: ['skills', 'isVisible'],
     emits: ['close']
   }
@@ -136,13 +136,13 @@ describe('ModalManager', () => {
     it('shows no modals when all are hidden', () => {
       wrapper = createWrapper()
       
-      expect(wrapper.find('[data-testid="skill-modal"]').exists()).toBe(false)
-      expect(wrapper.find('[data-testid="practice-rating"]').exists()).toBe(false)
-      expect(wrapper.find('[data-testid="timeline-modal"]').exists()).toBe(false)
-      expect(wrapper.find('[data-testid="status-editor"]').exists()).toBe(false)
-      expect(wrapper.find('[data-testid="tags-editor"]').exists()).toBe(false)
-      expect(wrapper.find('[data-testid="notes-editor"]').exists()).toBe(false)
-      expect(wrapper.find('[data-testid="training-log"]').exists()).toBe(false)
+      expect(wrapper.findComponent({ name: 'SkillModal' }).props('isVisible')).toBe(false)
+      expect(wrapper.findComponent({ name: 'PracticeRating' }).props('isVisible')).toBe(false)
+      expect(wrapper.findComponent({ name: 'TimelineModal' }).props('isVisible')).toBe(false)
+      expect(wrapper.findComponent({ name: 'StatusEditor' }).props('isVisible')).toBe(false)
+      expect(wrapper.findComponent({ name: 'TagsEditor' }).props('isVisible')).toBe(false)
+      expect(wrapper.findComponent({ name: 'NotesEditor' }).props('isVisible')).toBe(false)
+      expect(wrapper.findComponent({ name: 'TrainingLog' }).props('isVisible')).toBe(false)
     })
 
     it('shows skill modal when visible', () => {
@@ -152,7 +152,7 @@ describe('ModalManager', () => {
       }
       wrapper = createWrapper(modalStates)
       
-      expect(wrapper.find('[data-testid="skill-modal"]').exists()).toBe(true)
+      expect(wrapper.findComponent({ name: 'SkillModal' }).props('isVisible')).toBe(true)
     })
 
     it('shows practice rating when visible', () => {
@@ -162,7 +162,7 @@ describe('ModalManager', () => {
       }
       wrapper = createWrapper(modalStates)
       
-      expect(wrapper.find('[data-testid="practice-rating"]').exists()).toBe(true)
+      expect(wrapper.findComponent({ name: 'PracticeRating' }).props('isVisible')).toBe(true)
     })
 
     it('shows timeline modal when visible', () => {
@@ -172,7 +172,7 @@ describe('ModalManager', () => {
       }
       wrapper = createWrapper(modalStates)
       
-      expect(wrapper.find('[data-testid="timeline-modal"]').exists()).toBe(true)
+      expect(wrapper.findComponent({ name: 'TimelineModal' }).props('isVisible')).toBe(true)
     })
 
     it('shows status editor when visible', () => {
@@ -182,7 +182,7 @@ describe('ModalManager', () => {
       }
       wrapper = createWrapper(modalStates)
       
-      expect(wrapper.find('[data-testid="status-editor"]').exists()).toBe(true)
+      expect(wrapper.findComponent({ name: 'StatusEditor' }).props('isVisible')).toBe(true)
     })
 
     it('shows tags editor when visible', () => {
@@ -192,7 +192,7 @@ describe('ModalManager', () => {
       }
       wrapper = createWrapper(modalStates)
       
-      expect(wrapper.find('[data-testid="tags-editor"]').exists()).toBe(true)
+      expect(wrapper.findComponent({ name: 'TagsEditor' }).props('isVisible')).toBe(true)
     })
 
     it('shows notes editor when visible', () => {
@@ -202,7 +202,7 @@ describe('ModalManager', () => {
       }
       wrapper = createWrapper(modalStates)
       
-      expect(wrapper.find('[data-testid="notes-editor"]').exists()).toBe(true)
+      expect(wrapper.findComponent({ name: 'NotesEditor' }).props('isVisible')).toBe(true)
     })
 
     it('shows training log when visible', () => {
@@ -212,7 +212,7 @@ describe('ModalManager', () => {
       }
       wrapper = createWrapper(modalStates)
       
-      expect(wrapper.find('[data-testid="training-log"]').exists()).toBe(true)
+      expect(wrapper.findComponent({ name: 'TrainingLog' }).props('isVisible')).toBe(true)
     })
   })
 
@@ -347,16 +347,16 @@ describe('ModalManager', () => {
       }
       wrapper = createWrapper(modalStates)
       
-      expect(wrapper.find('[data-testid="skill-modal"]').exists()).toBe(true)
-      expect(wrapper.find('[data-testid="practice-rating"]').exists()).toBe(true)
-      expect(wrapper.find('[data-testid="training-log"]').exists()).toBe(true)
+      expect(wrapper.findComponent({ name: 'SkillModal' }).props('isVisible')).toBe(true)
+      expect(wrapper.findComponent({ name: 'PracticeRating' }).props('isVisible')).toBe(true)
+      expect(wrapper.findComponent({ name: 'TrainingLog' }).props('isVisible')).toBe(true)
     })
 
     it('updates modal visibility when modal states change', async () => {
       wrapper = createWrapper()
       
       // Initially no modals visible
-      expect(wrapper.find('[data-testid="skill-modal"]').exists()).toBe(false)
+      expect(wrapper.findComponent({ name: 'SkillModal' }).props('isVisible')).toBe(false)
       
       // Show skill modal
       const newModalStates = {
@@ -365,7 +365,7 @@ describe('ModalManager', () => {
       }
       await wrapper.setProps({ modalStates: newModalStates })
       
-      expect(wrapper.find('[data-testid="skill-modal"]').exists()).toBe(true)
+      expect(wrapper.findComponent({ name: 'SkillModal' }).props('isVisible')).toBe(true)
     })
   })
 

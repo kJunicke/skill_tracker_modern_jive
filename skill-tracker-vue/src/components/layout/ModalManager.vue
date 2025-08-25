@@ -102,7 +102,6 @@ interface ModalStates {
 interface Props {
   skills: SkillData[]
   modalStates: ModalStates
-  modalKey: number
 }
 
 interface Emits {
