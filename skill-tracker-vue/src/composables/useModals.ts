@@ -1,21 +1,16 @@
-import { reactive, ref, nextTick } from 'vue'
+import { reactive } from 'vue'
 import type { SkillData } from '@/types/skill'
 import type { SkillStatus } from '@/utils/constants'
 import type { 
   AllModalStates, 
-  ModalEventHandlers, 
-  ModalId 
+  ModalEventHandlers
 } from '@/types/modals'
-import { showModal, hideModal, destroyModal } from '@/utils/modalManager'
 import { useToasts } from './useToasts'
 import { useSkillStore } from '@/stores/skillStore'
 
 export function useModals(handlers: ModalEventHandlers) {
   const { showSuccess } = useToasts()
   const skillStore = useSkillStore()
-  
-  // Modal key for forcing re-render
-  const modalKey = ref(0)
   
   // Modal states - reactive for Vue reactivity
   const modalStates = reactive<AllModalStates>({
@@ -54,64 +49,22 @@ export function useModals(handlers: ModalEventHandlers) {
     }
   })
 
-  // Generic modal show function
-  async function openModal(modalType: keyof AllModalStates, skill?: SkillData | null) {
-    // Set modal state
-    modalStates[modalType].isVisible = true
-    if ('selectedSkill' in modalStates[modalType] && skill !== undefined) {
-      const modal = modalStates[modalType] as { selectedSkill?: SkillData | null }
-      modal.selectedSkill = skill
-    }
-
-    // Show Bootstrap modal
-    const modalId = getModalId(modalType)
-    await nextTick()
-    await showModal(modalId)
-  }
-
-  // Generic modal close function
-  async function closeModal(modalType: keyof AllModalStates) {
-    // Hide Bootstrap modal first
-    const modalId = getModalId(modalType)
-    await hideModal(modalId)
-
-    // Clear modal state
-    modalStates[modalType].isVisible = false
-    if ('selectedSkill' in modalStates[modalType]) {
-      const modal = modalStates[modalType] as { selectedSkill?: SkillData | null }
-      modal.selectedSkill = null
-    }
-  }
-
-  // Map modal types to DOM element IDs
-  function getModalId(modalType: keyof AllModalStates): ModalId {
-    const modalIdMap: Record<keyof AllModalStates, ModalId> = {
-      skill: 'skillModal',
-      practice: 'practiceRatingModal',
-      timeline: 'progressionTimelineModal',
-      status: 'statusEditorModal',
-      tags: 'tagsEditorModal',
-      notes: 'notesEditorModal',
-      trainingLog: 'trainingLogModal',
-      statusTransition: 'statusTransitionModal',
-    }
-    return modalIdMap[modalType]
-  }
 
   // Specific modal actions
   const modalActions = {
-    // Skill Modal
+    // Skill Modal (Vue 3 Teleport - no Bootstrap dependency)
     showAddSkillModal: () => {
-      destroyModal('skillModal') // Destroy old Bootstrap instance
-      modalKey.value++ // Force component re-render
-      openModal('skill', null)
+      modalStates.skill.selectedSkill = null
+      modalStates.skill.isVisible = true
     },
     showEditSkillModal: (skill: SkillData) => {
-      destroyModal('skillModal') // Destroy old Bootstrap instance
-      modalKey.value++ // Force component re-render
-      openModal('skill', skill)
+      modalStates.skill.selectedSkill = skill
+      modalStates.skill.isVisible = true
     },
-    closeSkillModal: () => closeModal('skill'),
+    closeSkillModal: () => {
+      modalStates.skill.isVisible = false
+      modalStates.skill.selectedSkill = null
+    },
     
     // Practice Rating Modal (Vue 3 Teleport - no Bootstrap dependency)
     showPracticeModal: (skill: SkillData) => {
@@ -123,13 +76,15 @@ export function useModals(handlers: ModalEventHandlers) {
       modalStates.practice.selectedSkill = null
     },
     
-    // Timeline Modal
+    // Timeline Modal (Vue 3 Teleport - no Bootstrap dependency)
     showTimelineModal: (skill: SkillData) => {
-      destroyModal('progressionTimelineModal') // Destroy old Bootstrap instance
-      modalKey.value++ // Force component re-render
-      openModal('timeline', skill)
+      modalStates.timeline.selectedSkill = skill
+      modalStates.timeline.isVisible = true
     },
-    closeTimelineModal: () => closeModal('timeline'),
+    closeTimelineModal: () => {
+      modalStates.timeline.isVisible = false
+      modalStates.timeline.selectedSkill = null
+    },
     
     // Status Editor Modal (Vue 3 Teleport - no Bootstrap dependency)
     showStatusModal: (skill: SkillData) => {
@@ -161,9 +116,13 @@ export function useModals(handlers: ModalEventHandlers) {
       modalStates.notes.selectedSkill = null
     },
     
-    // Training Log Modal
-    showTrainingLogModal: () => openModal('trainingLog'),
-    closeTrainingLogModal: () => closeModal('trainingLog'),
+    // Training Log Modal (Vue 3 Teleport - no Bootstrap dependency)
+    showTrainingLogModal: () => {
+      modalStates.trainingLog.isVisible = true
+    },
+    closeTrainingLogModal: () => {
+      modalStates.trainingLog.isVisible = false
+    },
     
     // Status Transition Modal
     showStatusTransitionModal: (skill: SkillData, suggestedStatus: SkillStatus, reason: string) => {
@@ -236,7 +195,6 @@ export function useModals(handlers: ModalEventHandlers) {
   return {
     // State
     modalStates,
-    modalKey,
     
     // Actions
     ...modalActions,

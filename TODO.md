@@ -42,14 +42,14 @@
 - [x] **Performance Optimization**: Eliminate `modalKey++` / `destroyModal()` complexity
 - [x] **Reactive Modal Management**: Full declarative control without DOM manipulation
 
-**Modals Migration Progress (5/8 completed):**
-1. **SkillModal.vue** - Create/edit skills modal (Bootstrap - remaining)
+**Modals Migration Progress (8/8 COMPLETED):**
+1. **SkillModal.vue** - Create/edit skills modal ✅ **MIGRATED**
 2. **PracticeRating.vue** - Practice session rating modal ✅ **MIGRATED**
-3. **TimelineModal.vue** - Skill progression timeline modal (Bootstrap - remaining)
+3. **TimelineModal.vue** - Skill progression timeline modal ✅ **MIGRATED**
 4. **StatusEditor.vue** - Status selection modal ✅ **MIGRATED**
 5. **TagsEditor.vue** - Tag management modal ✅ **MIGRATED**
 6. **NotesEditor.vue** - Notes editing modal ✅ **MIGRATED**
-7. **TrainingLog.vue** - Training log display modal (Bootstrap - remaining)
+7. **TrainingLog.vue** - Training log display modal ✅ **MIGRATED**
 8. **StatusTransitionConfirmation.vue** - Status transition confirmation modal ✅ **MIGRATED** (was already Vue 3 Teleport style)
 
 **Documentation Updates Required:**

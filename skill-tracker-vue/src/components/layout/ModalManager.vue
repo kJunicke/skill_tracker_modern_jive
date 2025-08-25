@@ -2,9 +2,6 @@
   <!-- All Modals -->
   <div>
     <SkillModal
-      v-if="modalStates.skill.isVisible"
-      :key="modalKey"
-      data-testid="skill-modal"
       :skill="modalStates.skill.selectedSkill"
       :is-visible="modalStates.skill.isVisible"
       @save="$emit('save-skill', $event)"
@@ -19,9 +16,6 @@
     />
 
     <TimelineModal
-      v-if="modalStates.timeline.isVisible"
-      :key="modalKey"
-      data-testid="timeline-modal"
       :skill="modalStates.timeline.selectedSkill"
       :is-visible="modalStates.timeline.isVisible"
       @close="$emit('close-timeline-modal')"
@@ -60,8 +54,6 @@
     />
 
     <TrainingLog
-      v-if="modalStates.trainingLog.isVisible"
-      data-testid="training-log"
       :skills="skills"
       :is-visible="modalStates.trainingLog.isVisible"
       @close="$emit('close-training-log-modal')"
@@ -82,13 +74,13 @@
 <script setup lang="ts">
 import type { SkillData, ProgressionEntry, PracticeSession } from '@/types/skill'
 import type { SkillStatus } from '@/utils/constants'
-import SkillModal from '@/components/skills/SkillModal.vue'
+import SkillModal from '@/components/skills/SkillModalTeleport.vue'
 import PracticeRating from '@/components/training/PracticeRatingTeleport.vue'
-import TimelineModal from '@/components/ui/TimelineModal.vue'
+import TimelineModal from '@/components/ui/TimelineModalTeleport.vue'
 import StatusEditor from '@/components/ui/StatusEditorTeleport.vue'
 import TagsEditor from '@/components/ui/TagsEditorTeleport.vue'
 import NotesEditor from '@/components/ui/NotesEditorTeleport.vue'
-import TrainingLog from '@/components/analytics/TrainingLog.vue'
+import TrainingLog from '@/components/analytics/TrainingLogTeleport.vue'
 import StatusTransitionConfirmation from '@/components/modals/StatusTransitionConfirmation.vue'
 
 interface ModalStates {
