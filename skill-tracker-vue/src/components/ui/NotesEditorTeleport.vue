@@ -198,28 +198,10 @@ defineExpose({
 </script>
 
 <style scoped>
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1055;
-  backdrop-filter: blur(2px);
-}
+/* Modal styles are now defined in /assets/modal.css using CSS variables */
 
+/* Notes Editor specific styles only */
 .modal-content {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  max-height: 90vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
   transition: max-width 0.3s ease-in-out;
 }
 
@@ -231,12 +213,6 @@ defineExpose({
 .modal-xl {
   max-width: 1200px;
   width: 95%;
-}
-
-.modal-body {
-  padding: 1.5rem;
-  overflow-y: auto;
-  flex: 1;
 }
 
 /* Smooth transition for layout changes */

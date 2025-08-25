@@ -11,7 +11,6 @@
         role="dialog"
         :aria-labelledby="titleId"
         aria-modal="true"
-        style="background: var(--modal-bg);"
       >
         <!-- Header -->
         <div class="modal-header modal-header-tags">
@@ -97,7 +96,7 @@
             </div>
 
             <!-- Current Tags Info -->
-            <div class="mt-3 p-3 rounded" style="background-color: #f8f9fa;">
+            <div class="mt-3 p-3 rounded bg-light">
               <h6 class="mb-2">
                 <i class="bi bi-arrow-left-right me-2"></i>
                 Changes Preview

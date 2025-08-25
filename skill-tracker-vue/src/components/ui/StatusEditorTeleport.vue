@@ -11,7 +11,6 @@
         role="dialog"
         :aria-labelledby="titleId"
         aria-modal="true"
-        style="background: var(--modal-bg);"
       >
         <!-- Header -->
         <div class="modal-header modal-header-status">
@@ -436,19 +435,19 @@ const handleOverlayClick = () => {
 
 /* Status Flow Diagram Styles */
 .status-flow-diagram {
-  padding: 1rem;
+  padding: var(--modal-padding);
   background: rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
+  border-radius: var(--modal-border-radius);
   margin: 1rem 0;
 }
 
 .learning-path {
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  padding-bottom: 1rem;
+  padding-bottom: var(--modal-padding);
 }
 
 .advanced-cycle {
-  padding-top: 1rem;
+  padding-top: var(--modal-padding);
 }
 
 .level-threshold {
@@ -457,7 +456,7 @@ const handleOverlayClick = () => {
   align-items: center;
   padding: 0.5rem;
   border: 1px dashed #6c757d;
-  border-radius: 4px;
+  border-radius: calc(var(--modal-border-radius) / 2);
   background: rgba(255, 255, 255, 0.5);
 }
 
@@ -488,7 +487,7 @@ const handleOverlayClick = () => {
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem;
-  border-radius: 8px;
+  border-radius: var(--modal-border-radius);
   transition: all 0.3s ease;
   cursor: pointer;
   min-width: 80px;

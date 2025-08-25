@@ -151,69 +151,11 @@ const handleOverlayClick = () => {
 </script>
 
 <style scoped>
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1055;
-  backdrop-filter: blur(2px);
-}
+/* Modal styles are now defined in /assets/modal.css using CSS variables */
 
-.modal-content {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  max-height: 90vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
+/* Timeline Modal specific styles only */
 .modal-lg {
   max-width: 900px;
   width: 90%;
-}
-
-.modal-header {
-  background: linear-gradient(135deg, #17a2b8, #138496);
-  color: white;
-  padding: 1rem 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: none;
-}
-
-.modal-title {
-  margin: 0;
-  font-size: 1.25rem;
-}
-
-.btn-close {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  opacity: 0.8;
-  cursor: pointer;
-}
-
-.btn-close:hover {
-  opacity: 1;
-}
-
-.btn-close-white {
-  filter: invert(1) grayscale(100%) brightness(200%);
-}
-
-.modal-body {
-  padding: 1.5rem;
-  overflow-y: auto;
-  flex: 1;
 }
 </style>

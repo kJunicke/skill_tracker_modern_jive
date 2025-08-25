@@ -11,7 +11,6 @@
         role="dialog"
         :aria-labelledby="titleId"
         aria-modal="true"
-        style="background: var(--modal-bg);"
       >
         <!-- Header -->
         <div class="modal-header modal-header-practice">
