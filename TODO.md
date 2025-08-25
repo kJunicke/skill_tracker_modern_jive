@@ -81,6 +81,110 @@
 - [ ] **PracticeRatingTeleport**: Convert to CSS variables system
 - [ ] **Remaining modals**: Check SkillModal, TrainingLog for consistency
 
+##### **Phase 4: BaseModal System Refactoring** ✅ **PARTIALLY COMPLETED**
+**Status:** 🔄 **ACTIVE** - Transparency fixed, Architecture planning completed  
+**Priority:** 🔥 **HIGH** - CSS cleanup and component migration remaining
+
+**Current Issue (2025-08-25) - RESOLVED:** Modal transparency problem fixed:
+- [x] Modals transparency resolved via CSS import order correction ✅
+- [x] Bootstrap CSS import order fixed in main.ts ✅  
+- [x] Defensive !important rules added to prevent future conflicts ✅
+- [ ] Each of 8 modals still has duplicate modal-overlay/modal-content implementations
+
+**Root Cause Analysis:**
+- **CSS Load Order**: main.ts loads modal.css before Bootstrap → Bootstrap wins specificity battle
+- **Code Duplication**: 8 separate Teleport modal implementations with repeated code
+- **Maintenance Burden**: Changes require updating 8 different files
+
+**BaseModal Architecture Solution:**
+- [x] **Create BaseModal.vue**: BaseTeleportModal.vue already exists with slot system ✅
+- [x] **Props System**: Configurable size, header-type, closable, overlay-close options ✅
+- [x] **Slot Architecture**: #header, #default, #footer slots for flexible content ✅
+- [x] **CSS Fix Integration**: Import order fix + !important defensive coding ✅
+- [x] **Accessibility**: Centralized keyboard navigation, ARIA attributes, focus management ✅
+
+**Migration Plan (8 Modals):**
+- [ ] **SkillModalTeleport**: Convert to BaseModal (simplest first)
+- [ ] **TagsEditorTeleport**: Convert to BaseModal 
+- [ ] **StatusEditorTeleport**: Convert to BaseModal
+- [ ] **PracticeRatingTeleport**: Convert to BaseModal
+- [ ] **NotesEditorTeleport**: Convert to BaseModal
+- [ ] **TimelineModalTeleport**: Convert to BaseModal
+- [ ] **TrainingLogTeleport**: Convert to BaseModal
+- [ ] **StatusTransitionConfirmation**: Convert to BaseModal
+
+**Technical Benefits:**
+- ✅ **DRY Principle**: One modal implementation instead of 8
+- ✅ **Consistency**: Guaranteed identical styling and behavior
+- ✅ **Maintainability**: Single source of truth for modal functionality
+- ✅ **Performance**: Shared component reduces bundle size
+- ✅ **Professional**: Industry-standard component architecture
+
+**Immediate CSS Fixes (Completed 2025-08-25):**
+- [x] **Fix CSS import order**: Move modal.css after Bootstrap in main.ts ✅
+- [x] **Add !important rules**: Defensive CSS to prevent Bootstrap overrides ✅
+- [x] **Test transparency fix**: Verify solid backgrounds in all themes ✅
+
+##### **Phase 4.5: CSS Architecture Cleanup** 🔧 **NEXT PRIORITY**
+**Status:** 📋 **PLANNED** - Professional CSS Architecture Implementation  
+**Priority:** 🔥 **HIGH** - Clean CSS without !important chaos + Fix NotesEditor sizing
+
+**Problem Identified (2025-08-25):** Current !important approach creates conflicts:
+- All modal.css base classes use `!important` (defensive against Bootstrap)
+- Size classes (modal-lg, modal-xl) can't override base `max-width: var(--modal-max-width) !important`
+- NotesEditor timeline-sideview can't expand from lg (800px) to xl (1200px)
+- Multiple !important rules competing against each other
+
+**Clean Architecture Solution:**
+- [ ] **Remove !important from modal.css base classes**: Clean CSS foundation without aggressive overrides
+- [ ] **CSS Variables as normal defaults**: Let natural CSS specificity work
+- [ ] **Component-specific !important only**: Add !important in individual components only where Bootstrap actually conflicts
+- [ ] **Size classes work naturally**: modal-lg, modal-xl override base max-width normally
+- [ ] **NotesEditor timeline fix**: Verify dynamic sizing lg→xl works on timeline toggle
+
+**Detailed Implementation Plan:**
+
+**Step 1: Clean Base Modal CSS (modal.css)**
+- [ ] Remove `!important` from `.modal-content` (background, border-radius, max-width, etc.)
+- [ ] Remove `!important` from `.modal-header` (background, color, padding, etc.)  
+- [ ] Remove `!important` from `.modal-body` (padding, flex, color, etc.)
+- [ ] Remove `!important` from `.modal-footer` (padding, border-top, display, etc.)
+- [ ] Keep CSS Variables as normal defaults (--modal-bg, --modal-max-width, etc.)
+
+**Step 2: Test & Fix Component-Specific Bootstrap Conflicts**
+- [ ] **Test SkillModalTeleport**: Check if Bootstrap overrides background/styling
+- [ ] **Test TagsEditorTeleport**: Verify CSS variables work without !important
+- [ ] **Test StatusEditorTeleport**: Check Bootstrap modal conflicts  
+- [ ] **Test PracticeRatingTeleport**: Verify normal CSS precedence works
+- [ ] **Test NotesEditorTeleport**: Priority - timeline lg→xl sizing must work
+- [ ] **Test TimelineModalTeleport**: Check size classes function properly
+- [ ] **Test TrainingLogTeleport**: Verify xl sizing works correctly
+- [ ] **Add targeted !important**: Only in components where Bootstrap actually interferes
+
+**Step 3: Verify Size System Works**
+- [ ] **BaseTeleportModal size props**: Test sm, lg, xl props work correctly
+- [ ] **NotesEditor dynamic sizing**: Confirm `:class="{ 'modal-xl': showTimeline, 'modal-lg': !showTimeline }"` works
+- [ ] **Timeline sideview expansion**: Desktop 800px→1200px when timeline enabled
+- [ ] **Mobile responsiveness**: All sizes collapse properly on mobile/tablet
+
+**Step 4: Documentation Update**
+- [ ] **Update CLAUDE.md**: Document clean CSS architecture approach
+- [ ] **Remove !important guidelines**: Update dev guidelines to avoid !important in base classes
+- [ ] **Component override pattern**: Document when/how to add !important in components
+
+**Technical Benefits:**
+- ✅ **Clean CSS Hierarchy**: Natural CSS specificity instead of !important wars
+- ✅ **Flexible Size System**: BaseTeleportModal size props work correctly
+- ✅ **NotesEditor Fix**: Timeline sideview properly expands to xl size
+- ✅ **Maintainable**: Clear component-level overrides instead of base-level aggression
+- ✅ **Professional**: Follows CSS best practices and standards
+
+**Success Criteria:**
+- NotesEditor expands to 1200px when timeline is shown (desktop only)
+- All modal size props (sm, lg, xl) work in BaseTeleportModal
+- No transparency issues remain
+- Minimal use of !important (only where Bootstrap truly conflicts)
+
 **Global Improvements (Future):**
 - [ ] Standardize keyboard navigation (Tab, Escape, Enter) across all modals
 - [ ] Improve mobile responsiveness and modal sizing

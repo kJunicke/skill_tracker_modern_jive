@@ -178,17 +178,56 @@ const closeModal = () => {
 - **🎯 Reliability**: No instance caching or DOM manipulation conflicts
 
 #### Development Guidelines
-1. **Use Teleport**: All new modals MUST use Vue 3 Teleport pattern
-2. **Declarative Visibility**: Control with reactive `v-if`, not DOM manipulation  
-3. **Event Handling**: Standard Vue events, no Bootstrap-specific listeners
-4. **CSS Variables**: Custom styling with CSS variables, not Bootstrap classes
-5. **Accessibility**: Include proper ARIA attributes and keyboard navigation
+1. **Use BaseTeleportModal**: All new modals MUST use BaseTeleportModal.vue component from `/components/base/`
+2. **Standard Architecture**: Import and extend BaseTeleportModal instead of creating custom modal structures
+3. **CSS Variables System**: Styling handled automatically through modal.css variables (import order fixed)
+4. **Slot-Based Content**: Use `#title`, default slot, and `#footer` slots for content organization
+5. **Header Types**: Use `headerType` prop for consistent styling (skill, practice, status, tags, notes, timeline, training, transition)
+6. **Accessibility Built-in**: Keyboard navigation, ARIA attributes, and focus management included
+
+#### BaseTeleportModal Usage Pattern
+```vue
+<template>
+  <BaseTeleportModal
+    :isVisible="isVisible"
+    title="Modal Title"
+    headerType="skill"
+    size="lg"
+    @close="closeModal"
+  >
+    <template #title>
+      <i class="bi bi-icon me-2"></i>
+      Custom Title
+    </template>
+    
+    <!-- Modal content in default slot -->
+    <form>...</form>
+    
+    <template #footer>
+      <button class="btn btn-secondary" @click="closeModal">Cancel</button>
+      <button class="btn btn-primary" @click="save">Save</button>
+    </template>
+  </BaseTeleportModal>
+</template>
+
+<script setup lang="ts">
+import BaseTeleportModal from '@/components/base/BaseTeleportModal.vue'
+// No custom modal styling needed - handled by modal.css variables
+</script>
+```
 
 #### Migration Benefits Achieved
 - **Anti-Pattern Elimination**: No more `modalKey++` / `destroyModal()` complexity
 - **Bundle Size Reduction**: Eliminated Bootstrap modal JavaScript (32.5kB saved)
 - **Code Simplification**: Clean reactive state management
 - **Testing Improvements**: Reliable component testing with Vue Test Utils
+- **CSS Transparency Fix (2025-08-25)**: Fixed modal transparency by correcting CSS import order in main.ts and adding defensive !important rules
+
+#### Technical Implementation Notes (2025-08-25)
+- **CSS Import Order**: modal.css now loads AFTER Bootstrap to ensure proper specificity
+- **Defensive Styling**: Added !important rules to prevent Bootstrap overrides
+- **BaseTeleportModal Ready**: All future modal development should use the existing BaseTeleportModal.vue component
+- **Migration Path**: 8 existing modals can be gradually migrated to BaseTeleportModal for consistency
 
 ### Testing with Vitest (241+ tests passing)
 - **Structure**: Arrange-Act-Assert pattern
