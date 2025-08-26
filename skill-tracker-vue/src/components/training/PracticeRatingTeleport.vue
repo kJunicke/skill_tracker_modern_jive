@@ -244,10 +244,10 @@ const resetForm = () => {
 watch(() => props.isVisible, (isVisible) => {
   if (isVisible) {
     resetForm()
-    // TODO: For acquisition mode skills, default to level-up (will be implemented later)
-    // if (props.skill?.status === 'acquisition') {
-    //   isLevelUp.value = true
-    // }
+    // For acquisition mode skills, default to level-up
+    if (props.skill?.status === 'acquisition') {
+      isLevelUp.value = true
+    }
   }
 })
 

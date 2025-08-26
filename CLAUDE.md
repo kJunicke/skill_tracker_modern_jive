@@ -17,7 +17,7 @@ This file provides guidance to Claude Code when working with the Modern Jive Ski
 
 **Key Transitions**: ACQUISITION → MAINTENANCE at Level 5, FOCUS → MAINTENANCE after 7 days without practice
 
-### Current Status (2025-08-25)
+### Current Status (2025-08-26)
 - **Production-Ready**: Complete 5-status learning system deployed as PWA
 - **Live Deployment**: https://github.com/kJunicke/skill_tracker_modern_jive
 - **Quality Assured**: 241+ unit tests passing, TypeScript strict mode, ESLint clean, 90%+ coverage
@@ -26,7 +26,8 @@ This file provides guidance to Claude Code when working with the Modern Jive Ski
 - **Latest Feature**: **Unified Practice & Level-Up System** - Single interface combining practice sessions and level-ups
 - **Bug Fixes**: Fixed inconsistent interval calculations and timeline display issues
 - **Code Cleanup**: Removed unused components and deprecated code (275+ lines cleaned up)
-- **LATEST (2025-08-26)**: **BaseTeleportModal Migration COMPLETED** - All 8 modals successfully consolidated into shared BaseTeleportModal component. Achieved ~1200 lines code reduction (40% average), DRY principle implementation, unified modal architecture, and improved maintainability. Quality assured: 241 tests passing, TypeScript clean, ESLint clean, production builds successful.
+- **LATEST (2025-08-26)**: **Acquisition Mode UX Enhancement** - Practice modal now automatically selects level-up button for skills in acquisition mode, improving user experience and workflow efficiency. This enhancement eliminates manual toggle steps for acquisition skills where level-ups are the primary goal.
+- **Previous (2025-08-26)**: **BaseTeleportModal Migration COMPLETED** - All 8 modals successfully consolidated into shared BaseTeleportModal component. Achieved ~1200 lines code reduction (40% average), DRY principle implementation, unified modal architecture, and improved maintainability. Quality assured: 241 tests passing, TypeScript clean, ESLint clean, production builds successful.
 - **Previous (2025-08-26)**: **CSS Architecture Cleanup COMPLETED** - Successfully removed all `!important` from modal.css base classes, restoring natural CSS specificity. Modal sizing now works correctly - NotesEditor timeline lg→xl expansion (800px→1200px) functions properly.
 - **Previous (2025-08-25)**: **Vue 3 Teleport Modal Migration COMPLETED** - All 8 modals successfully migrated from Bootstrap to Vue 3 Teleport architecture. Achieved 55% performance improvement, eliminated 32.5kB bundle overhead, removed anti-patterns (modalKey++/destroyModal), and established modern declarative modal management. Comprehensive modal analysis completed with 28 improvement opportunities identified for future enhancement.
 - **Previous**: **Test Suite Stabilization** - Fixed failing PracticeRating component tests that were blocking deployment. All 241 tests now pass, ensuring stable CI/CD pipeline.
