@@ -1,36 +1,16 @@
 <template>
-  <Teleport to="body">
-    <div
-      v-if="isVisible"
-      class="modal-overlay"
-      @click="handleOverlayClick"
-    >
-      <div
-        ref="modalRef"
-        class="modal-content modal-lg"
-        @click.stop
-        role="dialog"
-        :aria-labelledby="titleId"
-        aria-modal="true"
-        tabindex="-1"
-      >
-        <!-- Header -->
-        <div class="modal-header modal-header-skill">
-          <h5 class="modal-title" :id="titleId">
-            <i class="bi bi-plus-circle me-2" v-if="!isEditing"></i>
-            <i class="bi bi-pencil me-2" v-else></i>
-            {{ isEditing ? 'Edit Skill' : 'Add New Skill' }}
-          </h5>
-          <button
-            type="button"
-            class="btn-close"
-            aria-label="Close"
-            @click="$emit('close')"
-          ></button>
-        </div>
-
-        <!-- Body -->
-        <div class="modal-body">
+  <BaseTeleportModal
+    :isVisible="isVisible"
+    title="Skill"
+    headerType="skill"
+    size="lg"
+    @close="$emit('close')"
+  >
+    <template #title>
+      <i class="bi bi-plus-circle me-2" v-if="!isEditing"></i>
+      <i class="bi bi-pencil me-2" v-else></i>
+      {{ isEditing ? 'Edit Skill' : 'Add New Skill' }}
+    </template>
           <form @submit.prevent="saveSkill">
             <!-- Skill Name -->
             <div class="mb-3">
@@ -210,29 +190,26 @@
               </small>
             </div>
           </form>
-        </div>
 
-        <!-- Footer -->
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" @click="$emit('close')">
-            Cancel
-          </button>
-          <button 
-            type="button" 
-            :class="[
-              'btn',
-              isFormValid ? 'btn-primary' : 'btn-outline-primary'
-            ]"
-            :disabled="!isFormValid"
-            @click="saveSkill"
-          >
-            <i :class="isFormValid ? 'bi bi-check-circle me-2' : 'bi bi-exclamation-triangle me-2'"></i>
-            {{ isEditing ? 'Update Skill' : 'Add Skill' }}
-          </button>
-        </div>
-      </div>
-    </div>
-  </Teleport>
+    <!-- Footer is now in template #footer slot -->
+    <template #footer>
+      <button type="button" class="btn btn-secondary" @click="$emit('close')">
+        Cancel
+      </button>
+      <button 
+        type="button" 
+        :class="[
+          'btn',
+          isFormValid ? 'btn-primary' : 'btn-outline-primary'
+        ]"
+        :disabled="!isFormValid"
+        @click="saveSkill"
+      >
+        <i :class="isFormValid ? 'bi bi-check-circle me-2' : 'bi bi-exclamation-triangle me-2'"></i>
+        {{ isEditing ? 'Update Skill' : 'Add Skill' }}
+      </button>
+    </template>
+  </BaseTeleportModal>
 </template>
 
 <script setup lang="ts">
@@ -241,6 +218,7 @@ import type { SkillData } from '@/types/skill'
 import { SKILL_TAGS, STATUS_CONFIG, type SkillTag, type SkillStatus } from '@/utils/constants'
 import { useToasts } from '@/composables/useToasts'
 import { useModalKeyboardNavigation } from '@/composables/useModalKeyboardNavigation'
+import BaseTeleportModal from '@/components/base/BaseTeleportModal.vue'
 
 interface Props {
   skill?: SkillData | null
@@ -257,7 +235,6 @@ const emit = defineEmits<Emits>()
 
 const { showError, showWarning } = useToasts()
 const availableTags = SKILL_TAGS
-const titleId = computed(() => 'skillModal-title')
 const modalRef = ref<HTMLElement | null>(null)
 
 const formData = ref({
@@ -407,12 +384,8 @@ function saveSkill() {
   emit('close')
 }
 
-const handleOverlayClick = () => {
-  emit('close')
-}
 </script>
 
 <style scoped>
-/* Modal styles are now defined in /assets/modal.css using CSS variables */
-/* This provides consistent dark mode support and better maintainability */
+/* Modal styles are handled by BaseTeleportModal and /assets/modal.css */
 </style>

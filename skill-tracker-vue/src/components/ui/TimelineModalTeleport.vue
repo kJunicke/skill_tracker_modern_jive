@@ -1,86 +1,66 @@
 <template>
-  <Teleport to="body">
-    <div
-      v-if="isVisible"
-      class="modal-overlay"
-      @click="handleOverlayClick"
-    >
-      <div
-        class="modal-content modal-lg"
-        @click.stop
-        role="dialog"
-        :aria-labelledby="titleId"
-        aria-modal="true"
-      >
-        <!-- Header -->
-        <div class="modal-header modal-header-timeline">
-          <h5 class="modal-title" :id="titleId">
-            <i class="bi bi-clock-history me-2"></i>
-            Progression Timeline: {{ skill?.name }}
-          </h5>
-          <button
-            type="button"
-            class="btn-close"
-            aria-label="Close"
-            @click="$emit('close')"
-          ></button>
+  <BaseTeleportModal
+    :isVisible="isVisible"
+    title="Progression Timeline"
+    headerType="timeline"
+    size="lg"
+    @close="$emit('close')"
+  >
+    <template #title>
+      <i class="bi bi-clock-history me-2"></i>
+      Progression Timeline: {{ skill?.name }}
+    </template>
+
+    <!-- Error state when skill cannot be found in store -->
+    <div v-if="!currentSkill && props.skill?.id" class="text-center text-muted py-5">
+      <i class="bi bi-exclamation-triangle fs-1"></i>
+      <p class="mt-3 mb-0">Unable to load skill data</p>
+      <small class="text-muted">The skill may have been deleted or modified</small>
+    </div>
+    
+    <div v-else-if="currentSkill">
+      <!-- Unified Timeline Component -->
+      <SkillTimelineContent
+        :skill="currentSkill"
+        :is-modal-view="true"
+        @edit-levelup-comment="handleEditLevelUpComment"
+        @edit-practice-note="handleEditPracticeNote"
+        @edit-quick-note="handleEditQuickNote"
+        @delete-quick-note="handleDeleteQuickNote"
+        @toggle-transferred-to-notes="handleToggleTransferredToNotes"
+      />
+
+      <!-- SM2 Statistics -->
+      <div class="card mt-4 bg-light">
+        <div class="card-header">
+          <h6 class="mb-0">
+            <i class="bi bi-graph-up me-2"></i>
+            Spaced Repetition Statistics
+          </h6>
         </div>
-
-        <!-- Body -->
-        <div class="modal-body">
-          <!-- Error state when skill cannot be found in store -->
-          <div v-if="!currentSkill && props.skill?.id" class="text-center text-muted py-5">
-            <i class="bi bi-exclamation-triangle fs-1"></i>
-            <p class="mt-3 mb-0">Unable to load skill data</p>
-            <small class="text-muted">The skill may have been deleted or modified</small>
-          </div>
-          
-          <div v-else-if="currentSkill">
-            <!-- Unified Timeline Component -->
-            <SkillTimelineContent
-              :skill="currentSkill"
-              :is-modal-view="true"
-              @edit-levelup-comment="handleEditLevelUpComment"
-              @edit-practice-note="handleEditPracticeNote"
-              @edit-quick-note="handleEditQuickNote"
-              @delete-quick-note="handleDeleteQuickNote"
-              @toggle-transferred-to-notes="handleToggleTransferredToNotes"
-            />
-
-            <!-- SM2 Statistics -->
-            <div class="card mt-4 bg-light">
-              <div class="card-header">
-                <h6 class="mb-0">
-                  <i class="bi bi-graph-up me-2"></i>
-                  Spaced Repetition Statistics
-                </h6>
-              </div>
-              <div class="card-body">
-                <div class="row text-center">
-                  <div class="col-md-3">
-                    <h5 class="text-primary">{{ currentSkill.easeFactor?.toFixed(2) || '2.50' }}</h5>
-                    <small class="text-muted">Ease Factor</small>
-                  </div>
-                  <div class="col-md-3">
-                    <h5 class="text-info">{{ currentSkill.repetitions || 0 }}</h5>
-                    <small class="text-muted">Repetitions</small>
-                  </div>
-                  <div class="col-md-3">
-                    <h5 class="text-warning">{{ currentSkill.interval || 1 }}</h5>
-                    <small class="text-muted">Interval (days)</small>
-                  </div>
-                  <div class="col-md-3">
-                    <h5 class="text-success">{{ nextReviewDays }}</h5>
-                    <small class="text-muted">Next Review</small>
-                  </div>
-                </div>
-              </div>
+        <div class="card-body">
+          <div class="row text-center">
+            <div class="col-md-3">
+              <h5 class="text-primary">{{ currentSkill.easeFactor?.toFixed(2) || '2.50' }}</h5>
+              <small class="text-muted">Ease Factor</small>
+            </div>
+            <div class="col-md-3">
+              <h5 class="text-info">{{ currentSkill.repetitions || 0 }}</h5>
+              <small class="text-muted">Repetitions</small>
+            </div>
+            <div class="col-md-3">
+              <h5 class="text-warning">{{ currentSkill.interval || 1 }}</h5>
+              <small class="text-muted">Interval (days)</small>
+            </div>
+            <div class="col-md-3">
+              <h5 class="text-success">{{ nextReviewDays }}</h5>
+              <small class="text-muted">Next Review</small>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </Teleport>
+  </BaseTeleportModal>
 </template>
 
 <script setup lang="ts">
@@ -88,6 +68,7 @@ import { computed } from 'vue'
 import type { SkillData, ProgressionEntry, PracticeSession } from '@/types/skill'
 import { SpacedRepetitionService } from '@/services/core/SpacedRepetitionService'
 import { useSkillStore } from '@/stores/skillStore'
+import BaseTeleportModal from '@/components/base/BaseTeleportModal.vue'
 import SkillTimelineContent from './SkillTimelineContent.vue'
 
 interface Props {
@@ -109,7 +90,6 @@ const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
 const skillStore = useSkillStore()
-const titleId = computed(() => 'progressionTimelineModal-title')
 
 // Get the current skill from store instead of using the prop copy
 // Never use the static prop as fallback to prevent stale data issues
@@ -145,17 +125,8 @@ const handleToggleTransferredToNotes = (skillId: string, entryType: 'levelup' | 
   emit('toggle-transferred-to-notes', skillId, entryType, entryDate)
 }
 
-const handleOverlayClick = () => {
-  emit('close')
-}
 </script>
 
 <style scoped>
-/* Modal styles are now defined in /assets/modal.css using CSS variables */
-
-/* Timeline Modal specific styles only */
-.modal-lg {
-  max-width: 900px;
-  width: 90%;
-}
+/* Modal styles are handled by BaseTeleportModal and /assets/modal.css */
 </style>

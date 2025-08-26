@@ -1,62 +1,65 @@
 <template>
-  <div v-if="show" style="position: fixed; top: 0; left: 0; z-index: 9999; background: rgba(0,0,0,0.5); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
-    <div style="background: white; padding: 2rem; border-radius: 8px; max-width: 500px; width: 90%;">
-      <h4>{{ modalTitle }}</h4>
-      <div class="status-transition-content">
-        <div class="current-skill-info mb-3">
-          <h6 class="text-muted mb-1">Skill</h6>
-          <strong>{{ skill?.name }}</strong>
-          <span class="badge bg-secondary ms-2">Level {{ skill?.level }}</span>
-        </div>
+  <BaseTeleportModal
+    :isVisible="show"
+    :title="modalTitle"
+    headerType="transition"
+    @close="handleCancel"
+  >
+    <div class="status-transition-content">
+      <div class="current-skill-info mb-3">
+        <h6 class="text-muted mb-1">Skill</h6>
+        <strong>{{ skill?.name }}</strong>
+        <span class="badge bg-secondary ms-2">Level {{ skill?.level }}</span>
+      </div>
 
-        <div class="transition-info mb-4">
-          <div class="status-transition-visual d-flex align-items-center justify-content-center mb-3">
-            <span class="badge" :class="getCurrentStatusClass(skill?.status)">
-              {{ getStatusDisplayName(skill?.status) }}
-            </span>
-            <i class="fas fa-arrow-right mx-3 text-muted"></i>
-            <span class="badge" :class="getNewStatusClass(suggestedStatus)">
-              {{ getStatusDisplayName(suggestedStatus) }}
-            </span>
-          </div>
-          
-          <div class="reason-text">
-            <p class="mb-0">{{ reason }}</p>
-          </div>
-        </div>
-
-        <div class="status-explanation">
-          <div v-if="suggestedStatus === 'maintenance'" class="alert alert-info mb-0">
-            <h6 class="alert-heading mb-2">
-              <i class="fas fa-info-circle me-2"></i>
-              Was bedeutet Maintenance?
-            </h6>
-            <ul class="mb-0 small">
-              <li>Längere Intervalle zwischen Übungen (Spaced Repetition)</li>
-              <li>Fokus auf Beibehaltung der Fähigkeiten</li>
-              <li>Level-ups müssen manuell gemacht werden</li>
-              <li>Optimal für bereits gut beherrschte Skills</li>
-            </ul>
-          </div>
+      <div class="transition-info mb-4">
+        <div class="status-transition-visual d-flex align-items-center justify-content-center mb-3">
+          <span class="badge" :class="getCurrentStatusClass(skill?.status)">
+            {{ getStatusDisplayName(skill?.status) }}
+          </span>
+          <i class="fas fa-arrow-right mx-3 text-muted"></i>
+          <span class="badge" :class="getNewStatusClass(suggestedStatus)">
+            {{ getStatusDisplayName(suggestedStatus) }}
+          </span>
         </div>
         
-        <div style="margin-top: 1rem; display: flex; gap: 1rem; justify-content: flex-end;">
-          <button class="btn btn-secondary" @click="handleCancel">
-            Nein, bei {{ getStatusDisplayName(skill?.status) }} bleiben
-          </button>
-          <button class="btn btn-primary" @click="handleConfirm">
-            Ja, zu {{ getStatusDisplayName(suggestedStatus) }} wechseln
-          </button>
+        <div class="reason-text">
+          <p class="mb-0">{{ reason }}</p>
+        </div>
+      </div>
+
+      <div class="status-explanation">
+        <div v-if="suggestedStatus === 'maintenance'" class="alert alert-info mb-0">
+          <h6 class="alert-heading mb-2">
+            <i class="fas fa-info-circle me-2"></i>
+            Was bedeutet Maintenance?
+          </h6>
+          <ul class="mb-0 small">
+            <li>Längere Intervalle zwischen Übungen (Spaced Repetition)</li>
+            <li>Fokus auf Beibehaltung der Fähigkeiten</li>
+            <li>Level-ups müssen manuell gemacht werden</li>
+            <li>Optimal für bereits gut beherrschte Skills</li>
+          </ul>
         </div>
       </div>
     </div>
-  </div>
+        
+    <template #footer>
+      <button class="btn btn-secondary" @click="handleCancel">
+        Nein, bei {{ getStatusDisplayName(skill?.status) }} bleiben
+      </button>
+      <button class="btn btn-primary" @click="handleConfirm">
+        Ja, zu {{ getStatusDisplayName(suggestedStatus) }} wechseln
+      </button>
+    </template>
+  </BaseTeleportModal>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { SkillData } from '@/types/skill'
 import type { SkillStatus } from '@/utils/constants'
+import BaseTeleportModal from '@/components/base/BaseTeleportModal.vue'
 
 interface Props {
   show: boolean

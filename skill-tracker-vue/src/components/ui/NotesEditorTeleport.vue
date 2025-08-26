@@ -1,74 +1,88 @@
 <template>
-  <Teleport to="body">
-    <div
-      v-if="isVisible"
-      class="modal-overlay"
-      @click="handleOverlayClick"
-    >
-      <div
-        class="modal-content"
-        :class="{ 'modal-xl': showTimeline, 'modal-lg': !showTimeline }"
-        @click.stop
-        role="dialog"
-        :aria-labelledby="titleId"
-        aria-modal="true"
-      >
-        <!-- Header -->
-        <NotesEditorHeader
-          :skill-name="skill?.name"
-          :show-timeline-toggle="!!skill"
-          :timeline-visible="showTimeline"
-          @toggle-timeline="toggleTimeline"
-          @close="$emit('close')"
-        />
+  <BaseTeleportModal
+    :isVisible="isVisible"
+    title="Notes Editor"
+    headerType="notes"
+    :size="showTimeline ? 'xl' : 'lg'"
+    @close="$emit('close')"
+  >
+    <template #title>
+      <i class="bi bi-sticky me-2"></i>
+      Edit Notes: {{ skill?.name }}
+      <div class="d-flex align-items-center ms-auto">
+        <button
+          v-if="skill"
+          type="button"
+          class="btn btn-outline-light btn-sm me-2"
+          @click="toggleTimeline"
+          :title="showTimeline ? 'Hide timeline' : 'Show timeline'"
+        >
+          <i class="bi bi-hourglass-split" :class="{ 'text-warning': showTimeline }"></i>
+        </button>
+      </div>
+    </template>
         
-        <!-- Body -->
-        <div class="modal-body">
-          <div v-if="skill">
-            <div class="row">
-              <!-- Notes Editor Column -->
-              <div :class="showTimeline ? 'col-md-6' : 'col-12'">
-                <NotesEditorPanel
-                  v-model:notes="editedNotes"
-                  :placeholder="placeholder"
-                  :editor-height="showTimeline ? '450px' : '300px'"
-                  :with-timeline="showTimeline"
-                  @character-count-update="updateCharacterCount"
-                  @edit-start="onEditStart"
-                  @edit-end="onEditEnd"
-                />
-              </div>
-              
-              <!-- Timeline Sidebar -->
-              <div v-if="showTimeline" class="col-md-6">
-                <NotesEditorTimelineSidebar
-                  :skill="currentSkill"
-                  @add-to-notes="handleAddToNotes"
-                  @edit-levelup-comment="handleEditLevelUpComment"
-                  @edit-practice-note="handleEditPracticeNote"
-                  @edit-quick-note="handleEditQuickNote"
-                  @delete-quick-note="handleDeleteQuickNote"
-                  @toggle-transferred-to-notes="handleToggleTransferredToNotes"
-                />
-              </div>
-            </div>
-
-            <!-- Markdown Formatting Guide -->
-            <MarkdownFormattingGuide class="mb-4" />
-          </div>
+    <div v-if="skill">
+      <div class="row">
+        <!-- Notes Editor Column -->
+        <div :class="showTimeline ? 'col-md-6' : 'col-12'">
+          <NotesEditorPanel
+            v-model:notes="editedNotes"
+            :placeholder="placeholder"
+            :editor-height="showTimeline ? '450px' : '300px'"
+            :with-timeline="showTimeline"
+            @character-count-update="updateCharacterCount"
+            @edit-start="onEditStart"
+            @edit-end="onEditEnd"
+          />
         </div>
         
-        <!-- Footer -->
-        <NotesEditorFooter
-          :has-changes="hasChanges"
-          :has-existing-notes="!!skill?.notes"
-          @cancel="$emit('close')"
-          @save="saveNotes"
-          @clear="clearNotes"
-        />
+        <!-- Timeline Sidebar -->
+        <div v-if="showTimeline" class="col-md-6">
+          <NotesEditorTimelineSidebar
+            :skill="currentSkill"
+            @add-to-notes="handleAddToNotes"
+            @edit-levelup-comment="handleEditLevelUpComment"
+            @edit-practice-note="handleEditPracticeNote"
+            @edit-quick-note="handleEditQuickNote"
+            @delete-quick-note="handleDeleteQuickNote"
+            @toggle-transferred-to-notes="handleToggleTransferredToNotes"
+          />
+        </div>
       </div>
+
+      <!-- Markdown Formatting Guide -->
+      <MarkdownFormattingGuide class="mb-4" />
     </div>
-  </Teleport>
+        
+    <template #footer>
+      <button
+        type="button"
+        class="btn btn-secondary"
+        @click="$emit('close')"
+      >
+        Cancel
+      </button>
+      <button
+        v-if="skill?.notes"
+        type="button"
+        class="btn btn-outline-danger"
+        @click="clearNotes"
+      >
+        <i class="bi bi-trash me-2"></i>
+        Clear Notes
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        :disabled="!hasChanges"
+        @click="saveNotes"
+      >
+        <i class="bi bi-check-circle me-2"></i>
+        Save Notes
+      </button>
+    </template>
+  </BaseTeleportModal>
 </template>
 
 <script setup lang="ts">
@@ -77,11 +91,10 @@ import type { SkillData, ProgressionEntry, PracticeSession } from '@/types/skill
 import { useSkillStore } from '@/stores/skillStore'
 import '@/styles/markdown.css'
 import { SKILL_NOTES_PLACEHOLDER } from '@/composables/useMarkdown'
-import NotesEditorHeader from './NotesEditorHeader.vue'
+import BaseTeleportModal from '@/components/base/BaseTeleportModal.vue'
 import NotesEditorPanel from './NotesEditorPanel.vue'
 import NotesEditorTimelineSidebar from './NotesEditorTimelineSidebar.vue'
 import MarkdownFormattingGuide from './MarkdownFormattingGuide.vue'
-import NotesEditorFooter from './NotesEditorFooter.vue'
 
 interface Props {
   skill: SkillData | null
@@ -102,7 +115,6 @@ const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
 const skillStore = useSkillStore()
-const titleId = computed(() => 'notesEditorModal-title')
 
 // Get the current skill from store instead of using the prop copy
 const currentSkill = computed(() => {
@@ -180,9 +192,6 @@ const resetForm = () => {
   updateCharacterCount((props.skill?.notes || '').length)
 }
 
-const handleOverlayClick = () => {
-  emit('close')
-}
 
 // Watch for skill changes to reset form
 watch(() => props.skill, () => {
@@ -198,22 +207,7 @@ defineExpose({
 </script>
 
 <style scoped>
-/* Modal styles are now defined in /assets/modal.css using CSS variables */
-
-/* Notes Editor specific styles only */
-.modal-content {
-  transition: max-width 0.3s ease-in-out;
-}
-
-.modal-lg {
-  max-width: 900px;
-  width: 90%;
-}
-
-.modal-xl {
-  max-width: 1200px;
-  width: 95%;
-}
+/* Modal styles are handled by BaseTeleportModal and /assets/modal.css */
 
 /* Smooth transition for layout changes */
 .col-md-6, .col-12 {

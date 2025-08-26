@@ -1,153 +1,132 @@
 <template>
-  <Teleport to="body">
-    <div
-      v-if="isVisible"
-      class="modal-overlay"
-      @click="handleOverlayClick"
-    >
-      <div
-        class="modal-content"
-        @click.stop
-        role="dialog"
-        :aria-labelledby="titleId"
-        aria-modal="true"
-      >
-        <!-- Header -->
-        <div class="modal-header modal-header-practice">
-          <h5 class="modal-title" :id="titleId">
-            <i class="bi bi-play-circle me-2"></i>
-            Practice Session: {{ skill?.name }}
-          </h5>
-          <button
-            type="button"
-            class="btn-close"
-            aria-label="Close"
-            @click="$emit('close')"
-          ></button>
-        </div>
+  <BaseTeleportModal
+    :isVisible="isVisible"
+    title="Practice Session"
+    headerType="practice"
+    @close="$emit('close')"
+  >
+    <template #title>
+      <i class="bi bi-play-circle me-2"></i>
+      Practice Session: {{ skill?.name }}
+    </template>
 
-        <!-- Body -->
-        <div class="modal-body">
-          <div v-if="skill" class="text-center">
-            <!-- Skill Info -->
-            <div class="mb-4">
-              <h6 class="text-muted">How did your practice session go?</h6>
-              <small class="text-muted">
-                Rate your performance to update the SM2 spaced repetition schedule
+    <div v-if="skill" class="text-center">
+      <!-- Skill Info -->
+      <div class="mb-4">
+        <h6 class="text-muted">How did your practice session go?</h6>
+        <small class="text-muted">
+          Rate your performance to update the SM2 spaced repetition schedule
+        </small>
+      </div>
+
+      <!-- Quality Rating Buttons -->
+      <div class="d-grid gap-3 mb-4">
+        <BaseButton
+          v-for="(option, index) in qualityOptions"
+          :key="index"
+          :variant="option.color"
+          :outline="selectedQuality !== option.value"
+          size="lg"
+          :custom-class="`quality-btn ${selectedQuality === option.value ? 'quality-btn-selected' : ''}`"
+          @click="selectQuality(option.value)"
+        >
+          <div class="d-flex align-items-center justify-content-between w-100">
+            <div class="d-flex align-items-center">
+              <i :class="`bi ${option.icon} me-2 quality-icon`"></i>
+              <strong>{{ option.label }}</strong>
+              <i v-if="selectedQuality === option.value" class="bi bi-check-circle-fill ms-2 text-success"></i>
+            </div>
+            <div class="text-end">
+              <small class="d-block quality-description">{{ option.description }}</small>
+              <small class="d-block text-muted mt-1">
+                {{ getQualityHelperText(option.value) }}
               </small>
-            </div>
-
-            <!-- Quality Rating Buttons -->
-            <div class="d-grid gap-3 mb-4">
-              <BaseButton
-                v-for="(option, index) in qualityOptions"
-                :key="index"
-                :variant="option.color"
-                :outline="selectedQuality !== option.value"
-                size="lg"
-                :custom-class="`quality-btn ${selectedQuality === option.value ? 'quality-btn-selected' : ''}`"
-                @click="selectQuality(option.value)"
-              >
-                <div class="d-flex align-items-center justify-content-between w-100">
-                  <div class="d-flex align-items-center">
-                    <i :class="`bi ${option.icon} me-2 quality-icon`"></i>
-                    <strong>{{ option.label }}</strong>
-                    <i v-if="selectedQuality === option.value" class="bi bi-check-circle-fill ms-2 text-success"></i>
-                  </div>
-                  <div class="text-end">
-                    <small class="d-block quality-description">{{ option.description }}</small>
-                    <small class="d-block text-muted mt-1">
-                      {{ getQualityHelperText(option.value) }}
-                    </small>
-                  </div>
-                </div>
-              </BaseButton>
-            </div>
-
-            <!-- Session Notes (becomes required when level-up is checked) -->
-            <div class="mb-4">
-              <label for="sessionNotes" class="form-label">
-                <i class="bi bi-journal-text me-1"></i>
-                Session Notes 
-                <span v-if="isLevelUp" class="text-danger">*</span>
-                <span v-else>(Optional)</span>
-              </label>
-              <textarea
-                id="sessionNotes"
-                v-model="sessionNotes"
-                class="form-control"
-                rows="3"
-                :placeholder="isLevelUp ? 'Describe your practice and what you mastered for this level-up...' : 'What did you work on? Any insights or challenges?'"
-                :required="isLevelUp"
-              ></textarea>
-              <small v-if="isLevelUp" class="text-muted">
-                When leveling up, describe both your practice session and what you've mastered.
-              </small>
-            </div>
-
-            <!-- Level-Up Toggle Button -->
-            <div class="mb-4 text-center">
-              <BaseButton
-                variant="success"
-                :outline="!isLevelUp"
-                size="lg"
-                block
-                icon="bi-arrow-up-circle"
-                @click="isLevelUp = !isLevelUp"
-              >
-                This practice session represents a level-up
-                <i v-if="isLevelUp" class="bi bi-check-circle ms-2"></i>
-              </BaseButton>
-            </div>
-
-            <!-- Level Up Preview -->
-            <div v-if="isLevelUp && skill" class="alert alert-success mb-4">
-              <h6><i class="bi bi-trophy me-2"></i>Level Up!</h6>
-              <p class="mb-0">
-                <strong>Level {{ skill.level }} → Level {{ skill.level + 1 }}</strong>
-              </p>
-            </div>
-
-            <!-- Next Review Preview -->
-            <div v-if="selectedQuality !== null" class="alert alert-info">
-              <h6><i class="bi bi-calendar3 me-2"></i>Next Review Schedule</h6>
-              <p class="mb-0">
-                Based on your rating, your next review will be in 
-                <strong>{{ getNextReviewDays(selectedQuality) }} days</strong>
-                ({{ getNextReviewDate(selectedQuality) }})
-              </p>
             </div>
           </div>
-        </div>
+        </BaseButton>
+      </div>
 
-        <!-- Footer -->
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            @click="$emit('close')"
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-            class="btn btn-primary"
-            :disabled="selectedQuality === null || (isLevelUp && !sessionNotes.trim())"
-            @click="submitRating"
-          >
-            <i class="bi bi-check-circle me-2"></i>
-            {{ isLevelUp ? 'Submit Practice & Level Up' : 'Submit Rating' }}
-          </button>
-        </div>
+      <!-- Session Notes (becomes required when level-up is checked) -->
+      <div class="mb-4">
+        <label for="sessionNotes" class="form-label">
+          <i class="bi bi-journal-text me-1"></i>
+          Session Notes 
+          <span v-if="isLevelUp" class="text-danger">*</span>
+          <span v-else>(Optional)</span>
+        </label>
+        <textarea
+          id="sessionNotes"
+          v-model="sessionNotes"
+          class="form-control"
+          rows="3"
+          :placeholder="isLevelUp ? 'Describe your practice and what you mastered for this level-up...' : 'What did you work on? Any insights or challenges?'"
+          :required="isLevelUp"
+        ></textarea>
+        <small v-if="isLevelUp" class="text-muted">
+          When leveling up, describe both your practice session and what you've mastered.
+        </small>
+      </div>
+
+      <!-- Level-Up Toggle Button -->
+      <div class="mb-4 text-center">
+        <BaseButton
+          variant="success"
+          :outline="!isLevelUp"
+          size="lg"
+          block
+          icon="bi-arrow-up-circle"
+          @click="isLevelUp = !isLevelUp"
+        >
+          This practice session represents a level-up
+          <i v-if="isLevelUp" class="bi bi-check-circle ms-2"></i>
+        </BaseButton>
+      </div>
+
+      <!-- Level Up Preview -->
+      <div v-if="isLevelUp && skill" class="alert alert-success mb-4">
+        <h6><i class="bi bi-trophy me-2"></i>Level Up!</h6>
+        <p class="mb-0">
+          <strong>Level {{ skill.level }} → Level {{ skill.level + 1 }}</strong>
+        </p>
+      </div>
+
+      <!-- Next Review Preview -->
+      <div v-if="selectedQuality !== null" class="alert alert-info">
+        <h6><i class="bi bi-calendar3 me-2"></i>Next Review Schedule</h6>
+        <p class="mb-0">
+          Based on your rating, your next review will be in 
+          <strong>{{ getNextReviewDays(selectedQuality) }} days</strong>
+          ({{ getNextReviewDate(selectedQuality) }})
+        </p>
       </div>
     </div>
-  </Teleport>
+
+    <template #footer>
+      <button
+        type="button"
+        class="btn btn-secondary"
+        @click="$emit('close')"
+      >
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        :disabled="selectedQuality === null || (isLevelUp && !sessionNotes.trim())"
+        @click="submitRating"
+      >
+        <i class="bi bi-check-circle me-2"></i>
+        {{ isLevelUp ? 'Submit Practice & Level Up' : 'Submit Rating' }}
+      </button>
+    </template>
+  </BaseTeleportModal>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
+import { ref, watch } from 'vue'
 import type { SkillData } from '@/types/skill'
 import { SpacedRepetitionService } from '@/services/core/SpacedRepetitionService'
+import BaseTeleportModal from '@/components/base/BaseTeleportModal.vue'
 import BaseButton from '@/components/base/BaseButton.vue'
 
 interface Props {
@@ -166,7 +145,6 @@ const emit = defineEmits<Emits>()
 const selectedQuality = ref<number | null>(null)
 const sessionNotes = ref('')
 const isLevelUp = ref(false)
-const titleId = computed(() => 'practiceRatingModal-title')
 
 const qualityOptions = [
   {
@@ -261,9 +239,6 @@ const resetForm = () => {
   isLevelUp.value = false
 }
 
-const handleOverlayClick = () => {
-  emit('close')
-}
 
 // Watch for modal visibility changes to reset form when modal opens
 watch(() => props.isVisible, (isVisible) => {
@@ -284,7 +259,7 @@ defineExpose({
 </script>
 
 <style scoped>
-/* Modal styles are now defined in /assets/modal.css using CSS variables */
+/* Modal styles are handled by BaseTeleportModal and /assets/modal.css */
 
 /* Practice Rating specific styles */
 .quality-btn {

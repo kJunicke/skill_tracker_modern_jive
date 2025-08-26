@@ -1,64 +1,44 @@
 <template>
-  <Teleport to="body">
-    <div
-      v-if="isVisible"
-      class="modal-overlay"
-      @click="handleOverlayClick"
-    >
-      <div
-        class="modal-content modal-xl"
-        @click.stop
-        role="dialog"
-        :aria-labelledby="titleId"
-        aria-modal="true"
-      >
-        <!-- Header -->
-        <div class="modal-header modal-header-training">
-          <h5 class="modal-title" :id="titleId">
-            <i class="bi bi-journal-text me-2"></i>
-            Training Log
-          </h5>
-          <button
-            type="button"
-            class="btn-close"
-            aria-label="Close"
-            @click="$emit('close')"
-          ></button>
-        </div>
+  <BaseTeleportModal
+    :isVisible="isVisible"
+    title="Training Log"
+    headerType="training"
+    size="xl"
+    @close="$emit('close')"
+  >
+    <template #title>
+      <i class="bi bi-journal-text me-2"></i>
+      Training Log
+    </template>
 
-        <!-- Body -->
-        <div class="modal-body">
-          <!-- Filters Component -->
-          <TrainingLogFilters
-            :filters="filters"
-            :skills="skills"
-            :activity-counts="activityCounts"
-            @update:filters="updateFilters"
-          />
+    <!-- Filters Component -->
+    <TrainingLogFilters
+      :filters="filters"
+      :skills="skills"
+      :activity-counts="activityCounts"
+      @update:filters="updateFilters"
+    />
 
-          <!-- Timeline Component -->
-          <TrainingLogTimeline
-            :activities="filteredActivities"
-            :view-mode="viewMode"
-            @update:view-mode="viewMode = $event"
-          />
-        </div>
+    <!-- Timeline Component -->
+    <TrainingLogTimeline
+      :activities="filteredActivities"
+      :view-mode="viewMode"
+      @update:view-mode="viewMode = $event"
+    />
 
-        <!-- Footer -->
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" @click="$emit('close')">
-            Close
-          </button>
-          <TrainingLogExport :activities="filteredActivities" />
-        </div>
-      </div>
-    </div>
-  </Teleport>
+    <template #footer>
+      <button type="button" class="btn btn-secondary" @click="$emit('close')">
+        Close
+      </button>
+      <TrainingLogExport :activities="filteredActivities" />
+    </template>
+  </BaseTeleportModal>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, toRef, computed } from 'vue'
+import { ref, onMounted, toRef } from 'vue'
 import type { SkillData } from '@/types/skill'
+import BaseTeleportModal from '@/components/base/BaseTeleportModal.vue'
 import TrainingLogFilters from './TrainingLogFilters.vue'
 import TrainingLogTimeline from './TrainingLogTimeline.vue'
 import TrainingLogExport from './TrainingLogExport.vue'
@@ -76,7 +56,6 @@ interface Emits {
 const props = defineProps<Props>()
 defineEmits<Emits>()
 
-const titleId = computed(() => 'trainingLogModal-title')
 
 // Component state
 const viewMode = ref<'timeline' | 'table'>('timeline')
@@ -100,9 +79,6 @@ const updateFilters = (newFilters: typeof filters.value) => {
   filters.value = newFilters
 }
 
-const handleOverlayClick = () => {
-  // Allow closing on overlay click for TrainingLog as it's a read-only modal
-}
 
 // Initialize default date range - keep empty for 'all' time period
 onMounted(() => {
@@ -118,13 +94,5 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* Modal styles are now defined in /assets/modal.css using CSS variables */
-
-/* TrainingLog specific styles only */
-
-/* Training Log specific size override */
-.modal-content.modal-xl {
-  max-width: 1200px;
-  width: 95%;
-}
+/* Modal styles are handled by BaseTeleportModal and /assets/modal.css */
 </style>

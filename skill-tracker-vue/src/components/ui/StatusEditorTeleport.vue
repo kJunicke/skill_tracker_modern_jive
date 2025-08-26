@@ -1,33 +1,15 @@
 <template>
-  <Teleport to="body">
-    <div
-      v-if="isVisible"
-      class="modal-overlay"
-      @click="handleOverlayClick"
-    >
-      <div
-        class="modal-content modal-lg"
-        @click.stop
-        role="dialog"
-        :aria-labelledby="titleId"
-        aria-modal="true"
-      >
-        <!-- Header -->
-        <div class="modal-header modal-header-status">
-          <h5 class="modal-title" :id="titleId">
-            <i class="bi bi-tag me-2"></i>
-            Change Status: {{ skill?.name }}
-          </h5>
-          <button
-            type="button"
-            class="btn-close"
-            aria-label="Close"
-            @click="$emit('close')"
-          ></button>
-        </div>
-
-        <!-- Body -->
-        <div class="modal-body">
+  <BaseTeleportModal
+    :isVisible="isVisible"
+    title="Change Status"
+    headerType="status"
+    size="lg"
+    @close="$emit('close')"
+  >
+    <template #title>
+      <i class="bi bi-tag me-2"></i>
+      Change Status: {{ skill?.name }}
+    </template>
           <div v-if="skill">
             <p class="text-muted mb-4">
               Select the new status for this skill. Each status affects how the skill is scheduled for practice.
@@ -252,35 +234,32 @@
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Footer -->
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            @click="$emit('close')"
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-            class="btn btn-primary"
-            :disabled="!canSave"
-            @click="saveStatus"
-          >
-            <i class="bi bi-check-circle me-2"></i>
-            Update Status
-          </button>
-        </div>
-      </div>
-    </div>
-  </Teleport>
+    <!-- Footer is now in template #footer slot -->
+    <template #footer>
+      <button
+        type="button"
+        class="btn btn-secondary"
+        @click="$emit('close')"
+      >
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        :disabled="!canSave"
+        @click="saveStatus"
+      >
+        <i class="bi bi-check-circle me-2"></i>
+        Update Status
+      </button>
+    </template>
+  </BaseTeleportModal>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
 import type { SkillData } from '@/types/skill'
+import BaseTeleportModal from '@/components/base/BaseTeleportModal.vue'
 import { STATUS_CONFIG, type SkillStatus } from '@/utils/constants'
 import { useEditorModal } from '@/composables/useEditorModal'
 
@@ -304,7 +283,6 @@ const { editedValue: selectedStatus, canSave } = useEditorModal(
 )
 
 const statusOptions = STATUS_CONFIG
-const titleId = computed(() => 'statusEditorModal-title')
 
 
 // Determine if a status is accessible based on current skill state
@@ -381,13 +359,10 @@ const saveStatus = () => {
   emit('status-changed', props.skill.id, selectedStatus.value)
 }
 
-const handleOverlayClick = () => {
-  emit('close')
-}
 </script>
 
 <style scoped>
-/* Modal styles are now defined in /assets/modal.css using CSS variables */
+/* Modal styles are handled by BaseTeleportModal and /assets/modal.css */
 
 /* Status Editor specific styles */
 .status-btn {
