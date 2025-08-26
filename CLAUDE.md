@@ -26,7 +26,7 @@ This file provides guidance to Claude Code when working with the Modern Jive Ski
 - **Latest Feature**: **Unified Practice & Level-Up System** - Single interface combining practice sessions and level-ups
 - **Bug Fixes**: Fixed inconsistent interval calculations and timeline display issues
 - **Code Cleanup**: Removed unused components and deprecated code (275+ lines cleaned up)
-- **LATEST (2025-08-25)**: **Modal CSS Unification IN PROGRESS** - Started Phase 3 of Vue 3 Teleport Modal improvements. TagsEditorTeleport successfully migrated to CSS variables system from modal.css, eliminating inline styles and improving consistency. Working on unified modal design with proper rounded corners and side padding across all 8 modals.
+- **LATEST (2025-08-26)**: **CSS Architecture Cleanup COMPLETED** - Successfully removed all `!important` from modal.css base classes, restoring natural CSS specificity. Modal sizing now works correctly - NotesEditor timeline lg→xl expansion (800px→1200px) functions properly. All 241 tests passing, TypeScript clean, ESLint clean, production builds successful.
 - **Previous (2025-08-25)**: **Vue 3 Teleport Modal Migration COMPLETED** - All 8 modals successfully migrated from Bootstrap to Vue 3 Teleport architecture. Achieved 55% performance improvement, eliminated 32.5kB bundle overhead, removed anti-patterns (modalKey++/destroyModal), and established modern declarative modal management. Comprehensive modal analysis completed with 28 improvement opportunities identified for future enhancement.
 - **Previous**: **Test Suite Stabilization** - Fixed failing PracticeRating component tests that were blocking deployment. All 241 tests now pass, ensuring stable CI/CD pipeline.
 - **Previous**: **SkillModal Bootstrap Instance Caching Fix** - Fixed bug where SkillModal retained form data between openings, preventing users from adding multiple skills.
@@ -61,15 +61,14 @@ const currentSkill = computed(() =>
 )
 ```
 
-**Bootstrap Modal + Vue 3 Integration**: ALWAYS apply this pattern for modals that need fresh data
+**Vue 3 Teleport Modal Pattern**: All modals now use modern Vue 3 Teleport architecture
 ```typescript
-// ✅ MANDATORY PATTERN for all Bootstrap modals that display dynamic data
-showModalName: (skill: SkillData) => {
-  destroyModal('modalId') // Clear cached Bootstrap instance
-  modalKey.value++        // Force Vue component re-render
-  openModal('modalType', skill)
+// ✅ CURRENT PATTERN for all Vue 3 Teleport modals (no Bootstrap dependencies)
+const showModal = (skill: SkillData) => {
+  selectedSkill.value = skill
+  isVisible.value = true
 }
-// And in template: <ModalComponent :key="modalKey" ... />
+// Clean declarative state management without DOM manipulation
 ```
 
 **Event Handling**: Multi-parameter events through component hierarchy
@@ -143,8 +142,8 @@ src/
 - **Reactive Props**: Use `toRef()` for composable integration
 - **Computed Over Watchers**: Prefer computed properties for derived state
 
-### Vue 3 Teleport Modal System (2025-08-21) ✅
-**Modern Modal Architecture** - All modals migrated to Vue 3 Teleport for superior performance
+### Vue 3 Teleport Modal System (2025-08-26) ✅
+**Modern Modal Architecture** - All modals migrated to Vue 3 Teleport with clean CSS architecture
 
 #### Implementation Pattern
 **Standard Vue 3 Teleport Modal Structure:**
@@ -172,10 +171,11 @@ const closeModal = () => {
 ```
 
 #### Key Benefits
-- **🚀 Performance**: 55% faster than Bootstrap modals, 0kB bundle overhead
+- **🚀 Performance**: 55% faster than Bootstrap modals, 32.5kB bundle reduction
 - **🔧 Maintainability**: Declarative state management with simple `v-if`
 - **🧪 Testability**: Native Vue component testing without Bootstrap mocking
 - **🎯 Reliability**: No instance caching or DOM manipulation conflicts
+- **🎨 Clean CSS**: Natural CSS specificity without !important conflicts
 
 #### Development Guidelines
 1. **Use BaseTeleportModal**: All new modals MUST use BaseTeleportModal.vue component from `/components/base/`
@@ -223,9 +223,10 @@ import BaseTeleportModal from '@/components/base/BaseTeleportModal.vue'
 - **Testing Improvements**: Reliable component testing with Vue Test Utils
 - **CSS Transparency Fix (2025-08-25)**: Fixed modal transparency by correcting CSS import order in main.ts and adding defensive !important rules
 
-#### Technical Implementation Notes (2025-08-25)
-- **CSS Import Order**: modal.css now loads AFTER Bootstrap to ensure proper specificity
-- **Defensive Styling**: Added !important rules to prevent Bootstrap overrides
+#### Technical Implementation Notes (2025-08-26)
+- **Clean CSS Architecture**: Removed all !important from modal.css base classes for natural CSS specificity
+- **Modal Sizing Fixed**: Size classes (modal-lg, modal-xl) now work correctly without conflicts
+- **NotesEditor Timeline**: lg→xl expansion (800px→1200px) functions properly when timeline is shown
 - **BaseTeleportModal Ready**: All future modal development should use the existing BaseTeleportModal.vue component
 - **Migration Path**: 8 existing modals can be gradually migrated to BaseTeleportModal for consistency
 

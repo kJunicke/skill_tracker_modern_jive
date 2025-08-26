@@ -71,41 +71,41 @@
 
 /* Base Modal Styles - Shared by all Vue 3 Teleport Modals */
 .modal-overlay {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  background: var(--modal-overlay-bg) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  z-index: var(--modal-z-index) !important;
-  backdrop-filter: var(--modal-backdrop-filter) !important;
-  transition: var(--modal-transition) !important;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--modal-overlay-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--modal-z-index);
+  backdrop-filter: var(--modal-backdrop-filter);
+  transition: var(--modal-transition);
 }
 
 .modal-content {
-  background: var(--modal-bg) !important;
-  border-radius: var(--modal-border-radius) !important;
-  box-shadow: var(--modal-shadow) !important;
-  max-width: var(--modal-max-width) !important;
-  width: var(--modal-width) !important;
-  max-height: var(--modal-max-height) !important;
-  overflow: hidden !important;
-  display: flex !important;
-  flex-direction: column !important;
-  transition: var(--modal-transition) !important;
+  background: var(--modal-bg);
+  border-radius: var(--modal-border-radius);
+  box-shadow: var(--modal-shadow);
+  max-width: var(--modal-max-width);
+  width: var(--modal-width);
+  max-height: var(--modal-max-height);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: var(--modal-transition);
 }
 
 .modal-header {
-  background: var(--modal-header-bg) !important;
-  color: var(--modal-header-color) !important;
-  padding: var(--modal-header-padding) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  border-bottom: none !important;
+  background: var(--modal-header-bg);
+  color: var(--modal-header-color);
+  padding: var(--modal-header-padding);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: none;
 }
 
 .modal-title {
@@ -145,19 +145,19 @@
 }
 
 .modal-body {
-  padding: var(--modal-padding) !important;
-  overflow-y: auto !important;
-  flex: 1 !important;
-  color: var(--text-primary) !important;
+  padding: var(--modal-padding);
+  overflow-y: auto;
+  flex: 1;
+  color: var(--text-primary);
 }
 
 .modal-footer {
-  padding: var(--modal-footer-padding) !important;
-  border-top: 1px solid var(--modal-footer-border) !important;
-  display: flex !important;
-  gap: 1rem !important;
-  justify-content: flex-end !important;
-  background: var(--modal-bg) !important;
+  padding: var(--modal-footer-padding);
+  border-top: 1px solid var(--modal-footer-border);
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  background: var(--modal-bg);
 }
 
 /* Modal Size Variants */
