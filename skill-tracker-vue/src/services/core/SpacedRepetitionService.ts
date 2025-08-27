@@ -53,9 +53,12 @@ export class SpacedRepetitionService {
     try {
       // Dynamic import to avoid circular dependencies
       if (typeof window !== 'undefined') {
-        const store = (window as Record<string, unknown>).__PINIA_TRAINING_SCHEDULE__
-        if (store && store.trainingSchedule && Array.isArray((store.trainingSchedule as { trainingDays: unknown }).trainingDays)) {
-          this.trainingScheduleService.setTrainingDays((store.trainingSchedule as { trainingDays: number[] }).trainingDays)
+        const store = (window as unknown as Record<string, unknown>).__PINIA_TRAINING_SCHEDULE__
+        if (store && typeof store === 'object' && 'trainingSchedule' in store) {
+          const trainingSchedule = store.trainingSchedule as { trainingDays: unknown }
+          if (trainingSchedule && Array.isArray(trainingSchedule.trainingDays)) {
+            this.trainingScheduleService.setTrainingDays(trainingSchedule.trainingDays as number[])
+          }
         }
       }
     } catch {
