@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { createPinia, setActivePinia } from 'pinia'
 import { useSkillEventHandlers } from '../useSkillEventHandlers'
 import type { SkillData } from '@/types/skill'
 
@@ -54,6 +55,8 @@ describe('useSkillEventHandlers', () => {
   }
 
   beforeEach(() => {
+    // Setup Pinia for each test
+    setActivePinia(createPinia())
     vi.clearAllMocks()
   })
 

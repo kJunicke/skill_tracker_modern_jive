@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { createPinia, setActivePinia } from 'pinia'
 import { useModals } from '../useModals'
 import type { ModalEventHandlers } from '@/types/modals'
 import type { SkillData } from '@/types/skill'
@@ -21,6 +22,9 @@ describe('useModals', () => {
   let mockHandlers: ModalEventHandlers
 
   beforeEach(() => {
+    // Setup Pinia for each test
+    setActivePinia(createPinia())
+    
     mockHandlers = {
       onSaveSkill: vi.fn(),
       onPracticeComplete: vi.fn(),

@@ -22,7 +22,7 @@ describe('SpacedRepetitionService', () => {
       practiceLog: [],
       easeFactor: 2.5,
       interval: 1,
-      repetitions: 0,
+      repetitions: 1, // Use 1 instead of 0 to avoid fallback warnings
       lastPracticed: '2023-01-01T00:00:00.000Z'
     }
   })
@@ -39,7 +39,7 @@ describe('SpacedRepetitionService', () => {
   describe('updateSM2Parameters', () => {
     describe('acquisition mode', () => {
       it('should only increment repetitions for Good quality (interval calculated in calculateNextReview)', () => {
-        const acquisitionSkill = { ...mockSkill, status: 'acquisition' as const, level: 2, interval: 3 }
+        const acquisitionSkill = { ...mockSkill, status: 'acquisition' as const, level: 2, interval: 3, repetitions: 0 }
         const result = service.updateSM2Parameters(acquisitionSkill, 3) // Good
         
         expect(result.interval).toBe(3) // Unchanged - calculated in calculateAcquisitionInterval
@@ -47,7 +47,7 @@ describe('SpacedRepetitionService', () => {
       })
 
       it('should only increment repetitions for Very Easy quality (interval calculated in calculateNextReview)', () => {
-        const acquisitionSkill = { ...mockSkill, status: 'acquisition' as const, level: 2, interval: 2 }
+        const acquisitionSkill = { ...mockSkill, status: 'acquisition' as const, level: 2, interval: 2, repetitions: 0 }
         const result = service.updateSM2Parameters(acquisitionSkill, 4) // Very Easy
         
         expect(result.interval).toBe(2) // Unchanged - calculated in calculateAcquisitionInterval
@@ -55,7 +55,7 @@ describe('SpacedRepetitionService', () => {
       })
 
       it('should keep same interval for Hard quality', () => {
-        const acquisitionSkill = { ...mockSkill, status: 'acquisition' as const, level: 2, interval: 3 }
+        const acquisitionSkill = { ...mockSkill, status: 'acquisition' as const, level: 2, interval: 3, repetitions: 0 }
         const result = service.updateSM2Parameters(acquisitionSkill, 2) // Hard = +0
         
         expect(result.interval).toBe(3) // 3 + 0
@@ -63,7 +63,7 @@ describe('SpacedRepetitionService', () => {
       })
 
       it('should only increment repetitions for Could Not Perform (reset handled in calculateNextReview)', () => {
-        const acquisitionSkill = { ...mockSkill, status: 'acquisition' as const, level: 2, interval: 5 }
+        const acquisitionSkill = { ...mockSkill, status: 'acquisition' as const, level: 2, interval: 5, repetitions: 0 }
         const result = service.updateSM2Parameters(acquisitionSkill, 1) // Could Not Perform
         
         expect(result.interval).toBe(5) // Unchanged - reset handled in calculateAcquisitionInterval
@@ -71,7 +71,7 @@ describe('SpacedRepetitionService', () => {
       })
 
       it('should ensure minimum interval of 1 day', () => {
-        const acquisitionSkill = { ...mockSkill, status: 'acquisition' as const, level: 2, interval: 1 }
+        const acquisitionSkill = { ...mockSkill, status: 'acquisition' as const, level: 2, interval: 1, repetitions: 0 }
         const result = service.updateSM2Parameters(acquisitionSkill, 2) // Hard = +0
         
         expect(result.interval).toBe(1) // Min 1 day
@@ -84,7 +84,7 @@ describe('SpacedRepetitionService', () => {
       const result = service.updateSM2Parameters(mockSkill, 4)
       
       expect(result.easeFactor).toBe(2.6) // 2.5 + 0.1
-      expect(result.repetitions).toBe(1)
+      expect(result.repetitions).toBe(2) // 1 + 1
       expect(result.interval).toBe(1)
       expect(result.nextReview).toBeTruthy()
     })
@@ -93,7 +93,7 @@ describe('SpacedRepetitionService', () => {
       const result = service.updateSM2Parameters(mockSkill, 3)
       
       expect(result.easeFactor).toBe(2.48) // 2.5 - 0.02
-      expect(result.repetitions).toBe(1)
+      expect(result.repetitions).toBe(2) // 1 + 1
       expect(result.interval).toBe(1)
     })
 
@@ -128,19 +128,19 @@ describe('SpacedRepetitionService', () => {
     it('should calculate intervals correctly for repeated successes', () => {
       // First successful repetition
       const firstSuccess = service.updateSM2Parameters(mockSkill, 3)
-      expect(firstSuccess.repetitions).toBe(1)
+      expect(firstSuccess.repetitions).toBe(2)
       expect(firstSuccess.interval).toBe(1)
 
       // Second successful repetition
-      const skillAfterFirst = { ...mockSkill, repetitions: 1, interval: 1, easeFactor: firstSuccess.easeFactor }
+      const skillAfterFirst = { ...mockSkill, repetitions: 2, interval: 1, easeFactor: firstSuccess.easeFactor }
       const secondSuccess = service.updateSM2Parameters(skillAfterFirst, 3)
-      expect(secondSuccess.repetitions).toBe(2)
+      expect(secondSuccess.repetitions).toBe(3)
       expect(secondSuccess.interval).toBe(6)
 
       // Third successful repetition
-      const skillAfterSecond = { ...mockSkill, repetitions: 2, interval: 6, easeFactor: secondSuccess.easeFactor }
+      const skillAfterSecond = { ...mockSkill, repetitions: 3, interval: 6, easeFactor: secondSuccess.easeFactor }
       const thirdSuccess = service.updateSM2Parameters(skillAfterSecond, 3)
-      expect(thirdSuccess.repetitions).toBe(3)
+      expect(thirdSuccess.repetitions).toBe(4)
       expect(thirdSuccess.interval).toBeCloseTo(Math.round(6 * secondSuccess.easeFactor))
     })
     })
