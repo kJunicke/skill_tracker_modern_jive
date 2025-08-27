@@ -57,7 +57,12 @@ const FALLBACK_CONFIG: QualityConfig = {
  * Get quality configuration for a given quality level
  */
 function getQualityConfig(quality: number): QualityConfig {
-  return QUALITY_CONFIG[quality as QualityLevel] || FALLBACK_CONFIG
+  const config = QUALITY_CONFIG[quality as QualityLevel]
+  if (!config) {
+    console.warn(`[FALLBACK] qualityUtils.getQualityConfig: Invalid quality value "${quality}", using fallback config. Expected 1-4.`)
+    return FALLBACK_CONFIG
+  }
+  return config
 }
 
 /**

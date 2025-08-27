@@ -221,7 +221,11 @@ const getActivityColor = (type: string): string => {
     levelup: 'bg-warning',
     quicknote: 'bg-primary',
   }
-  return colors[type] || 'bg-secondary'
+  const color = colors[type]
+  if (!color) {
+    console.warn(`[FALLBACK] TrainingLogTimeline.getActivityBadgeColor: Unknown activity type "${type}", using 'bg-secondary'. Reason: type not in expected values.`)
+  }
+  return color || 'bg-secondary'
 }
 
 const getActivityColorName = (type: string): string => {
@@ -230,7 +234,11 @@ const getActivityColorName = (type: string): string => {
     levelup: 'warning',
     quicknote: 'primary',
   }
-  return colors[type] || 'secondary'
+  const color = colors[type]
+  if (!color) {
+    console.warn(`[FALLBACK] TrainingLogTimeline.getActivityColorName: Unknown activity type "${type}", using 'secondary'. Reason: type not in expected values.`)
+  }
+  return color || 'secondary'
 }
 
 const getActivityIcon = (type: string): string => {
@@ -239,17 +247,29 @@ const getActivityIcon = (type: string): string => {
     levelup: 'bi-arrow-up-circle',
     quicknote: 'bi-sticky',
   }
-  return icons[type] || 'bi-circle'
+  const icon = icons[type]
+  if (!icon) {
+    console.warn(`[FALLBACK] TrainingLogTimeline.getActivityIcon: Unknown activity type "${type}", using 'bi-circle'. Reason: type not in expected values.`)
+  }
+  return icon || 'bi-circle'
 }
 
 const getQualityColorName = (quality: number): string => {
   const colors = ['danger', 'warning', 'success', 'primary']
-  return colors[quality] || 'secondary'
+  const color = colors[quality]
+  if (!color) {
+    console.warn(`[FALLBACK] TrainingLogTimeline.getQualityColorName: Unknown quality "${quality}", using 'secondary'. Reason: quality index not in expected range.`)
+  }
+  return color || 'secondary'
 }
 
 const getQualityXP = (quality: number): number => {
   const xpValues = [0, 1, 2, 3]
-  return xpValues[quality] || 0
+  const xp = xpValues[quality]
+  if (xp === undefined) {
+    console.warn(`[FALLBACK] TrainingLogTimeline.getQualityXP: Unknown quality "${quality}", using 0. Reason: quality index not in expected range.`)
+  }
+  return xp || 0
 }
 </script>
 

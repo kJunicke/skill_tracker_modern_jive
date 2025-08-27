@@ -81,7 +81,12 @@ export class SkillService {
     const newSkill: SkillData = {
       ...data,
       id: this.generateSkillId(),
-      spacedRepetitionMode: data.spacedRepetitionMode || 'daily', // Default to daily mode
+      spacedRepetitionMode: (() => {
+        if (!data.spacedRepetitionMode) {
+          console.warn(`[FALLBACK] SkillService.createSkill: Missing spacedRepetitionMode for new skill "${data.name}", using 'daily' mode. Reason: spacedRepetitionMode is undefined.`)
+        }
+        return data.spacedRepetitionMode || 'daily'
+      })(),
       dateCreated: now,
       dateModified: now,
       progressionHistory: [],

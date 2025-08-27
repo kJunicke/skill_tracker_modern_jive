@@ -30,13 +30,21 @@ export class AnalyticsService {
    * Calculate comprehensive training statistics
    */
   calculateTrainingStats(skills: SkillData[]): TrainingStats {
-    const totalPracticeSessions = skills.reduce((sum, skill) => 
-      sum + (skill.practiceLog?.length || 0), 0
-    )
+    const totalPracticeSessions = skills.reduce((sum, skill) => {
+      const practiceCount = skill.practiceLog?.length
+      if (practiceCount === undefined) {
+        console.warn(`[FALLBACK] AnalyticsService.calculateTrainingStats: Missing practiceLog for skill "${skill.name}", using 0. Reason: practiceLog is undefined.`)
+      }
+      return sum + (practiceCount || 0)
+    }, 0)
     
-    const totalLevelUps = skills.reduce((sum, skill) => 
-      sum + (skill.progressionHistory?.length || 0), 0
-    )
+    const totalLevelUps = skills.reduce((sum, skill) => {
+      const levelUpCount = skill.progressionHistory?.length
+      if (levelUpCount === undefined) {
+        console.warn(`[FALLBACK] AnalyticsService.calculateTrainingStats: Missing progressionHistory for skill "${skill.name}", using 0. Reason: progressionHistory is undefined.`)
+      }
+      return sum + (levelUpCount || 0)
+    }, 0)
 
     const activeSkills = skills.filter(s => 
       s.status !== 'archived' && s.status !== 'backlog'
@@ -71,13 +79,26 @@ export class AnalyticsService {
    * Calculate progress metrics for a specific skill
    */
   calculateProgressMetrics(skill: SkillData) {
-    const practiceCount = skill.practiceLog?.length || 0
-    const levelUpCount = skill.progressionHistory?.length || 0
+    const practiceCount = skill.practiceLog?.length
+    if (practiceCount === undefined) {
+      console.warn(`[FALLBACK] AnalyticsService.calculateProgressMetrics: Missing practiceLog for skill "${skill.name}", using 0. Reason: practiceLog is undefined.`)
+    }
+    const calculatedPracticeCount = practiceCount || 0
+    
+    const levelUpCount = skill.progressionHistory?.length
+    if (levelUpCount === undefined) {
+      console.warn(`[FALLBACK] AnalyticsService.calculateProgressMetrics: Missing progressionHistory for skill "${skill.name}", using 0. Reason: progressionHistory is undefined.`)
+    }
+    const calculatedLevelUpCount = levelUpCount || 0
     
     // Calculate average quality from recent practice sessions
-    const recentSessions = skill.practiceLog?.slice(-10) || []
-    const averageQuality = recentSessions.length > 0 ?
-      recentSessions.reduce((sum, session) => sum + session.quality, 0) / recentSessions.length : 0
+    const recentSessions = skill.practiceLog?.slice(-10)
+    if (!recentSessions) {
+      console.warn(`[FALLBACK] AnalyticsService.calculateProgressMetrics: Missing practiceLog for recent sessions for skill "${skill.name}", using empty array. Reason: practiceLog is undefined.`)
+    }
+    const calculatedRecentSessions = recentSessions || []
+    const averageQuality = calculatedRecentSessions.length > 0 ?
+      calculatedRecentSessions.reduce((sum, session) => sum + session.quality, 0) / calculatedRecentSessions.length : 0
 
     // Calculate focus progress if in focus mode
     let focusProgress = 0
@@ -85,12 +106,18 @@ export class AnalyticsService {
       focusProgress = (skill.focusData.currentXP / skill.focusData.targetXP) * 100
     }
 
+    const isReadyForLevelUp = skill.focusData?.readyForLevelUp
+    if (skill.status === 'focus' && isReadyForLevelUp === undefined) {
+      console.warn(`[FALLBACK] AnalyticsService.calculateProgressMetrics: Missing focusData.readyForLevelUp for focus skill "${skill.name}", using false. Reason: focusData.readyForLevelUp is undefined.`)
+    }
+    const calculatedReadyForLevelUp = isReadyForLevelUp || false
+
     return {
-      practiceCount,
-      levelUpCount,
+      practiceCount: calculatedPracticeCount,
+      levelUpCount: calculatedLevelUpCount,
       averageQuality: Math.round(averageQuality * 100) / 100,
       focusProgress: Math.round(focusProgress * 100) / 100,
-      isReadyForLevelUp: skill.focusData?.readyForLevelUp || false
+      isReadyForLevelUp: calculatedReadyForLevelUp
     }
   }
 
@@ -121,8 +148,12 @@ export class AnalyticsService {
     const recentLevelUps = skills.reduce((count, skill) => {
       const recentProgressions = skill.progressionHistory?.filter(entry => 
         new Date(entry.date) >= cutoffDate
-      ) || []
-      return count + recentProgressions.length
+      )
+      if (recentProgressions === undefined) {
+        console.warn(`[FALLBACK] AnalyticsService.calculateLearningVelocity: Missing progressionHistory for skill "${skill.name}", using empty array. Reason: progressionHistory is undefined.`)
+      }
+      const calculatedProgressions = recentProgressions || []
+      return count + calculatedProgressions.length
     }, 0)
 
     return Math.round((recentLevelUps / weeks) * 100) / 100

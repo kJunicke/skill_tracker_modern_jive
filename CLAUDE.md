@@ -26,7 +26,8 @@ This file provides guidance to Claude Code when working with the Modern Jive Ski
 - **Latest Feature**: **Unified Practice & Level-Up System** - Single interface combining practice sessions and level-ups
 - **Bug Fixes**: Fixed inconsistent interval calculations and timeline display issues
 - **Code Cleanup**: Removed unused components and deprecated code (275+ lines cleaned up)
-- **LATEST (2025-08-27)**: **ACQUISITION Cumulative Interval System Fixed** - Resolved critical bug in spaced repetition where new skills showed incorrect "due in 3 days" instead of proper cumulative progression (0→1→2→3 days). Root cause: Interval was calculated in `calculateAcquisitionInterval()` but not saved to skill object, breaking cumulative system. Solution: Unified interval management in `updateSM2Parameters()` for consistent state persistence. Quality assured: 253+ tests passing, TypeScript clean, ESLint clean.
+- **LATEST (2025-08-27)**: **Comprehensive Fallback Logging System** - Implemented mandatory console logging for all fallback patterns across the codebase. Added standardized logging format `[FALLBACK] ServiceName.methodName: Missing property for identifier, using fallbackValue. Reason: specific reason.` to 80+ fallback locations. Created FALLBACKS.md documentation cataloging all fallback patterns by category. Updated CLAUDE.md with mandatory fallback logging requirement. This significantly improves debugging capabilities and error identification during development and production.
+- **Previous (2025-08-27)**: **ACQUISITION Cumulative Interval System Fixed** - Resolved critical bug in spaced repetition where new skills showed incorrect "due in 3 days" instead of proper cumulative progression (0→1→2→3 days). Root cause: Interval was calculated in `calculateAcquisitionInterval()` but not saved to skill object, breaking cumulative system. Solution: Unified interval management in `updateSM2Parameters()` for consistent state persistence. Quality assured: 253+ tests passing, TypeScript clean, ESLint clean.
 - **Previous (2025-08-27)**: **Enhanced Spaced Repetition System - Daily/Weekly Modes** - Implemented comprehensive dual-mode spaced repetition system. Skills can now be configured for daily practice (at home) or weekly practice (at training sessions). Features include global training schedule configuration (e.g., Tuesday/Thursday), intelligent weekly-based intervals (1-2-3 weeks), and automatic scheduling to next available training day. Complete with TrainingScheduleStore, TrainingScheduleService, migration logic for existing skills.
 - **Previous (2025-08-27)**: **Smooth Acquisition-Maintenance Transition** - Implemented intelligent ease factor initialization ensuring seamless interval transitions from ACQUISITION to MAINTENANCE mode at Level 5. No more interval regression - acquisition intervals are preserved or improved when transitioning to SM2 spaced repetition system.
 - **Previous (2025-08-26)**: **Acquisition Mode UX Enhancement** - Practice modal now automatically selects level-up button for skills in acquisition mode, improving user experience and workflow efficiency. This enhancement eliminates manual toggle steps for acquisition skills where level-ups are the primary goal.
@@ -52,6 +53,19 @@ This file provides guidance to Claude Code when working with the Modern Jive Ski
 - **Reference Docs**: `docs/DEVELOPMENT_WORKFLOW.md` for TDD workflow, `docs/BUG_PATTERNS.md` for common patterns
 
 ### Critical Patterns
+
+**Fallback Logging (MANDATORY)**: All fallback patterns MUST include console logging for debugging
+```typescript
+// ✅ REQUIRED PATTERN - All fallbacks must log usage with reason
+const value = obj.property
+if (!value) {
+  console.warn(`[FALLBACK] ServiceName.methodName: Missing property for ${identifier}, using ${fallbackValue}. Reason: property is ${typeof value}.`)
+}
+const result = value || fallbackValue
+
+// ❌ NEVER use silent fallbacks without logging
+const result = obj.property || fallbackValue
+```
 
 **Interval Management (Spaced Repetition)**: Unified state management for ACQUISITION/MAINTENANCE modes
 ```typescript

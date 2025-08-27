@@ -60,7 +60,7 @@ export class SpacedRepetitionService {
       }
     } catch {
       // Fallback to default training days if store is not available
-      console.warn('Could not access training schedule store, using default training days')
+      console.warn('[FALLBACK] SpacedRepetitionService.getTrainingScheduleService: Could not access training schedule store, using default training days. Reason: Store not available or accessible.')
     }
     
     return this.trainingScheduleService
@@ -97,9 +97,23 @@ export class SpacedRepetitionService {
    * Update SM2 parameters after practice session - only for MAINTENANCE status
    */
   updateSM2Parameters(skill: SkillData, quality: number): SM2Update {
-    let easeFactor = skill.easeFactor || 2.5
-    let interval = skill.status === 'acquisition' ? (skill.interval ?? 0) : (skill.interval || 1)
-    let repetitions = skill.repetitions || 0
+    let easeFactor = skill.easeFactor
+    if (!easeFactor) {
+      console.warn(`[FALLBACK] SpacedRepetitionService.updateSM2Parameters: Missing easeFactor for skill "${skill.name}", using default 2.5. Reason: easeFactor is undefined or null.`)
+      easeFactor = 2.5
+    }
+    
+    let interval = skill.status === 'acquisition' ? (skill.interval ?? 0) : skill.interval
+    if (skill.status !== 'acquisition' && !interval) {
+      console.warn(`[FALLBACK] SpacedRepetitionService.updateSM2Parameters: Missing interval for ${skill.status} skill "${skill.name}", using default 1. Reason: interval is undefined, null, or 0.`)
+      interval = 1
+    }
+    
+    let repetitions = skill.repetitions
+    if (!repetitions) {
+      console.warn(`[FALLBACK] SpacedRepetitionService.updateSM2Parameters: Missing repetitions for skill "${skill.name}", using default 0. Reason: repetitions is undefined, null, or 0.`)
+      repetitions = 0
+    }
 
     // Only apply SM2 algorithm for MAINTENANCE status
     if (skill.status === 'maintenance') {
@@ -161,7 +175,11 @@ export class SpacedRepetitionService {
    * Supports both daily and weekly spaced repetition modes
    */
   calculateNextReview(skill: SkillData, quality: number): string {
-    const lastPracticedDate = skill.lastPracticed || dateUtils.now()
+    const lastPracticedDate = skill.lastPracticed
+    if (!lastPracticedDate) {
+      console.warn(`[FALLBACK] SpacedRepetitionService.calculateNextReview: Missing lastPracticed date for skill "${skill.name}", using current date. Reason: lastPracticed is undefined or null.`)
+    }
+    const practicedDate = lastPracticedDate || dateUtils.now()
     const isWeeklyMode = skill.spacedRepetitionMode === 'weekly'
 
     switch (skill.status) {
@@ -173,14 +191,14 @@ export class SpacedRepetitionService {
       case 'acquisition':
         // Fixed intervals for building skills (Level 1-4)
         return isWeeklyMode 
-          ? this.calculateWeeklyAcquisitionInterval(skill, quality, lastPracticedDate)
-          : this.calculateAcquisitionInterval(skill, quality, lastPracticedDate)
+          ? this.calculateWeeklyAcquisitionInterval(skill, quality, practicedDate)
+          : this.calculateAcquisitionInterval(skill, quality, practicedDate)
 
       case 'maintenance':
         // SM2 algorithm for skill retention (Level 5+)
         return isWeeklyMode
-          ? this.calculateWeeklyMaintenanceInterval(skill, quality, lastPracticedDate)
-          : this.calculateMaintenanceInterval(skill, quality, lastPracticedDate)
+          ? this.calculateWeeklyMaintenanceInterval(skill, quality, practicedDate)
+          : this.calculateMaintenanceInterval(skill, quality, practicedDate)
 
       case 'focus':
         // Suggestions - normal spaced repetition is paused
@@ -189,9 +207,10 @@ export class SpacedRepetitionService {
           : this.calculateFocusInterval(skill, quality)
 
       default:
+        console.warn(`[FALLBACK] SpacedRepetitionService.calculateNextReview: Unknown skill status "${skill.status}" for skill "${skill.name}", using acquisition intervals. Reason: Status not in expected values (backlog, acquisition, maintenance, focus, archived).`)
         return isWeeklyMode
-          ? this.calculateWeeklyAcquisitionInterval(skill, quality, lastPracticedDate)
-          : this.calculateAcquisitionInterval(skill, quality, lastPracticedDate)
+          ? this.calculateWeeklyAcquisitionInterval(skill, quality, practicedDate)
+          : this.calculateAcquisitionInterval(skill, quality, practicedDate)
     }
   }
 
@@ -202,6 +221,9 @@ export class SpacedRepetitionService {
   private calculateAcquisitionInterval(skill: SkillData, quality: number, lastPracticedDate: string): string {
     // Use the interval already calculated by updateSM2Parameters
     const calculatedInterval = skill.interval ?? 1
+    if (skill.interval === undefined) {
+      console.warn(`[FALLBACK] SpacedRepetitionService.calculateAcquisitionInterval: Missing interval for skill "${skill.name}", using default 1. Reason: interval is undefined.`)
+    }
     
     return dateUtils.addDays(lastPracticedDate, calculatedInterval)
   }
@@ -211,8 +233,12 @@ export class SpacedRepetitionService {
    */
   private calculateMaintenanceInterval(skill: SkillData, quality: number, lastPracticedDate: string): string {
     // Use standard SM2 calculated interval for maintenance
-    const interval = skill.interval || 1
-    return dateUtils.addDays(lastPracticedDate, interval)
+    const interval = skill.interval
+    if (!interval) {
+      console.warn(`[FALLBACK] SpacedRepetitionService.calculateMaintenanceInterval: Missing interval for maintenance skill "${skill.name}", using default 1. Reason: interval is undefined, null, or 0.`)
+    }
+    const calculatedInterval = interval || 1
+    return dateUtils.addDays(lastPracticedDate, calculatedInterval)
   }
 
   /**
@@ -229,7 +255,11 @@ export class SpacedRepetitionService {
    */
   handleFocusProgression(skill: SkillData, quality: number): FocusProgression {
     // Initialize focus tracking if not present
-    const existingFocusData = skill.focusData || {
+    const existingFocusData = skill.focusData
+    if (!existingFocusData) {
+      console.warn(`[FALLBACK] SpacedRepetitionService.handleFocusProgression: Missing focusData for skill "${skill.name}", initializing default values. Reason: focusData is undefined or null.`)
+    }
+    const focusData = existingFocusData || {
       totalSessions: 0,
       consecutiveGoodSessions: 0,
       currentXP: 0,
@@ -245,15 +275,19 @@ export class SpacedRepetitionService {
       3: 2, // Good - 2 XP
       4: 3  // Very Easy - 3 XP
     }
-    const xpGained = xpRewards[quality as keyof typeof xpRewards] || 0
+    const xpGained = xpRewards[quality as keyof typeof xpRewards]
+    if (xpGained === undefined) {
+      console.warn(`[FALLBACK] SpacedRepetitionService.handleFocusProgression: Invalid quality "${quality}" for skill "${skill.name}", using 0 XP. Reason: Quality not in expected range 1-4.`)
+    }
+    const calculatedXP = xpGained || 0
 
     const updatedFocusData = {
-      totalSessions: existingFocusData.totalSessions + 1,
-      consecutiveGoodSessions: quality >= 3 ? existingFocusData.consecutiveGoodSessions + 1 : 0, // Good or Very Easy
-      currentXP: existingFocusData.currentXP + xpGained,
-      targetXP: existingFocusData.targetXP,
+      totalSessions: focusData.totalSessions + 1,
+      consecutiveGoodSessions: quality >= 3 ? focusData.consecutiveGoodSessions + 1 : 0, // Good or Very Easy
+      currentXP: focusData.currentXP + calculatedXP,
+      targetXP: focusData.targetXP,
       lastQuality: quality,
-      readyForLevelUp: existingFocusData.readyForLevelUp
+      readyForLevelUp: focusData.readyForLevelUp
     }
 
     // Check if ready for level up (75% of target XP)
@@ -303,12 +337,16 @@ export class SpacedRepetitionService {
       
       // Initialize ease factor to ensure smooth interval transition
       // Calculate minimum ease factor needed to maintain current interval
-      const currentInterval = skill.interval || 1
+      const currentInterval = skill.interval
+      if (!currentInterval) {
+        console.warn(`[FALLBACK] SpacedRepetitionService.checkAutomaticStatusTransitions: Missing interval for acquisition→maintenance transition of skill "${skill.name}", using default 1. Reason: interval is undefined, null, or 0.`)
+      }
+      const calculatedCurrentInterval = currentInterval || 1
       
       // SM2 formula for 3rd+ repetition: nextInterval = previousInterval * easeFactor
       // We want nextInterval >= currentInterval, so: easeFactor >= currentInterval / 6
       // (6 is the standard interval for 2nd repetition in SM2)
-      const minEaseFactor = currentInterval / 6
+      const minEaseFactor = calculatedCurrentInterval / 6
       
       // Clamp to SM2 boundaries and ensure reasonable values
       const calculatedEaseFactor = Math.max(
@@ -317,8 +355,12 @@ export class SpacedRepetitionService {
       )
       
       // Only update if we don't have an ease factor or need to increase it for smooth transition
-      const currentEaseFactor = skill.easeFactor || 2.5
-      if (!skill.easeFactor || calculatedEaseFactor > currentEaseFactor) {
+      const currentEaseFactor = skill.easeFactor
+      if (!currentEaseFactor) {
+        console.warn(`[FALLBACK] SpacedRepetitionService.checkAutomaticStatusTransitions: Missing easeFactor for skill "${skill.name}", using calculated value ${calculatedEaseFactor.toFixed(2)}. Reason: easeFactor is undefined or null.`)
+      }
+      const finalEaseFactor = currentEaseFactor || 2.5
+      if (!skill.easeFactor || calculatedEaseFactor > finalEaseFactor) {
         updates.easeFactor = calculatedEaseFactor
       }
       
@@ -326,7 +368,7 @@ export class SpacedRepetitionService {
       updates.repetitions = 2
       
       // Preserve current interval to maintain learning progress
-      updates.interval = currentInterval
+      updates.interval = calculatedCurrentInterval
     }
 
     // FOCUS → MAINTENANCE after 7 days without practice
@@ -372,7 +414,11 @@ export class SpacedRepetitionService {
    * Calculate weekly acquisition intervals - 1-2-3 week intervals instead of days
    */
   private calculateWeeklyAcquisitionInterval(skill: SkillData, quality: number, lastPracticedDate: string): string {
-    const currentInterval = skill.interval || 1
+    const currentInterval = skill.interval
+    if (!currentInterval) {
+      console.warn(`[FALLBACK] SpacedRepetitionService.calculateWeeklyAcquisitionInterval: Missing interval for weekly skill "${skill.name}", using default 1. Reason: interval is undefined, null, or 0.`)
+    }
+    const calculatedCurrentInterval = currentInterval || 1
     const bonus = SpacedRepetitionService.ACQUISITION_QUALITY_BONUSES[quality as keyof typeof SpacedRepetitionService.ACQUISITION_QUALITY_BONUSES]
     
     let newInterval: number
@@ -382,7 +428,7 @@ export class SpacedRepetitionService {
       newInterval = 1
     } else {
       // Add cumulative bonus to current interval (in weeks)
-      newInterval = currentInterval + (bonus as number)
+      newInterval = calculatedCurrentInterval + (bonus as number)
       // Ensure minimum of 1 week
       newInterval = Math.max(1, newInterval)
     }
@@ -397,11 +443,15 @@ export class SpacedRepetitionService {
    */
   private calculateWeeklyMaintenanceInterval(skill: SkillData, quality: number, lastPracticedDate: string): string {
     // Use standard SM2 calculated interval but interpret as weeks
-    const intervalInWeeks = skill.interval || 1
+    const intervalInWeeks = skill.interval
+    if (!intervalInWeeks) {
+      console.warn(`[FALLBACK] SpacedRepetitionService.calculateWeeklyMaintenanceInterval: Missing interval for weekly maintenance skill "${skill.name}", using default 1. Reason: interval is undefined, null, or 0.`)
+    }
+    const calculatedWeeklyInterval = intervalInWeeks || 1
     
     // Convert weeks to training sessions and find next training date
     const scheduleService = this.getTrainingScheduleService()
-    return scheduleService.addWeeksToTrainingDate(lastPracticedDate, intervalInWeeks)
+    return scheduleService.addWeeksToTrainingDate(lastPracticedDate, calculatedWeeklyInterval)
   }
 
   /**
