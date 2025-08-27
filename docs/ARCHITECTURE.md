@@ -88,7 +88,7 @@
 ### Core Services
 - **SkillService.ts** (197 lines): Complete business logic for skill CRUD operations, practice sessions, and level progression
 - **StorageService.ts** (48 lines): Abstraction layer for data persistence with adapter pattern
-- **SpacedRepetitionService.ts** (200 lines): Isolated SM2 algorithm implementation with focus mode logic
+- **SpacedRepetitionService.ts** (310 lines): Isolated SM2 algorithm implementation with focus mode logic and smooth acquisition-maintenance transitions
 - **AnalyticsService.ts** (154 lines): Statistics calculations, skill grouping, and progress metrics
 
 ### Adapter Pattern
