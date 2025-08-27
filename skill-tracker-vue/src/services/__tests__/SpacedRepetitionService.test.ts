@@ -418,6 +418,80 @@ describe('SpacedRepetitionService', () => {
       expect(result.status).toBe('maintenance')
     })
 
+    it('should initialize ease factor for smooth interval transition', () => {
+      const acquisitionSkillWithLargeInterval = { 
+        ...mockSkill, 
+        level: 5, 
+        status: 'acquisition' as const,
+        interval: 12 // Large interval from acquisition
+        // easeFactor will be default 2.5 from mockSkill
+      }
+      // Remove easeFactor to test initialization
+      delete (acquisitionSkillWithLargeInterval as Partial<SkillData>).easeFactor
+      
+      const result = service.checkAutomaticStatusTransitions(acquisitionSkillWithLargeInterval)
+      
+      expect(result.status).toBe('maintenance')
+      expect(result.easeFactor).toBe(2.0) // 12/6 = 2.0 (minimum to maintain interval)
+      expect(result.repetitions).toBe(2) // Set to use ease factor formula
+      expect(result.interval).toBe(12) // Preserve current interval
+    })
+
+    it('should respect SM2 ease factor boundaries', () => {
+      const acquisitionSkillWithSmallInterval = { 
+        ...mockSkill, 
+        level: 5, 
+        status: 'acquisition' as const,
+        interval: 3 // Small interval
+      }
+      // Remove easeFactor to test initialization
+      delete (acquisitionSkillWithSmallInterval as Partial<SkillData>).easeFactor
+      
+      const result = service.checkAutomaticStatusTransitions(acquisitionSkillWithSmallInterval)
+      
+      expect(result.status).toBe('maintenance')
+      // 3/6 = 0.5, but minimum is 1.3
+      expect(result.easeFactor).toBe(1.3) 
+      expect(result.repetitions).toBe(2)
+      expect(result.interval).toBe(3)
+    })
+
+    it('should handle very large intervals within max ease factor', () => {
+      const acquisitionSkillWithHugeInterval = { 
+        ...mockSkill, 
+        level: 5, 
+        status: 'acquisition' as const,
+        interval: 25 // Very large interval
+      }
+      // Remove easeFactor to test initialization
+      delete (acquisitionSkillWithHugeInterval as Partial<SkillData>).easeFactor
+      
+      const result = service.checkAutomaticStatusTransitions(acquisitionSkillWithHugeInterval)
+      
+      expect(result.status).toBe('maintenance')
+      // 25/6 = 4.17, but maximum is 3.0
+      expect(result.easeFactor).toBe(3.0) 
+      expect(result.repetitions).toBe(2)
+      expect(result.interval).toBe(25)
+    })
+
+    it('should not downgrade existing higher ease factor', () => {
+      const acquisitionSkillWithHighEaseFactor = { 
+        ...mockSkill, 
+        level: 5, 
+        status: 'acquisition' as const,
+        interval: 6,
+        easeFactor: 2.8 // Already high ease factor
+      }
+      
+      const result = service.checkAutomaticStatusTransitions(acquisitionSkillWithHighEaseFactor)
+      
+      expect(result.status).toBe('maintenance')
+      expect(result.easeFactor).toBeUndefined() // Don't downgrade from 2.8 to 1.0
+      expect(result.repetitions).toBe(2)
+      expect(result.interval).toBe(6)
+    })
+
     it('should not transition acquisition below level 5', () => {
       const acquisitionSkill = { 
         ...mockSkill, 

@@ -266,6 +266,33 @@ export class SpacedRepetitionService {
     // ACQUISITION → MAINTENANCE at Level 5
     if (skill.status === 'acquisition' && skill.level >= 5) {
       updates.status = 'maintenance'
+      
+      // Initialize ease factor to ensure smooth interval transition
+      // Calculate minimum ease factor needed to maintain current interval
+      const currentInterval = skill.interval || 1
+      
+      // SM2 formula for 3rd+ repetition: nextInterval = previousInterval * easeFactor
+      // We want nextInterval >= currentInterval, so: easeFactor >= currentInterval / 6
+      // (6 is the standard interval for 2nd repetition in SM2)
+      const minEaseFactor = currentInterval / 6
+      
+      // Clamp to SM2 boundaries and ensure reasonable values
+      const calculatedEaseFactor = Math.max(
+        SpacedRepetitionService.MIN_EASE_FACTOR,
+        Math.min(minEaseFactor, SpacedRepetitionService.MAX_EASE_FACTOR)
+      )
+      
+      // Only update if we don't have an ease factor or need to increase it for smooth transition
+      const currentEaseFactor = skill.easeFactor || 2.5
+      if (!skill.easeFactor || calculatedEaseFactor > currentEaseFactor) {
+        updates.easeFactor = calculatedEaseFactor
+      }
+      
+      // Set repetitions to 2 so next SM2 calculation uses ease factor formula
+      updates.repetitions = 2
+      
+      // Preserve current interval to maintain learning progress
+      updates.interval = currentInterval
     }
 
     // FOCUS → MAINTENANCE after 7 days without practice
