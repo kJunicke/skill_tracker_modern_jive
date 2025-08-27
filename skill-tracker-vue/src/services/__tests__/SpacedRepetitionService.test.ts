@@ -37,6 +37,49 @@ describe('SpacedRepetitionService', () => {
   })
 
   describe('updateSM2Parameters', () => {
+    describe('acquisition mode', () => {
+      it('should update interval cumulatively for Good quality', () => {
+        const acquisitionSkill = { ...mockSkill, status: 'acquisition' as const, level: 2, interval: 3 }
+        const result = service.updateSM2Parameters(acquisitionSkill, 3) // Good = +1
+        
+        expect(result.interval).toBe(4) // 3 + 1
+        expect(result.repetitions).toBe(1)
+      })
+
+      it('should update interval cumulatively for Very Easy quality', () => {
+        const acquisitionSkill = { ...mockSkill, status: 'acquisition' as const, level: 2, interval: 2 }
+        const result = service.updateSM2Parameters(acquisitionSkill, 4) // Very Easy = +2
+        
+        expect(result.interval).toBe(4) // 2 + 2
+        expect(result.repetitions).toBe(1)
+      })
+
+      it('should keep same interval for Hard quality', () => {
+        const acquisitionSkill = { ...mockSkill, status: 'acquisition' as const, level: 2, interval: 3 }
+        const result = service.updateSM2Parameters(acquisitionSkill, 2) // Hard = +0
+        
+        expect(result.interval).toBe(3) // 3 + 0
+        expect(result.repetitions).toBe(1)
+      })
+
+      it('should reset interval to 1 for Could Not Perform', () => {
+        const acquisitionSkill = { ...mockSkill, status: 'acquisition' as const, level: 2, interval: 5 }
+        const result = service.updateSM2Parameters(acquisitionSkill, 1) // Could Not Perform = reset
+        
+        expect(result.interval).toBe(1) // Reset to 1
+        expect(result.repetitions).toBe(1)
+      })
+
+      it('should ensure minimum interval of 1 day', () => {
+        const acquisitionSkill = { ...mockSkill, status: 'acquisition' as const, level: 2, interval: 1 }
+        const result = service.updateSM2Parameters(acquisitionSkill, 2) // Hard = +0
+        
+        expect(result.interval).toBe(1) // Min 1 day
+        expect(result.repetitions).toBe(1)
+      })
+    })
+
+    describe('maintenance mode', () => {
     it('should increase ease factor for very easy (quality 4)', () => {
       const result = service.updateSM2Parameters(mockSkill, 4)
       
@@ -100,6 +143,61 @@ describe('SpacedRepetitionService', () => {
       expect(thirdSuccess.repetitions).toBe(3)
       expect(thirdSuccess.interval).toBeCloseTo(Math.round(6 * secondSuccess.easeFactor))
     })
+    })
+  })
+
+  describe('calculateNextReview - acquisition cumulative intervals', () => {
+    it('should calculate next review with cumulative Good bonus', () => {
+      const acquisitionSkill = { 
+        ...mockSkill, 
+        status: 'acquisition' as const, 
+        level: 2, 
+        interval: 3,
+        lastPracticed: '2023-01-01T00:00:00.000Z'
+      }
+      
+      const result = service.calculateNextReview(acquisitionSkill, 3) // Good = +1
+      expect(result).toBe('2023-01-05T00:00:00.000Z') // 4 days later (3+1)
+    })
+
+    it('should calculate next review with cumulative Very Easy bonus', () => {
+      const acquisitionSkill = { 
+        ...mockSkill, 
+        status: 'acquisition' as const, 
+        level: 2, 
+        interval: 2,
+        lastPracticed: '2023-01-01T00:00:00.000Z'
+      }
+      
+      const result = service.calculateNextReview(acquisitionSkill, 4) // Very Easy = +2
+      expect(result).toBe('2023-01-05T00:00:00.000Z') // 4 days later (2+2)
+    })
+
+    it('should calculate next review with reset for Could Not Perform', () => {
+      const acquisitionSkill = { 
+        ...mockSkill, 
+        status: 'acquisition' as const, 
+        level: 2, 
+        interval: 7,
+        lastPracticed: '2023-01-01T00:00:00.000Z'
+      }
+      
+      const result = service.calculateNextReview(acquisitionSkill, 1) // Could Not Perform = reset to 1
+      expect(result).toBe('2023-01-02T00:00:00.000Z') // 1 day later (reset)
+    })
+
+    it('should calculate next review with no change for Hard', () => {
+      const acquisitionSkill = { 
+        ...mockSkill, 
+        status: 'acquisition' as const, 
+        level: 2, 
+        interval: 3,
+        lastPracticed: '2023-01-01T00:00:00.000Z'
+      }
+      
+      const result = service.calculateNextReview(acquisitionSkill, 2) // Hard = +0
+      expect(result).toBe('2023-01-04T00:00:00.000Z') // 3 days later (no change)
+    })
   })
 
   describe('calculateNextReview', () => {
@@ -117,10 +215,10 @@ describe('SpacedRepetitionService', () => {
     it('should use status-specific interval logic', () => {
       const baseDate = new Date('2023-01-01T00:00:00.000Z')
       
-      // Acquisition uses fixed 1-2-3 day intervals
-      const acquisitionSkill = { ...mockSkill, status: 'acquisition' as const, repetitions: 0 }
-      const acquisitionResult = service.calculateNextReview(acquisitionSkill, 3)
-      expect(new Date(acquisitionResult).getDate()).toBe(baseDate.getDate() + 1) // First interval is 1 day
+      // Acquisition uses cumulative intervals based on quality
+      const acquisitionSkill = { ...mockSkill, status: 'acquisition' as const, repetitions: 0, interval: 1 }
+      const acquisitionResult = service.calculateNextReview(acquisitionSkill, 3) // Good = +1 day
+      expect(new Date(acquisitionResult).getDate()).toBe(baseDate.getDate() + 2) // 1 + 1 = 2 days
 
       // Maintenance uses SM2 interval directly
       const maintenanceSkill = { ...mockSkill, status: 'maintenance' as const, interval: 7 }

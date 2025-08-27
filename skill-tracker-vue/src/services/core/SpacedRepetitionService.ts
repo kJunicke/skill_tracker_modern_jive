@@ -36,7 +36,13 @@ export class SpacedRepetitionService {
   private static readonly EASE_FACTOR_PENALTY = 0.15
   private static readonly EASE_FACTOR_SLIGHT_PENALTY = 0.02
 
-  private static readonly ACQUISITION_INTERVALS = [1, 2, 3] // Fixed 1-2-3 day intervals for acquisition
+  // Acquisition interval bonuses based on quality (cumulative system)
+  private static readonly ACQUISITION_QUALITY_BONUSES = {
+    1: 'reset', // Could Not Perform - reset to 1 day
+    2: 0,       // Hard - no change
+    3: 1,       // Good - add 1 day
+    4: 2        // Very Easy - add 2 days
+  } as const
 
   private static readonly FOCUS_INTERVALS = {
     1: 1, // Forgotten - practice tomorrow
@@ -88,9 +94,19 @@ export class SpacedRepetitionService {
         }
       }
     } else if (skill.status === 'acquisition') {
-      // For acquisition, just increment repetitions for interval cycling
-      // Do NOT update interval - calculateAcquisitionInterval handles this
+      // For acquisition, increment repetitions and update interval based on quality
       repetitions += 1
+      
+      // Update interval based on cumulative quality bonuses
+      const bonus = SpacedRepetitionService.ACQUISITION_QUALITY_BONUSES[quality as keyof typeof SpacedRepetitionService.ACQUISITION_QUALITY_BONUSES]
+      
+      if (bonus === 'reset') {
+        // Could Not Perform - reset to 1 day
+        interval = 1
+      } else {
+        // Add cumulative bonus to current interval
+        interval = Math.max(1, interval + (bonus as number))
+      }
     }
     // For other statuses (backlog, focus, archived), don't update SM2 parameters
 
@@ -134,20 +150,26 @@ export class SpacedRepetitionService {
   }
 
   /**
-   * Calculate acquisition intervals - fixed 1-2-3 day pattern for skill building
+   * Calculate acquisition intervals - cumulative progression based on quality
+   * Anki-inspired system: 1 day base + cumulative bonuses based on performance
    */
   private calculateAcquisitionInterval(skill: SkillData, quality: number, lastPracticedDate: string): string {
-    // For acquisition, use fixed short intervals regardless of quality
-    // Cycle through 1-2-3 day intervals to build familiarity
-    // repetitions is already incremented by updateSM2Parameters, so:
-    // repetitions=1 → use interval[0]=1 day (after 1st session)
-    // repetitions=2 → use interval[1]=2 days (after 2nd session)  
-    // repetitions=3 → use interval[2]=3 days (after 3rd session)
-    const repetitions = skill.repetitions || 0
-    const intervalIndex = Math.max(0, (repetitions - 1)) % SpacedRepetitionService.ACQUISITION_INTERVALS.length
-    const interval = SpacedRepetitionService.ACQUISITION_INTERVALS[intervalIndex]
+    const currentInterval = skill.interval || 1
+    const bonus = SpacedRepetitionService.ACQUISITION_QUALITY_BONUSES[quality as keyof typeof SpacedRepetitionService.ACQUISITION_QUALITY_BONUSES]
     
-    return dateUtils.addDays(lastPracticedDate, interval)
+    let newInterval: number
+    
+    if (bonus === 'reset') {
+      // Could Not Perform - reset to 1 day
+      newInterval = 1
+    } else {
+      // Add cumulative bonus to current interval
+      newInterval = currentInterval + (bonus as number)
+      // Ensure minimum of 1 day
+      newInterval = Math.max(1, newInterval)
+    }
+    
+    return dateUtils.addDays(lastPracticedDate, newInterval)
   }
 
   /**
