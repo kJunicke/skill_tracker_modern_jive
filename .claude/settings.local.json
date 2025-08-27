@@ -49,7 +49,9 @@
       "Bash(start http://localhost:5175/skill_tracker_modern_jive/)",
       "Bash(git log:*)",
       "Bash(start http://localhost:5176/skill_tracker_modern_jive/)",
-      "Bash(git log:*)"
+      "Bash(git log:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(echo \"Exit code: $?\")"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

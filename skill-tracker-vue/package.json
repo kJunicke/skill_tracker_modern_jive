@@ -10,7 +10,7 @@
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
-    "test:unit": "vitest",
+    "test:unit": "vitest run",
     "test:unit:watch": "vitest --watch",
     "test:coverage": "vitest run --coverage",
     "test:coverage:watch": "vitest --watch --coverage",
