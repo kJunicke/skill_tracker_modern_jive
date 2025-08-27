@@ -30,6 +30,10 @@ export interface TrainingLogModalState {
   isVisible: boolean
 }
 
+export interface TrainingScheduleModalState {
+  isVisible: boolean
+}
+
 export interface StatusTransitionModalState {
   isVisible: boolean
   selectedSkill: SkillData | null
@@ -46,6 +50,7 @@ export interface AllModalStates {
   tags: TagsModalState
   notes: NotesModalState
   trainingLog: TrainingLogModalState
+  trainingSchedule: TrainingScheduleModalState
   statusTransition: StatusTransitionModalState
 }
 

@@ -38,19 +38,19 @@ describe('SpacedRepetitionService', () => {
 
   describe('updateSM2Parameters', () => {
     describe('acquisition mode', () => {
-      it('should update interval cumulatively for Good quality', () => {
+      it('should only increment repetitions for Good quality (interval calculated in calculateNextReview)', () => {
         const acquisitionSkill = { ...mockSkill, status: 'acquisition' as const, level: 2, interval: 3 }
-        const result = service.updateSM2Parameters(acquisitionSkill, 3) // Good = +1
+        const result = service.updateSM2Parameters(acquisitionSkill, 3) // Good
         
-        expect(result.interval).toBe(4) // 3 + 1
+        expect(result.interval).toBe(3) // Unchanged - calculated in calculateAcquisitionInterval
         expect(result.repetitions).toBe(1)
       })
 
-      it('should update interval cumulatively for Very Easy quality', () => {
+      it('should only increment repetitions for Very Easy quality (interval calculated in calculateNextReview)', () => {
         const acquisitionSkill = { ...mockSkill, status: 'acquisition' as const, level: 2, interval: 2 }
-        const result = service.updateSM2Parameters(acquisitionSkill, 4) // Very Easy = +2
+        const result = service.updateSM2Parameters(acquisitionSkill, 4) // Very Easy
         
-        expect(result.interval).toBe(4) // 2 + 2
+        expect(result.interval).toBe(2) // Unchanged - calculated in calculateAcquisitionInterval
         expect(result.repetitions).toBe(1)
       })
 
@@ -62,11 +62,11 @@ describe('SpacedRepetitionService', () => {
         expect(result.repetitions).toBe(1)
       })
 
-      it('should reset interval to 1 for Could Not Perform', () => {
+      it('should only increment repetitions for Could Not Perform (reset handled in calculateNextReview)', () => {
         const acquisitionSkill = { ...mockSkill, status: 'acquisition' as const, level: 2, interval: 5 }
-        const result = service.updateSM2Parameters(acquisitionSkill, 1) // Could Not Perform = reset
+        const result = service.updateSM2Parameters(acquisitionSkill, 1) // Could Not Perform
         
-        expect(result.interval).toBe(1) // Reset to 1
+        expect(result.interval).toBe(5) // Unchanged - reset handled in calculateAcquisitionInterval
         expect(result.repetitions).toBe(1)
       })
 

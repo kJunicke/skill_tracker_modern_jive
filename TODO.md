@@ -5,6 +5,15 @@
 
 ## 🎯 Next Development Priorities
 
+### **✅ Phase 6: ACQUISITION Cumulative Interval Bug Fix COMPLETED**
+**Critical Bug Resolution (2025-08-27)**: Fixed ACQUISITION skills showing incorrect "due in 3 days" instead of proper cumulative progression (0→1→2→3 days). 
+
+**Root Cause**: Interval calculation and persistence were split between `updateSM2Parameters()` and `calculateAcquisitionInterval()`, causing state inconsistency.
+
+**Solution**: Unified interval management in `updateSM2Parameters()` for consistent state persistence across all skill statuses.
+
+**Quality Assured**: All tests passing, manual verification confirms cumulative progression works correctly.
+
 ### **✅ Phase 5: BaseTeleportModal Migration COMPLETED** 
 All 8 modal implementations successfully consolidated into shared base component:
 - [x] **TrainingLogTeleport**: 129→66 lines (49% reduction) ✅

@@ -47,7 +47,8 @@
       "Bash(start http://localhost:5174/skill_tracker_modern_jive/)",
       "WebSearch",
       "Bash(start http://localhost:5175/skill_tracker_modern_jive/)",
-      "Bash(git log:*)"
+      "Bash(git log:*)",
+      "Bash(start http://localhost:5176/skill_tracker_modern_jive/)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

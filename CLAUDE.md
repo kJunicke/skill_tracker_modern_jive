@@ -26,7 +26,8 @@ This file provides guidance to Claude Code when working with the Modern Jive Ski
 - **Latest Feature**: **Unified Practice & Level-Up System** - Single interface combining practice sessions and level-ups
 - **Bug Fixes**: Fixed inconsistent interval calculations and timeline display issues
 - **Code Cleanup**: Removed unused components and deprecated code (275+ lines cleaned up)
-- **LATEST (2025-08-27)**: **Enhanced Spaced Repetition System - Daily/Weekly Modes** - Implemented comprehensive dual-mode spaced repetition system. Skills can now be configured for daily practice (at home) or weekly practice (at training sessions). Features include global training schedule configuration (e.g., Tuesday/Thursday), intelligent weekly-based intervals (1-2-3 weeks), and automatic scheduling to next available training day. Complete with TrainingScheduleStore, TrainingScheduleService, migration logic for existing skills, and quality assurance: 253+ tests passing, TypeScript clean, ESLint clean.
+- **LATEST (2025-08-27)**: **ACQUISITION Cumulative Interval System Fixed** - Resolved critical bug in spaced repetition where new skills showed incorrect "due in 3 days" instead of proper cumulative progression (0→1→2→3 days). Root cause: Interval was calculated in `calculateAcquisitionInterval()` but not saved to skill object, breaking cumulative system. Solution: Unified interval management in `updateSM2Parameters()` for consistent state persistence. Quality assured: 253+ tests passing, TypeScript clean, ESLint clean.
+- **Previous (2025-08-27)**: **Enhanced Spaced Repetition System - Daily/Weekly Modes** - Implemented comprehensive dual-mode spaced repetition system. Skills can now be configured for daily practice (at home) or weekly practice (at training sessions). Features include global training schedule configuration (e.g., Tuesday/Thursday), intelligent weekly-based intervals (1-2-3 weeks), and automatic scheduling to next available training day. Complete with TrainingScheduleStore, TrainingScheduleService, migration logic for existing skills.
 - **Previous (2025-08-27)**: **Smooth Acquisition-Maintenance Transition** - Implemented intelligent ease factor initialization ensuring seamless interval transitions from ACQUISITION to MAINTENANCE mode at Level 5. No more interval regression - acquisition intervals are preserved or improved when transitioning to SM2 spaced repetition system.
 - **Previous (2025-08-26)**: **Acquisition Mode UX Enhancement** - Practice modal now automatically selects level-up button for skills in acquisition mode, improving user experience and workflow efficiency. This enhancement eliminates manual toggle steps for acquisition skills where level-ups are the primary goal.
 - **Previous (2025-08-26)**: **BaseTeleportModal Migration COMPLETED** - All 8 modals successfully consolidated into shared BaseTeleportModal component. Achieved ~1200 lines code reduction (40% average), DRY principle implementation, unified modal architecture, and improved maintainability. Quality assured: 241 tests passing, TypeScript clean, ESLint clean, production builds successful.
@@ -51,6 +52,20 @@ This file provides guidance to Claude Code when working with the Modern Jive Ski
 - **Reference Docs**: `docs/DEVELOPMENT_WORKFLOW.md` for TDD workflow, `docs/BUG_PATTERNS.md` for common patterns
 
 ### Critical Patterns
+
+**Interval Management (Spaced Repetition)**: Unified state management for ACQUISITION/MAINTENANCE modes
+```typescript
+// ✅ ACQUISITION intervals calculated in updateSM2Parameters() - single source of truth
+else if (skill.status === 'acquisition') {
+  repetitions += 1
+  const bonus = ACQUISITION_QUALITY_BONUSES[quality]
+  interval = bonus === 'reset' ? 1 : Math.max(1, interval + bonus)
+}
+// ✅ Status-specific fallbacks to handle 0 values correctly
+let interval = skill.status === 'acquisition' ? (skill.interval ?? 0) : (skill.interval || 1)
+// ❌ NEVER use || fallback for acquisition - prevents 0->1 progression
+```
+
 **Vue.js Reactivity**: Use `toRef(props, 'propName')` when passing props to composables
 ```typescript
 // ✅ Correct reactive prop usage
@@ -188,6 +203,7 @@ const closeModal = () => {
 4. **Slot-Based Content**: Use `#title`, default slot, and `#footer` slots for content organization
 5. **Header Types**: Use `headerType` prop for consistent styling (skill, practice, status, tags, notes, timeline, training, transition)
 6. **Accessibility Built-in**: Keyboard navigation, ARIA attributes, and focus management included
+7. **IMPORTANT**: When creating new modals, ALWAYS use BaseTeleportModal - never create custom modal components from scratch
 
 #### BaseTeleportModal Usage Pattern
 ```vue

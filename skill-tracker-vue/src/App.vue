@@ -11,6 +11,7 @@
         :filters="filters"
         :sorting="sorting"
         @show-training-log="showTrainingLogModal"
+        @show-training-schedule="showTrainingScheduleModal"
         @export-data="handleExportData"
         @import-data="handleImportData"
         @delete-all-skills="handleDeleteAllSkills"
@@ -54,6 +55,7 @@
       @notes-changed="handleNotesChanged"
       @close-notes-modal="closeNotesModal"
       @close-training-log-modal="closeTrainingLogModal"
+      @close-training-schedule-modal="closeTrainingScheduleModal"
       @status-transition-confirm="handleStatusTransitionConfirm"
       @close-status-transition-modal="closeStatusTransitionModal"
     />
@@ -120,6 +122,8 @@ const {
   closeNotesModal,
   showTrainingLogModal,
   closeTrainingLogModal,
+  showTrainingScheduleModal,
+  closeTrainingScheduleModal,
   showStatusTransitionModal,
   closeStatusTransitionModal,
   handleSaveSkill,

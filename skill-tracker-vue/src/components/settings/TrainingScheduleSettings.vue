@@ -82,10 +82,18 @@
           <button
             type="button"
             class="btn btn-outline-primary btn-sm"
-            @click="applyPreset([1, 3, 5])"
+            @click="applyPreset([2])"
           >
-            <i class="bi bi-calendar3 me-1"></i>
-            Mo-Mi-Fr (3x/week)
+            <i class="bi bi-calendar-day me-1"></i>
+            Nur Dienstag
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline-primary btn-sm"
+            @click="applyPreset([4])"
+          >
+            <i class="bi bi-calendar-day me-1"></i>
+            Nur Donnerstag
           </button>
           <button
             type="button"
@@ -93,15 +101,7 @@
             @click="applyPreset([2, 4])"
           >
             <i class="bi bi-calendar2-week me-1"></i>
-            Di-Do (2x/week)
-          </button>
-          <button
-            type="button"
-            class="btn btn-outline-primary btn-sm"
-            @click="applyPreset([6])"
-          >
-            <i class="bi bi-calendar-day me-1"></i>
-            Saturday (1x/week)
+            Di + Do (2x/week)
           </button>
           <button
             type="button"

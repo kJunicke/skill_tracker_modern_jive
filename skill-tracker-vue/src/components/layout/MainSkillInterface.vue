@@ -4,6 +4,7 @@
       <!-- Action buttons -->
       <AppActionBar
         @show-training-log="$emit('show-training-log')"
+        @show-training-schedule="$emit('show-training-schedule')"
         @export-data="$emit('export-data')"
         @import-data="$emit('import-data')"
         @delete-all-skills="$emit('delete-all-skills')"
@@ -67,6 +68,7 @@ interface Props {
 
 interface Emits {
   (e: 'show-training-log'): void
+  (e: 'show-training-schedule'): void
   (e: 'export-data'): void
   (e: 'import-data'): void
   (e: 'delete-all-skills'): void

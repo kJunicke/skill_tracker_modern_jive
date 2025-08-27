@@ -17,6 +17,7 @@ const mockStorageService = {
 
 const mockSpacedRepetitionService = {
   calculateTargetXP: vi.fn(),
+  calculateNextReview: vi.fn(),
   updateSM2Parameters: vi.fn(),
   handleFocusProgression: vi.fn(),
   resetFocusDataForLevelUp: vi.fn(),
@@ -47,6 +48,7 @@ describe('SkillService', () => {
         name: 'Test Skill 1',
         level: 3,
         status: 'acquisition',
+        spacedRepetitionMode: 'daily',
         tags: ['Move'],
         notes: 'Test notes',
         dateCreated: '2023-01-01T00:00:00.000Z',
@@ -54,7 +56,7 @@ describe('SkillService', () => {
         progressionHistory: [],
         practiceLog: [],
         easeFactor: 2.5,
-        interval: 1,
+        interval: 0,
         repetitions: 0
       }
     ]
@@ -63,6 +65,7 @@ describe('SkillService', () => {
     mockStorageService.saveSkills.mockResolvedValue(undefined)
     
     // Set up default returns for spaced repetition service
+    mockSpacedRepetitionService.calculateNextReview.mockReturnValue('2023-01-02T00:00:00.000Z')
     mockSpacedRepetitionService.checkAutomaticStatusTransitions.mockReturnValue({})
     mockSpacedRepetitionService.shouldSuggestLevelUp.mockReturnValue(false)
   })
@@ -92,7 +95,7 @@ describe('SkillService', () => {
       expect(result.dateCreated).toBeTruthy()
       expect(result.dateModified).toBeTruthy()
       expect(result.easeFactor).toBe(2.5)
-      expect(result.interval).toBe(1)
+      expect(result.interval).toBe(0)
       expect(result.repetitions).toBe(0)
       expect(mockStorageService.saveSkills).toHaveBeenCalledWith([...mockSkills, result])
     })

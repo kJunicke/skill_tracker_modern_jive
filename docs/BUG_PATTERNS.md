@@ -1,5 +1,86 @@
 # Common Bug Patterns & Solutions
 
+## State Management: Calculation vs Persistence Bug (2025-08-27)
+
+**⚠️ CRITICAL**: When complex state involves calculation AND persistence, ensure both happen in the same place.
+
+**Problem**: ACQUISITION skills showed "Due in 3 days" instead of cumulative progression (0→1→2→3 days).
+
+**Root Cause**: 
+- `updateSM2Parameters()` returned old interval (unverändert for ACQUISITION)
+- `calculateAcquisitionInterval()` calculated new interval only for nextReview
+- Skill was saved with old interval → cumulative system broken
+
+**Symptom**: Feature seems to work on first use, but doesn't progress correctly over time
+```typescript
+// ❌ BAD - Split responsibility (calculation vs persistence)
+updateSM2Parameters() { 
+  // Only increments repetitions for ACQUISITION
+  return { interval: skill.interval } // Old value!
+}
+calculateAcquisitionInterval() {
+  // Calculates new interval but doesn't save it
+  newInterval = oldInterval + bonus
+  return dateUtils.addDays(date, newInterval) // Only for nextReview!
+}
+```
+
+**Solution**: Single source of truth principle
+```typescript
+// ✅ GOOD - Unified responsibility
+updateSM2Parameters() {
+  if (skill.status === 'acquisition') {
+    repetitions += 1
+    const bonus = ACQUISITION_QUALITY_BONUSES[quality]
+    interval = bonus === 'reset' ? 1 : Math.max(1, interval + bonus) // Calculate AND store
+  }
+  return { interval, repetitions, nextReview } // Return calculated values
+}
+calculateAcquisitionInterval() {
+  // Just use already calculated interval
+  return dateUtils.addDays(date, skill.interval)
+}
+```
+
+**Debugging Strategy**: Use strategic console.log to track state flow
+```typescript
+console.log('🔍 Input:', { interval: skill.interval, quality })
+console.log('📊 Calculated:', { newInterval, nextReview })  
+console.log('✅ Saved:', { interval: updatedSkill.interval })
+```
+
+**Key Principle**: If you calculate state, you must also persist it. Never split this responsibility.
+
+## Fallback Logic: || vs ?? Bug (2025-08-27)
+
+**⚠️ SUBTLE**: JavaScript falsy values can break initialization logic when 0 is a valid value.
+
+**Problem**: New skills couldn't start with `interval: 0` for cumulative progression.
+
+**Root Cause**: 
+```typescript
+// ❌ BAD - || treats 0 as falsy
+let interval = skill.interval || 1  // 0 becomes 1!
+// Expected: 0 -> 1 -> 2 -> 3
+// Actual: 1 -> 2 -> 3 -> 4
+```
+
+**Solution**: Use status-specific fallbacks with nullish coalescing
+```typescript
+// ✅ GOOD - ?? only handles null/undefined
+let interval = skill.status === 'acquisition' 
+  ? (skill.interval ?? 0)  // Allow 0 for new skills
+  : (skill.interval || 1)  // Default 1 for other statuses
+```
+
+**Debugging Tip**: Log the actual vs expected values
+```typescript
+console.log(`skill.interval: ${skill.interval}, typeof: ${typeof skill.interval}`)
+console.log(`fallback result: ${skill.interval || 1} vs ${skill.interval ?? 0}`)
+```
+
+**Key Principle**: When 0 is valid, use ?? instead of ||. Consider context-specific fallbacks.
+
 ## Critical Vue.js Reactivity Pattern
 
 **⚠️ IMPORTANT**: When components need skill data, always access the reactive store directly, not static prop copies.

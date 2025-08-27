@@ -10,6 +10,13 @@
         @click="$emit('show-training-log')"
       />
       <BaseButton
+        variant="secondary"
+        icon="bi-calendar-week"
+        text="Training Schedule"
+        title="Configure weekly training days"
+        @click="$emit('show-training-schedule')"
+      />
+      <BaseButton
         variant="success"
         icon="bi-download"
         text="Export Data"
@@ -57,6 +64,7 @@ import BaseButton from '@/components/base/BaseButton.vue'
 
 interface Emits {
   (e: 'show-training-log'): void
+  (e: 'show-training-schedule'): void
   (e: 'export-data'): void
   (e: 'import-data'): void
   (e: 'delete-all-skills'): void

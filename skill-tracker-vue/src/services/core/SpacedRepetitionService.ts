@@ -98,7 +98,7 @@ export class SpacedRepetitionService {
    */
   updateSM2Parameters(skill: SkillData, quality: number): SM2Update {
     let easeFactor = skill.easeFactor || 2.5
-    let interval = skill.interval || 1
+    let interval = skill.status === 'acquisition' ? (skill.interval ?? 0) : (skill.interval || 1)
     let repetitions = skill.repetitions || 0
 
     // Only apply SM2 algorithm for MAINTENANCE status
@@ -129,10 +129,9 @@ export class SpacedRepetitionService {
         }
       }
     } else if (skill.status === 'acquisition') {
-      // For acquisition, increment repetitions and update interval based on quality
+      // For acquisition, update interval based on cumulative quality bonuses
       repetitions += 1
       
-      // Update interval based on cumulative quality bonuses
       const bonus = SpacedRepetitionService.ACQUISITION_QUALITY_BONUSES[quality as keyof typeof SpacedRepetitionService.ACQUISITION_QUALITY_BONUSES]
       
       if (bonus === 'reset') {
@@ -140,7 +139,9 @@ export class SpacedRepetitionService {
         interval = 1
       } else {
         // Add cumulative bonus to current interval
-        interval = Math.max(1, interval + (bonus as number))
+        interval = interval + (bonus as number)
+        // Ensure minimum of 1 day (allows 0->1 progression)
+        interval = Math.max(1, interval)
       }
     }
     // For other statuses (backlog, focus, archived), don't update SM2 parameters
@@ -199,22 +200,10 @@ export class SpacedRepetitionService {
    * Anki-inspired system: 1 day base + cumulative bonuses based on performance
    */
   private calculateAcquisitionInterval(skill: SkillData, quality: number, lastPracticedDate: string): string {
-    const currentInterval = skill.interval || 1
-    const bonus = SpacedRepetitionService.ACQUISITION_QUALITY_BONUSES[quality as keyof typeof SpacedRepetitionService.ACQUISITION_QUALITY_BONUSES]
+    // Use the interval already calculated by updateSM2Parameters
+    const calculatedInterval = skill.interval ?? 1
     
-    let newInterval: number
-    
-    if (bonus === 'reset') {
-      // Could Not Perform - reset to 1 day
-      newInterval = 1
-    } else {
-      // Add cumulative bonus to current interval
-      newInterval = currentInterval + (bonus as number)
-      // Ensure minimum of 1 day
-      newInterval = Math.max(1, newInterval)
-    }
-    
-    return dateUtils.addDays(lastPracticedDate, newInterval)
+    return dateUtils.addDays(lastPracticedDate, calculatedInterval)
   }
 
   /**

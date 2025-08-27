@@ -79,6 +79,7 @@ describe('ModalManager', () => {
     tags: { selectedSkill: SkillData | null; isVisible: boolean }
     notes: { selectedSkill: SkillData | null; isVisible: boolean }
     trainingLog: { isVisible: boolean }
+    trainingSchedule: { isVisible: boolean }
     statusTransition: { 
       selectedSkill: SkillData | null; 
       isVisible: boolean; 
@@ -101,6 +102,7 @@ describe('ModalManager', () => {
       tags: { selectedSkill: null, isVisible: false },
       notes: { selectedSkill: null, isVisible: false },
       trainingLog: { isVisible: false },
+      trainingSchedule: { isVisible: false },
       statusTransition: { 
         selectedSkill: null, 
         isVisible: false, 
@@ -126,6 +128,7 @@ describe('ModalManager', () => {
           TagsEditor: true,
           NotesEditor: true,
           TrainingLog: true,
+          TrainingScheduleModal: true,
           StatusTransitionConfirmation: true
         }
       }

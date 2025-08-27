@@ -88,8 +88,10 @@ export class SkillService {
       practiceLog: [],
       // SM2 defaults
       easeFactor: 2.5,
-      interval: 1,
-      repetitions: 0
+      interval: 0, // Start with 0 for proper cumulative progression in acquisition mode
+      repetitions: 0,
+      // New skills are due today
+      nextReview: now
     }
 
     // Initialize focus data if status is focus

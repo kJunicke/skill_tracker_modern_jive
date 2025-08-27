@@ -41,6 +41,9 @@ export function useModals(handlers: ModalEventHandlers) {
     trainingLog: {
       isVisible: false
     },
+    trainingSchedule: {
+      isVisible: false
+    },
     statusTransition: {
       isVisible: false,
       selectedSkill: null,
@@ -122,6 +125,14 @@ export function useModals(handlers: ModalEventHandlers) {
     },
     closeTrainingLogModal: () => {
       modalStates.trainingLog.isVisible = false
+    },
+    
+    // Training Schedule Modal (Vue 3 Teleport - no Bootstrap dependency)
+    showTrainingScheduleModal: () => {
+      modalStates.trainingSchedule.isVisible = true
+    },
+    closeTrainingScheduleModal: () => {
+      modalStates.trainingSchedule.isVisible = false
     },
     
     // Status Transition Modal

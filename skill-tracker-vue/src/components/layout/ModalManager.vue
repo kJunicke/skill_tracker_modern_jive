@@ -68,6 +68,11 @@
       @cancel="$emit('close-status-transition-modal')"
     />
 
+    <TrainingScheduleModal
+      :is-visible="modalStates.trainingSchedule.isVisible"
+      @close="$emit('close-training-schedule-modal')"
+    />
+
   </div>
 </template>
 
@@ -82,6 +87,7 @@ import TagsEditor from '@/components/ui/TagsEditorTeleport.vue'
 import NotesEditor from '@/components/ui/NotesEditorTeleport.vue'
 import TrainingLog from '@/components/analytics/TrainingLogTeleport.vue'
 import StatusTransitionConfirmation from '@/components/modals/StatusTransitionConfirmation.vue'
+import TrainingScheduleModal from '@/components/modals/TrainingScheduleModal.vue'
 
 interface ModalStates {
   skill: { selectedSkill: SkillData | null; isVisible: boolean }
@@ -91,6 +97,7 @@ interface ModalStates {
   tags: { selectedSkill: SkillData | null; isVisible: boolean }
   notes: { selectedSkill: SkillData | null; isVisible: boolean }
   trainingLog: { isVisible: boolean }
+  trainingSchedule: { isVisible: boolean }
   statusTransition: { 
     selectedSkill: SkillData | null; 
     isVisible: boolean; 
@@ -123,6 +130,7 @@ interface Emits {
   (e: 'notes-changed', skillId: string, newNotes: string): void
   (e: 'close-notes-modal'): void
   (e: 'close-training-log-modal'): void
+  (e: 'close-training-schedule-modal'): void
   (e: 'status-transition-confirm', skillId: string, newStatus: SkillStatus): void
   (e: 'close-status-transition-modal'): void
 }
