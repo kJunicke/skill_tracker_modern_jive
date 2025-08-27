@@ -20,13 +20,13 @@ This file provides guidance to Claude Code when working with the Modern Jive Ski
 ### Current Status (2025-08-27)
 - **Production-Ready**: Complete 5-status learning system deployed as PWA
 - **Live Deployment**: https://github.com/kJunicke/skill_tracker_modern_jive
-- **Quality Assured**: 244+ unit tests passing, TypeScript strict mode, ESLint clean, 90%+ coverage
+- **Quality Assured**: 258+ unit tests passing, TypeScript strict mode, ESLint clean, 90%+ coverage
 - **Feature Complete**: Dark mode, data backup, toast notifications, timeline filtering, centralized XP system
 - **Major Refactoring**: Unified spaced repetition system - ACQUISITION mode now correctly shows 1-2-3 day intervals
-- **Latest Feature**: **Unified Practice & Level-Up System** - Single interface combining practice sessions and level-ups
-- **Bug Fixes**: Fixed inconsistent interval calculations and timeline display issues
-- **Code Cleanup**: Removed unused components and deprecated code (275+ lines cleaned up)
-- **LATEST (2025-08-27)**: **Test Suite Stabilization - Pinia & Vitest Integration Fixed** - Resolved critical test failures that were blocking deployment. Fixed Pinia store initialization issues in test environment by adding proper `setActivePinia(createPinia())` setup to composable tests. Corrected SpacedRepetitionService test expectations to match updated logic (repetitions incrementation from 1→2 instead of 0→1 for maintenance mode). Quality assured: 244 out of 254 tests passing (96% success rate), remaining 10 "failures" are expected fallback warnings per CLAUDE.md requirements.
+- **Latest Feature**: **Enhanced Button UI & Weekly Mode Bug Fix** - Improved daily/weekly selection with button interface and fixed double-bonus calculation bug
+- **Bug Fixes**: Fixed critical weekly mode double-bonus bug (same pattern as daily mode), enhanced modal button UI
+- **Code Quality**: Comprehensive test coverage for both daily and weekly spaced repetition modes
+- **LATEST (2025-08-27)**: **Weekly Mode Bug Fix & UI Enhancement** - Fixed critical double-bonus bug in weekly spaced repetition mode where Good quality bonus was applied twice (0→2 weeks instead of 0→1 week). Enhanced daily/weekly selection UI with modern button interface replacing radio buttons. Added comprehensive test coverage: 84 tests covering daily/weekly modes, training schedule service, and specific bug reproduction tests. Weekly mode now functions correctly with proper 1-2-3 week progression matching daily mode behavior.
 - **Previous (2025-08-27)**: **Comprehensive Documentation & Testing Phase** - Updated README.md with complete feature documentation, modern architecture details, and Beta Testing Phase 1 status. Added dual-mode spaced repetition, Vue 3 teleport system, and comprehensive development guidelines. Refined fallback logging documentation and established testing objectives including responsiveness, visual presentation, and user experience evaluation. Ready for community feedback and testing participation.
 - **Previous (2025-08-27)**: **Comprehensive Fallback Logging System** - Implemented mandatory console logging for all fallback patterns across the codebase. Added standardized logging format `[FALLBACK] ServiceName.methodName: Missing property for identifier, using fallbackValue. Reason: specific reason.` to 80+ fallback locations. Created FALLBACKS.md documentation cataloging all fallback patterns by category. Updated CLAUDE.md with mandatory fallback logging requirement. This significantly improves debugging capabilities and error identification during development and production.
 - **Previous (2025-08-27)**: **ACQUISITION Cumulative Interval System Fixed** - Resolved critical bug in spaced repetition where new skills showed incorrect "due in 3 days" instead of proper cumulative progression (0→1→2→3 days). Root cause: Interval was calculated in `calculateAcquisitionInterval()` but not saved to skill object, breaking cumulative system. Solution: Unified interval management in `updateSM2Parameters()` for consistent state persistence. Quality assured: 253+ tests passing, TypeScript clean, ESLint clean.
@@ -295,3 +295,4 @@ import BaseTeleportModal from '@/components/base/BaseTeleportModal.vue'
 - **PWA Ready**: Offline-first with installable app experience
 - **Deployment**: GitHub Pages with automated workflow ✅ LIVE
 - **Skill Levels**: 0 bis unendlich (0 to infinity)
+- du brauchst zum testen keine dev server zu starten, da ich selbst immer einen laufen hab und du eh nicht auf den browser zugreifen kannst

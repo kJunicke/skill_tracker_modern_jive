@@ -414,31 +414,21 @@ export class SpacedRepetitionService {
   // Weekly Spaced Repetition Methods
 
   /**
-   * Calculate weekly acquisition intervals - 1-2-3 week intervals instead of days
+   * Calculate weekly acquisition intervals - use interval already calculated by updateSM2Parameters
+   * Fixed: Prevents double-application of quality bonuses (same bug pattern as daily mode)
    */
   private calculateWeeklyAcquisitionInterval(skill: SkillData, quality: number, lastPracticedDate: string): string {
+    // Use the interval already calculated by updateSM2Parameters
+    // This prevents double-application of quality bonuses
     const currentInterval = skill.interval
     if (!currentInterval) {
       console.warn(`[FALLBACK] SpacedRepetitionService.calculateWeeklyAcquisitionInterval: Missing interval for weekly skill "${skill.name}", using default 1. Reason: interval is undefined, null, or 0.`)
     }
-    const calculatedCurrentInterval = currentInterval || 1
-    const bonus = SpacedRepetitionService.ACQUISITION_QUALITY_BONUSES[quality as keyof typeof SpacedRepetitionService.ACQUISITION_QUALITY_BONUSES]
-    
-    let newInterval: number
-    
-    if (bonus === 'reset') {
-      // Could Not Perform - reset to 1 week
-      newInterval = 1
-    } else {
-      // Add cumulative bonus to current interval (in weeks)
-      newInterval = calculatedCurrentInterval + (bonus as number)
-      // Ensure minimum of 1 week
-      newInterval = Math.max(1, newInterval)
-    }
+    const weeklyInterval = currentInterval || 1
     
     // Convert weeks to training sessions and find next training date
     const scheduleService = this.getTrainingScheduleService()
-    return scheduleService.addWeeksToTrainingDate(lastPracticedDate, newInterval)
+    return scheduleService.addWeeksToTrainingDate(lastPracticedDate, weeklyInterval)
   }
 
   /**

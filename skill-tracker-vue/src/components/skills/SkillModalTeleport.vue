@@ -69,45 +69,46 @@
                 <i class="bi bi-calendar-week me-1"></i>
                 Spaced Repetition Mode *
               </label>
-              <div class="row g-2">
-                <div class="col-6">
-                  <div class="form-check">
-                    <input
-                      id="spacedRepetitionDaily"
-                      v-model="formData.spacedRepetitionMode"
-                      type="radio"
-                      value="daily"
-                      class="form-check-input"
-                      name="spacedRepetitionMode"
-                    >
-                    <label for="spacedRepetitionDaily" class="form-check-label">
-                      <i class="bi bi-sun me-1"></i>
-                      <strong>Daily</strong>
-                      <br>
-                      <small class="text-muted">Practice at home daily</small>
-                    </label>
-                  </div>
-                </div>
-                <div class="col-6">
-                  <div class="form-check">
-                    <input
-                      id="spacedRepetitionWeekly"
-                      v-model="formData.spacedRepetitionMode"
-                      type="radio"
-                      value="weekly"
-                      class="form-check-input"
-                      name="spacedRepetitionMode"
-                    >
-                    <label for="spacedRepetitionWeekly" class="form-check-label">
-                      <i class="bi bi-calendar-week me-1"></i>
-                      <strong>Weekly</strong>
-                      <br>
-                      <small class="text-muted">Practice at training sessions</small>
-                    </label>
-                  </div>
+              <div class="d-grid gap-2">
+                <div class="btn-group" role="group" aria-label="Spaced repetition mode selection">
+                  <input 
+                    type="radio" 
+                    class="btn-check" 
+                    name="spacedRepetitionMode" 
+                    id="spacedRepetitionDaily" 
+                    autocomplete="off"
+                    value="daily"
+                    v-model="formData.spacedRepetitionMode"
+                  >
+                  <label 
+                    class="btn btn-outline-primary d-flex flex-column align-items-center py-3" 
+                    for="spacedRepetitionDaily"
+                  >
+                    <i class="bi bi-sun fs-3 mb-2"></i>
+                    <div class="fw-bold">Daily</div>
+                    <small class="text-muted mt-1">Practice at home daily</small>
+                  </label>
+
+                  <input 
+                    type="radio" 
+                    class="btn-check" 
+                    name="spacedRepetitionMode" 
+                    id="spacedRepetitionWeekly" 
+                    autocomplete="off"
+                    value="weekly"
+                    v-model="formData.spacedRepetitionMode"
+                  >
+                  <label 
+                    class="btn btn-outline-primary d-flex flex-column align-items-center py-3" 
+                    for="spacedRepetitionWeekly"
+                  >
+                    <i class="bi bi-calendar-week fs-3 mb-2"></i>
+                    <div class="fw-bold">Weekly</div>
+                    <small class="text-muted mt-1">Practice at training sessions</small>
+                  </label>
                 </div>
               </div>
-              <small class="text-muted mt-1">
+              <small class="text-muted mt-2 d-block">
                 <i class="bi bi-info-circle me-1"></i>
                 Daily: Practice intervals in days (1-2-3 days). Weekly: Practice intervals in weeks (1-2-3 weeks).
               </small>
