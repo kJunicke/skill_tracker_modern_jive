@@ -1,6 +1,7 @@
 import type { SkillData } from '@/types/skill'
 import { dateUtils } from '@/utils/dateHelpers'
 import { calculateTargetXP } from '@/utils/focusDataHelpers'
+import { TrainingScheduleService } from './TrainingScheduleService'
 
 /**
  * SM2 Algorithm parameters update result
@@ -28,8 +29,42 @@ export interface FocusProgression {
 
 /**
  * Service for handling SM2 Spaced Repetition Algorithm and Focus Mode logic
+ * Supports both daily and weekly spaced repetition modes
  */
 export class SpacedRepetitionService {
+  private trainingScheduleService: TrainingScheduleService
+
+  constructor(trainingDays: number[] = [2, 4]) {
+    this.trainingScheduleService = new TrainingScheduleService(trainingDays)
+  }
+
+  /**
+   * Update training schedule for weekly spaced repetition
+   */
+  setTrainingSchedule(trainingDays: number[]): void {
+    this.trainingScheduleService.setTrainingDays(trainingDays)
+  }
+
+  /**
+   * Get current training schedule from store or use provided days
+   */
+  private getTrainingScheduleService(): TrainingScheduleService {
+    // Try to get training days from the store
+    try {
+      // Dynamic import to avoid circular dependencies
+      if (typeof window !== 'undefined') {
+        const store = (window as Record<string, unknown>).__PINIA_TRAINING_SCHEDULE__
+        if (store && store.trainingSchedule && Array.isArray((store.trainingSchedule as { trainingDays: unknown }).trainingDays)) {
+          this.trainingScheduleService.setTrainingDays((store.trainingSchedule as { trainingDays: number[] }).trainingDays)
+        }
+      }
+    } catch {
+      // Fallback to default training days if store is not available
+      console.warn('Could not access training schedule store, using default training days')
+    }
+    
+    return this.trainingScheduleService
+  }
   private static readonly MAX_EASE_FACTOR = 3.0
   private static readonly MIN_EASE_FACTOR = 1.3
   private static readonly EASE_FACTOR_BONUS = 0.1
@@ -122,9 +157,11 @@ export class SpacedRepetitionService {
 
   /**
    * Calculate next review date based on new 5-status learning system
+   * Supports both daily and weekly spaced repetition modes
    */
   calculateNextReview(skill: SkillData, quality: number): string {
     const lastPracticedDate = skill.lastPracticed || dateUtils.now()
+    const isWeeklyMode = skill.spacedRepetitionMode === 'weekly'
 
     switch (skill.status) {
       case 'backlog':
@@ -133,19 +170,27 @@ export class SpacedRepetitionService {
         return dateUtils.addDays(dateUtils.now(), 3650) // 10 years
 
       case 'acquisition':
-        // Fixed 1-2-3 day intervals for building skills (Level 1-4)
-        return this.calculateAcquisitionInterval(skill, quality, lastPracticedDate)
+        // Fixed intervals for building skills (Level 1-4)
+        return isWeeklyMode 
+          ? this.calculateWeeklyAcquisitionInterval(skill, quality, lastPracticedDate)
+          : this.calculateAcquisitionInterval(skill, quality, lastPracticedDate)
 
       case 'maintenance':
-        // Standard SM2 algorithm for skill retention (Level 5+)
-        return this.calculateMaintenanceInterval(skill, quality, lastPracticedDate)
+        // SM2 algorithm for skill retention (Level 5+)
+        return isWeeklyMode
+          ? this.calculateWeeklyMaintenanceInterval(skill, quality, lastPracticedDate)
+          : this.calculateMaintenanceInterval(skill, quality, lastPracticedDate)
 
       case 'focus':
-        // Daily suggestions - normal spaced repetition is paused
-        return this.calculateFocusInterval(skill, quality)
+        // Suggestions - normal spaced repetition is paused
+        return isWeeklyMode
+          ? this.calculateWeeklyFocusInterval(skill, quality)
+          : this.calculateFocusInterval(skill, quality)
 
       default:
-        return this.calculateAcquisitionInterval(skill, quality, lastPracticedDate)
+        return isWeeklyMode
+          ? this.calculateWeeklyAcquisitionInterval(skill, quality, lastPracticedDate)
+          : this.calculateAcquisitionInterval(skill, quality, lastPracticedDate)
     }
   }
 
@@ -330,5 +375,60 @@ export class SpacedRepetitionService {
       default:
         return false
     }
+  }
+
+  // Weekly Spaced Repetition Methods
+
+  /**
+   * Calculate weekly acquisition intervals - 1-2-3 week intervals instead of days
+   */
+  private calculateWeeklyAcquisitionInterval(skill: SkillData, quality: number, lastPracticedDate: string): string {
+    const currentInterval = skill.interval || 1
+    const bonus = SpacedRepetitionService.ACQUISITION_QUALITY_BONUSES[quality as keyof typeof SpacedRepetitionService.ACQUISITION_QUALITY_BONUSES]
+    
+    let newInterval: number
+    
+    if (bonus === 'reset') {
+      // Could Not Perform - reset to 1 week
+      newInterval = 1
+    } else {
+      // Add cumulative bonus to current interval (in weeks)
+      newInterval = currentInterval + (bonus as number)
+      // Ensure minimum of 1 week
+      newInterval = Math.max(1, newInterval)
+    }
+    
+    // Convert weeks to training sessions and find next training date
+    const scheduleService = this.getTrainingScheduleService()
+    return scheduleService.addWeeksToTrainingDate(lastPracticedDate, newInterval)
+  }
+
+  /**
+   * Calculate weekly maintenance intervals - SM2 algorithm with weekly multipliers
+   */
+  private calculateWeeklyMaintenanceInterval(skill: SkillData, quality: number, lastPracticedDate: string): string {
+    // Use standard SM2 calculated interval but interpret as weeks
+    const intervalInWeeks = skill.interval || 1
+    
+    // Convert weeks to training sessions and find next training date
+    const scheduleService = this.getTrainingScheduleService()
+    return scheduleService.addWeeksToTrainingDate(lastPracticedDate, intervalInWeeks)
+  }
+
+  /**
+   * Calculate weekly focus intervals - next training day
+   */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private calculateWeeklyFocusInterval(_skill: SkillData, _quality: number): string {
+    // Focus mode suggests next available training day
+    const scheduleService = this.getTrainingScheduleService()
+    return scheduleService.getNextTrainingDate(dateUtils.now())
+  }
+
+  /**
+   * Get training schedule service for external use
+   */
+  getPublicTrainingScheduleService(): TrainingScheduleService {
+    return this.getTrainingScheduleService()
   }
 }

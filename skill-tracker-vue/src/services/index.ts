@@ -2,6 +2,7 @@
 export { SkillService } from './core/SkillService'
 export { StorageService } from './core/StorageService'
 export { SpacedRepetitionService } from './core/SpacedRepetitionService'
+export { TrainingScheduleService } from './core/TrainingScheduleService'
 export { AnalyticsService } from './core/AnalyticsService'
 
 // Adapters

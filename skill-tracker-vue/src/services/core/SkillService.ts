@@ -12,6 +12,7 @@ export interface CreateSkillDto {
   name: string
   level: number
   status: SkillStatus
+  spacedRepetitionMode?: 'daily' | 'weekly'
   tags: SkillTag[]
   notes: string
 }
@@ -23,6 +24,7 @@ export interface UpdateSkillDto {
   name?: string
   level?: number
   status?: SkillStatus
+  spacedRepetitionMode?: 'daily' | 'weekly'
   tags?: SkillTag[]
   notes?: string
   nextReview?: string
@@ -79,6 +81,7 @@ export class SkillService {
     const newSkill: SkillData = {
       ...data,
       id: this.generateSkillId(),
+      spacedRepetitionMode: data.spacedRepetitionMode || 'daily', // Default to daily mode
       dateCreated: now,
       dateModified: now,
       progressionHistory: [],
@@ -323,7 +326,28 @@ export class SkillService {
    * Load all skills
    */
   async loadAllSkills(): Promise<SkillData[]> {
-    return await this.storage.loadSkills()
+    const skills = await this.storage.loadSkills()
+    
+    // Migration: Add spacedRepetitionMode to existing skills
+    let needsMigration = false
+    const migratedSkills = skills.map(skill => {
+      if (!skill.spacedRepetitionMode) {
+        needsMigration = true
+        return {
+          ...skill,
+          spacedRepetitionMode: 'daily' as const // Default existing skills to daily mode
+        }
+      }
+      return skill
+    })
+    
+    // Save migrated skills back to storage if migration was needed
+    if (needsMigration) {
+      await this.storage.saveSkills(migratedSkills)
+      console.log(`Migrated ${migratedSkills.filter(s => !skills.find(orig => orig.id === s.id && orig.spacedRepetitionMode)).length} skills to include spacedRepetitionMode`)
+    }
+    
+    return migratedSkills
   }
 
   /**

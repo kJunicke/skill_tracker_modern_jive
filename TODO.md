@@ -44,6 +44,13 @@ All 8 modal implementations successfully consolidated into shared base component
 
 ## 📊 Recent Achievements
 
+### **✅ Enhanced Spaced Repetition System - Daily/Weekly Modes (2025-08-27)**
+- **Dual-Mode Architecture** - Skills can be configured for daily practice (at home) or weekly practice (at training sessions)
+- **Training Schedule Configuration** - Global settings for weekly training days with flexible 1-7 days per week
+- **Intelligent Weekly Intervals** - Weekly-based spaced repetition (1-2-3 weeks) automatically scheduled to training days
+- **Complete Architecture**: TrainingScheduleStore, TrainingScheduleService, migration logic for existing skills
+- **Production Quality**: 253+ tests passing, TypeScript strict mode, ESLint clean, full backward compatibility
+
 ### **✅ Smooth Acquisition-Maintenance Transition (2025-08-27)**
 - **Intelligent Ease Factor Initialization** - Seamless interval transitions from ACQUISITION to MAINTENANCE at Level 5
 - **No Interval Regression** - Acquisition intervals preserved or improved when transitioning to SM2 system  

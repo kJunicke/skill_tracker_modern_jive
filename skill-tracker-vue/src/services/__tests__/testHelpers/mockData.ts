@@ -10,6 +10,7 @@ export function createMockSkill(overrides: Partial<SkillData> = {}): SkillData {
     name: 'Test Skill',
     level: 3,
     status: 'acquisition',
+    spacedRepetitionMode: 'daily',
     tags: ['Move'],
     notes: 'Test skill notes',
     dateCreated: '2023-01-01T00:00:00.000Z',

@@ -10,6 +10,9 @@ export interface SkillData {
   dateCreated: string
   dateModified: string
   
+  // Spaced Repetition Mode
+  spacedRepetitionMode?: 'daily' | 'weekly'
+  
   // SM2 Spaced Repetition Parameters
   easeFactor: number
   interval: number

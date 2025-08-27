@@ -63,6 +63,56 @@
               </select>
             </div>
 
+            <!-- Spaced Repetition Mode -->
+            <div class="mb-3">
+              <label class="form-label">
+                <i class="bi bi-calendar-week me-1"></i>
+                Spaced Repetition Mode *
+              </label>
+              <div class="row g-2">
+                <div class="col-6">
+                  <div class="form-check">
+                    <input
+                      id="spacedRepetitionDaily"
+                      v-model="formData.spacedRepetitionMode"
+                      type="radio"
+                      value="daily"
+                      class="form-check-input"
+                      name="spacedRepetitionMode"
+                    >
+                    <label for="spacedRepetitionDaily" class="form-check-label">
+                      <i class="bi bi-sun me-1"></i>
+                      <strong>Daily</strong>
+                      <br>
+                      <small class="text-muted">Practice at home daily</small>
+                    </label>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-check">
+                    <input
+                      id="spacedRepetitionWeekly"
+                      v-model="formData.spacedRepetitionMode"
+                      type="radio"
+                      value="weekly"
+                      class="form-check-input"
+                      name="spacedRepetitionMode"
+                    >
+                    <label for="spacedRepetitionWeekly" class="form-check-label">
+                      <i class="bi bi-calendar-week me-1"></i>
+                      <strong>Weekly</strong>
+                      <br>
+                      <small class="text-muted">Practice at training sessions</small>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <small class="text-muted mt-1">
+                <i class="bi bi-info-circle me-1"></i>
+                Daily: Practice intervals in days (1-2-3 days). Weekly: Practice intervals in weeks (1-2-3 weeks).
+              </small>
+            </div>
+
             <!-- Tags -->
             <div class="mb-3">
               <label class="form-label">
@@ -215,7 +265,7 @@
 <script setup lang="ts">
 import { ref, watch, computed, toRef } from 'vue'
 import type { SkillData } from '@/types/skill'
-import { SKILL_TAGS, STATUS_CONFIG, type SkillTag, type SkillStatus } from '@/utils/constants'
+import { SKILL_TAGS, STATUS_CONFIG, type SkillTag, type SkillStatus, type SpacedRepetitionMode } from '@/utils/constants'
 import { useToasts } from '@/composables/useToasts'
 import { useModalKeyboardNavigation } from '@/composables/useModalKeyboardNavigation'
 import BaseTeleportModal from '@/components/base/BaseTeleportModal.vue'
@@ -240,6 +290,7 @@ const modalRef = ref<HTMLElement | null>(null)
 const formData = ref({
   name: '',
   status: 'acquisition' as SkillStatus,
+  spacedRepetitionMode: 'daily' as SpacedRepetitionMode,
   tags: [] as SkillTag[],
   level: 0,
   notes: ''
@@ -273,6 +324,7 @@ watch(() => props.skill, (newSkill) => {
     formData.value = {
       name: newSkill.name,
       status: newSkill.status,
+      spacedRepetitionMode: newSkill.spacedRepetitionMode || 'daily', // Default for existing skills
       tags: [...newSkill.tags],
       level: newSkill.level,
       notes: newSkill.notes
@@ -295,6 +347,7 @@ function resetForm() {
   formData.value = {
     name: '',
     status: 'acquisition',
+    spacedRepetitionMode: 'daily',
     tags: [],
     level: 0,
     notes: ''

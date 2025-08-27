@@ -32,6 +32,14 @@ export const PRACTICE_QUALITIES = [
 
 export type PracticeQuality = typeof PRACTICE_QUALITIES[number]
 
+// Spaced Repetition Modes
+export const SPACED_REPETITION_MODES = [
+  'daily',
+  'weekly'
+] as const
+
+export type SpacedRepetitionMode = typeof SPACED_REPETITION_MODES[number]
+
 // Status configurations
 export const STATUS_CONFIG = {
   backlog: {
