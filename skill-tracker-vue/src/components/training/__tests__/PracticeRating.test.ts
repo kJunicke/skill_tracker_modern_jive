@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
-import PracticeRating from '../PracticeRating.vue'
+import PracticeRating from '../PracticeRatingTeleport.vue'
 import type { SkillData } from '@/types/skill'
 import type { SkillStatus } from '@/utils/constants'
 
@@ -34,8 +34,8 @@ describe('PracticeRating - Acquisition Mode Defaults', () => {
 
     await wrapper.vm.$nextTick()
 
-    // Check the component's exposed isLevelUp state directly - temporarily expect false until feature is implemented
-    expect(wrapper.vm.isLevelUp).toBe(false)
+    // Acquisition skills default to level-up enabled
+    expect(wrapper.vm.isLevelUp).toBe(true)
   })
 
   it('should default level-up to false for non-acquisition skills', async () => {
@@ -65,7 +65,7 @@ describe('PracticeRating - Acquisition Mode Defaults', () => {
     await wrapper.setProps({ isVisible: true })
     await wrapper.vm.$nextTick()
 
-    // Temporarily expect false until feature is implemented
-    expect(wrapper.vm.isLevelUp).toBe(false)
+    // Acquisition skills should reset to level-up enabled when modal reopens
+    expect(wrapper.vm.isLevelUp).toBe(true)
   })
 })

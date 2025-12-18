@@ -22,7 +22,7 @@
         </button>
       </div>
     </div>
-    <div class="card-body" style="max-height: 500px; overflow-y: auto;">
+    <div class="card-body timeline-scroll-container">
       <!-- Timeline View -->
       <div v-if="viewMode === 'timeline'" class="timeline">
         <div v-if="activities.length === 0" class="text-center py-4">
@@ -330,5 +330,24 @@ const getQualityXP = (quality: number): number => {
 
 .table-responsive {
   border-radius: 0.375rem;
+}
+
+/* Responsive timeline height */
+.timeline-scroll-container {
+  max-height: 50vh;
+  min-height: 200px;
+  overflow-y: auto;
+}
+
+@media (min-height: 800px) {
+  .timeline-scroll-container {
+    max-height: 500px;
+  }
+}
+
+@media (max-height: 600px) {
+  .timeline-scroll-container {
+    max-height: 40vh;
+  }
 }
 </style>

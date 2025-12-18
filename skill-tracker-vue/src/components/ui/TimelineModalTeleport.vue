@@ -67,6 +67,7 @@
 import { computed } from 'vue'
 import type { SkillData, ProgressionEntry, PracticeSession } from '@/types/skill'
 import { SpacedRepetitionService } from '@/services/core/SpacedRepetitionService'
+import { dateUtils } from '@/utils/dateHelpers'
 import { useSkillStore } from '@/stores/skillStore'
 import BaseTeleportModal from '@/components/base/BaseTeleportModal.vue'
 import SkillTimelineContent from './SkillTimelineContent.vue'
@@ -102,7 +103,7 @@ const nextReviewDays = computed(() => {
   if (!currentSkill.value) return 0
   const service = new SpacedRepetitionService()
   const days = service.getDaysUntilReview(currentSkill.value)
-  return days > 0 ? `${days} days` : 'Today'
+  return days > 0 ? dateUtils.formatDaysAsWeeksAndDays(days) : 'Today'
 })
 
 const handleEditLevelUpComment = (skillId: string, levelUpData: ProgressionEntry) => {

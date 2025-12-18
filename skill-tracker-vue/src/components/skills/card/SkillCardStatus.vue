@@ -54,6 +54,7 @@ import { computed } from 'vue'
 import type { SkillData } from '@/types/skill'
 import { STATUS_CONFIG } from '@/utils/constants'
 import { SpacedRepetitionService } from '@/services/core/SpacedRepetitionService'
+import { dateUtils } from '@/utils/dateHelpers'
 
 interface Props {
   skill: SkillData
@@ -82,7 +83,10 @@ const safeStatusConfig = computed(() => {
 const daysUntilReview = computed(() => {
   if (!props.skill.nextReview) return null
   const service = new SpacedRepetitionService()
-  return service.getDaysUntilReview(props.skill)
+  
+  // Use display-friendly date that respects training schedules for weekly skills
+  const displayDate = service.getDisplayNextReview(props.skill)
+  return dateUtils.daysBetween(dateUtils.now(), displayDate)
 })
 
 const isDue = computed(() => {
@@ -98,13 +102,15 @@ const reviewText = computed(() => {
   
   if (daysUntilReview.value < 0) {
     const overdueDays = Math.abs(daysUntilReview.value)
-    return `Overdue by ${overdueDays} day${overdueDays !== 1 ? 's' : ''}`
+    const formattedOverdue = dateUtils.formatDaysAsWeeksAndDays(overdueDays)
+    return `Overdue by ${formattedOverdue}`
   } else if (daysUntilReview.value === 0) {
     return 'Due today'
   } else if (daysUntilReview.value === 1) {
     return 'Due tomorrow'
   } else {
-    return `Due in ${daysUntilReview.value} days`
+    const formattedDays = dateUtils.formatDaysAsWeeksAndDays(daysUntilReview.value)
+    return `Due in ${formattedDays}`
   }
 })
 
@@ -118,6 +124,13 @@ const handleTagsEdit = () => {
 </script>
 
 <style scoped>
+.clickable-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0.375rem 0.75rem;
+}
+
 .clickable-status:hover {
   filter: brightness(1.1);
   transform: translateY(-1px);
@@ -131,5 +144,21 @@ const handleTagsEdit = () => {
 
 .badge {
   transition: all 0.2s ease-in-out;
+}
+
+/* Mobile touch-friendly targets */
+@media (max-width: 575.98px) {
+  .clickable-status {
+    min-height: 44px;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .clickable-tags .badge {
+    min-height: 36px;
+    padding: 0.5rem 0.75rem;
+    display: inline-flex;
+    align-items: center;
+  }
 }
 </style>

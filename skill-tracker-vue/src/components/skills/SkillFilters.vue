@@ -1,7 +1,7 @@
 <template>
   <div class="mb-4">
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-12 col-md-6 mb-3 mb-md-0">
         <label class="form-label fw-bold">Filter by status:</label>
         <div class="d-flex flex-wrap gap-2">
           <button 
@@ -19,7 +19,7 @@
           </button>
         </div>
       </div>
-      <div class="col-md-6">
+      <div class="col-12 col-md-6">
         <label class="form-label fw-bold">Filter by tags:</label>
         <div class="d-flex flex-wrap gap-2">
           <button 
@@ -40,7 +40,7 @@
     
     <!-- Search and Sorting -->
     <div class="row mt-3">
-      <div class="col-md-6">
+      <div class="col-12 col-md-6 mb-3 mb-md-0">
         <input 
           :value="filters.search"
           @input="handleSearchInput"
@@ -49,7 +49,7 @@
           placeholder="Search skills..."
         >
       </div>
-      <div class="col-md-6">
+      <div class="col-12 col-md-6">
         <label class="form-label fw-bold">Sort by:</label>
         <div class="d-flex gap-2 align-items-center">
           <div class="dropdown">
@@ -64,7 +64,7 @@
             <ul 
               v-show="showDropdown" 
               class="dropdown-menu show"
-              style="position: absolute; z-index: 1000;"
+              style="position: absolute; z-index: 1030;"
             >
               <li v-for="option in sortOptions" :key="option.value">
                 <a 

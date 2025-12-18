@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { SpacedRepetitionService } from '../core/SpacedRepetitionService'
-import type { SkillData } from '@/types/skill'
 import { calculateTargetXP } from '@/utils/focusDataHelpers'
+import type { SkillData } from '@/types/skill'
 
 describe('SpacedRepetitionService', () => {
   let service: SpacedRepetitionService
@@ -29,10 +29,10 @@ describe('SpacedRepetitionService', () => {
 
   describe('calculateTargetXP', () => {
     it('should calculate correct target XP for different levels', () => {
-      expect(service.calculateTargetXP(1)).toBe(6) // Math.floor(3*2 + 1/3) = 6
-      expect(service.calculateTargetXP(2)).toBe(6) // Math.floor(3*2 + 2/3) = 6
-      expect(service.calculateTargetXP(3)).toBe(7) // Math.floor(3*2 + 3/3) = 7
-      expect(service.calculateTargetXP(5)).toBe(7) // Math.floor(3*2 + 5/3) = 7
+      expect(calculateTargetXP(1)).toBe(6) // Math.floor(3*2 + 1/3) = 6
+      expect(calculateTargetXP(2)).toBe(6) // Math.floor(3*2 + 2/3) = 6
+      expect(calculateTargetXP(3)).toBe(7) // Math.floor(3*2 + 3/3) = 7
+      expect(calculateTargetXP(5)).toBe(7) // Math.floor(3*2 + 5/3) = 7
     })
   })
 
@@ -156,8 +156,11 @@ describe('SpacedRepetitionService', () => {
         lastPracticed: '2023-01-01T00:00:00.000Z'
       }
       
-      const result = service.calculateNextReview(acquisitionSkill, 3) // Good = +1
-      expect(result).toBe('2023-01-04T00:00:00.000Z') // 3 days later (uses existing interval 3)
+      // Simulate SM2 update first, then calculate next review
+      const sm2Update = service.updateSM2Parameters(acquisitionSkill, 3) // Good = +1
+      const updatedSkill = { ...acquisitionSkill, ...sm2Update }
+      const result = service.calculateNextReview(updatedSkill)
+      expect(result).toBe('2023-01-05T00:00:00.000Z') // 4 days later (3 + 1 bonus)
     })
 
     it('should calculate next review with cumulative Very Easy bonus', () => {
@@ -169,8 +172,11 @@ describe('SpacedRepetitionService', () => {
         lastPracticed: '2023-01-01T00:00:00.000Z'
       }
       
-      const result = service.calculateNextReview(acquisitionSkill, 4) // Very Easy = +2
-      expect(result).toBe('2023-01-03T00:00:00.000Z') // 2 days later (uses existing interval 2)
+      // Simulate SM2 update first, then calculate next review
+      const sm2Update = service.updateSM2Parameters(acquisitionSkill, 4) // Very Easy = +2
+      const updatedSkill = { ...acquisitionSkill, ...sm2Update }
+      const result = service.calculateNextReview(updatedSkill)
+      expect(result).toBe('2023-01-05T00:00:00.000Z') // 4 days later (2 + 2 bonus)
     })
 
     it('should calculate next review with reset for Could Not Perform', () => {
@@ -182,8 +188,11 @@ describe('SpacedRepetitionService', () => {
         lastPracticed: '2023-01-01T00:00:00.000Z'
       }
       
-      const result = service.calculateNextReview(acquisitionSkill, 1) // Could Not Perform = reset to 1
-      expect(result).toBe('2023-01-08T00:00:00.000Z') // 7 days later (uses existing interval 7)
+      // Simulate SM2 update first, then calculate next review
+      const sm2Update = service.updateSM2Parameters(acquisitionSkill, 1) // Could Not Perform = reset to 1
+      const updatedSkill = { ...acquisitionSkill, ...sm2Update }
+      const result = service.calculateNextReview(updatedSkill)
+      expect(result).toBe('2023-01-02T00:00:00.000Z') // 1 day later (reset to 1)
     })
 
     it('should calculate next review with no change for Hard', () => {
@@ -195,7 +204,10 @@ describe('SpacedRepetitionService', () => {
         lastPracticed: '2023-01-01T00:00:00.000Z'
       }
       
-      const result = service.calculateNextReview(acquisitionSkill, 2) // Hard = +0
+      // Simulate SM2 update first, then calculate next review
+      const sm2Update = service.updateSM2Parameters(acquisitionSkill, 2) // Hard = +0
+      const updatedSkill = { ...acquisitionSkill, ...sm2Update }
+      const result = service.calculateNextReview(updatedSkill)
       expect(result).toBe('2023-01-04T00:00:00.000Z') // 3 days later (no change)
     })
   })
@@ -203,7 +215,7 @@ describe('SpacedRepetitionService', () => {
   describe('calculateNextReview', () => {
     it('should return far future date for archived skills', () => {
       const archivedSkill = { ...mockSkill, status: 'archived' as const }
-      const result = service.calculateNextReview(archivedSkill, 2)
+      const result = service.calculateNextReview(archivedSkill)
       
       const nextReview = new Date(result)
       const now = new Date()
@@ -217,12 +229,15 @@ describe('SpacedRepetitionService', () => {
       
       // Acquisition uses cumulative intervals based on quality
       const acquisitionSkill = { ...mockSkill, status: 'acquisition' as const, repetitions: 0, interval: 1 }
-      const acquisitionResult = service.calculateNextReview(acquisitionSkill, 3) // Good = +1 day
-      expect(new Date(acquisitionResult).getDate()).toBe(baseDate.getDate() + 1) // uses existing interval 1
+      // Simulate SM2 update first, then calculate next review
+      const sm2Update = service.updateSM2Parameters(acquisitionSkill, 3) // Good = +1 day
+      const updatedAcquisitionSkill = { ...acquisitionSkill, ...sm2Update }
+      const acquisitionResult = service.calculateNextReview(updatedAcquisitionSkill)
+      expect(new Date(acquisitionResult).getDate()).toBe(baseDate.getDate() + 2) // 1 + 1 bonus = 2
 
       // Maintenance uses SM2 interval directly
       const maintenanceSkill = { ...mockSkill, status: 'maintenance' as const, interval: 7 }
-      const maintenanceResult = service.calculateNextReview(maintenanceSkill, 3)
+      const maintenanceResult = service.calculateNextReview(maintenanceSkill)
       expect(new Date(maintenanceResult).getDate()).toBe(baseDate.getDate() + 7)
     })
 
@@ -241,10 +256,10 @@ describe('SpacedRepetitionService', () => {
       }
 
       // Focus mode always suggests daily practice regardless of quality
-      const forgottenResult = service.calculateNextReview(focusSkill, 1)
-      const hardResult = service.calculateNextReview(focusSkill, 2)
-      const goodResult = service.calculateNextReview(focusSkill, 3)
-      const excellentResult = service.calculateNextReview(focusSkill, 4)
+      const forgottenResult = service.calculateNextReview(focusSkill)
+      const hardResult = service.calculateNextReview(focusSkill)
+      const goodResult = service.calculateNextReview(focusSkill)
+      const excellentResult = service.calculateNextReview(focusSkill)
 
       // All should return tomorrow's date (daily suggestions)
       const tomorrow = new Date()

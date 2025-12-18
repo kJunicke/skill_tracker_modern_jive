@@ -61,7 +61,7 @@ const removeToast = (id: string) => {
 
 <style scoped>
 .toast-container {
-  z-index: 1055;
+  z-index: 1060;
   padding: 1rem;
   pointer-events: none;
   max-width: 420px;

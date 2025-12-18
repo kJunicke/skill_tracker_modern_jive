@@ -89,6 +89,22 @@ const handleNotesEdit = () => {
   line-height: 1.4;
 }
 
+/* Fade-out indicator for truncated content */
+.notes-content::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2rem;
+  background: linear-gradient(transparent, var(--bg-card, #f8f9fa));
+  pointer-events: none;
+}
+
+[data-theme="dark"] .notes-content::after {
+  background: linear-gradient(transparent, var(--bg-card, #2d3748));
+}
+
 /* Deep styling for markdown renderer */
 .notes-content :deep(.markdown-base) {
   font-size: inherit;

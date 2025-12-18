@@ -95,7 +95,7 @@
         <h6><i class="bi bi-calendar3 me-2"></i>Next Review Schedule</h6>
         <p class="mb-0">
           Based on your rating, your next review will be in 
-          <strong>{{ getNextReviewDays(selectedQuality) }} days</strong>
+          <strong>{{ getFormattedNextReviewDays(selectedQuality) }}</strong>
           ({{ getNextReviewDate(selectedQuality) }})
         </p>
       </div>
@@ -126,6 +126,7 @@
 import { ref, watch } from 'vue'
 import type { SkillData } from '@/types/skill'
 import { SpacedRepetitionService } from '@/services/core/SpacedRepetitionService'
+import { dateUtils } from '@/utils/dateHelpers'
 import BaseTeleportModal from '@/components/base/BaseTeleportModal.vue'
 import BaseButton from '@/components/base/BaseButton.vue'
 
@@ -196,17 +197,30 @@ const spacedRepetitionService = new SpacedRepetitionService()
 const getNextReviewDays = (quality: number): number => {
   if (!props.skill) return 0
   
-  const nextReview = spacedRepetitionService.calculateNextReview(props.skill, quality)
+  // Simulate SM2 parameters update for the given quality
+  const simulatedUpdate = spacedRepetitionService.updateSM2Parameters(props.skill, quality)
+  const simulatedSkill = { ...props.skill, ...simulatedUpdate }
+  
+  const nextReview = spacedRepetitionService.calculateNextReview(simulatedSkill)
   const today = new Date()
   const reviewDate = new Date(nextReview)
   const diffTime = reviewDate.getTime() - today.getTime()
   return Math.ceil(diffTime / (1000 * 60 * 60 * 24))
 }
 
+const getFormattedNextReviewDays = (quality: number): string => {
+  const days = getNextReviewDays(quality)
+  return dateUtils.formatDaysAsWeeksAndDays(days)
+}
+
 const getNextReviewDate = (quality: number): string => {
   if (!props.skill) return ''
   
-  const nextReview = spacedRepetitionService.calculateNextReview(props.skill, quality)
+  // Simulate SM2 parameters update for the given quality
+  const simulatedUpdate = spacedRepetitionService.updateSM2Parameters(props.skill, quality)
+  const simulatedSkill = { ...props.skill, ...simulatedUpdate }
+  
+  const nextReview = spacedRepetitionService.calculateNextReview(simulatedSkill)
   return new Date(nextReview).toLocaleDateString('de-DE', {
     weekday: 'short',
     day: 'numeric',
@@ -215,9 +229,19 @@ const getNextReviewDate = (quality: number): string => {
 }
 
 const submitRating = () => {
-  if (!props.skill || selectedQuality.value === null) return
-  if (isLevelUp.value && !sessionNotes.value.trim()) return
-  
+  if (!props.skill) {
+    console.warn('[FALLBACK] PracticeRatingTeleport.submitRating: No skill provided. Submit cancelled.')
+    return
+  }
+  if (selectedQuality.value === null) {
+    console.warn('[FALLBACK] PracticeRatingTeleport.submitRating: No quality selected. Submit cancelled.')
+    return
+  }
+  if (isLevelUp.value && !sessionNotes.value.trim()) {
+    console.warn('[FALLBACK] PracticeRatingTeleport.submitRating: Level-up requires notes. Submit cancelled.')
+    return
+  }
+
   emit(
     'practice-complete', 
     props.skill.id, 
@@ -249,7 +273,7 @@ watch(() => props.isVisible, (isVisible) => {
       isLevelUp.value = true
     }
   }
-})
+}, { immediate: true })
 
 // Reset form when modal closes
 defineExpose({

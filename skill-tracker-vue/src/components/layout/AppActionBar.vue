@@ -81,11 +81,20 @@ defineEmits<Emits>()
   .d-flex.flex-wrap {
     gap: 0.5rem !important;
   }
-  
-  /* Ensure buttons don't get too small on mobile */
+
+  /* Allow buttons to wrap and grow on mobile */
   .d-flex.flex-wrap > * {
-    min-width: fit-content;
-    flex-shrink: 0;
+    flex-shrink: 1;
+    flex-grow: 1;
+    min-width: calc(50% - 0.5rem);
+  }
+}
+
+/* Very small screens: Stack buttons vertically */
+@media (max-width: 360px) {
+  .d-flex.flex-wrap > * {
+    flex-basis: 100%;
+    min-width: 100%;
   }
 }
 

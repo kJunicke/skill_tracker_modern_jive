@@ -107,9 +107,10 @@ Each skill can be configured for different practice environments:
 
 ### Weekly Mode  
 - **Use Case**: Group classes, scheduled training sessions
-- **Intervals**: Calculated in weeks, then mapped to training days
+- **Algorithm**: Uses same daily intervals as daily mode
+- **Display**: Rounds calculated nextReview to next available training day
 - **Training Schedule**: Configurable (e.g., Tuesday/Thursday)
-- **Intelligent Scheduling**: Automatically finds next available training day
+- **Smart Rounding**: If algorithm suggests Monday, displays Thursday
 
 ## Quality Scale (1-4)
 
@@ -128,7 +129,8 @@ Each skill can be configured for different practice environments:
 - **SkillService**: Business logic integration
 
 ### Key Methods
-- `calculateNextReview()`: Main scheduling logic
+- `calculateNextReview()`: Main scheduling logic (daily intervals for all skills)
+- `getDisplayNextReview()`: Display-only rounding for weekly skills
 - `updateSM2Parameters()`: SM2 algorithm implementation  
 - `checkAutomaticStatusTransitions()`: Status progression
 - `handleFocusProgression()`: XP and level-up logic
@@ -151,7 +153,7 @@ Each skill can be configured for different practice environments:
 - **SM2 Algorithm**: Proven spaced repetition method from SuperMemo
 - **Anki Inspiration**: Acquisition intervals based on Anki's learning phase
 - **Gamification**: XP system provides motivation and clear progress indicators
-- **Adaptive Scheduling**: Weekly mode accommodates real-world training constraints
+- **Smart Display**: Weekly mode uses display-only rounding to training days
 
 ---
 

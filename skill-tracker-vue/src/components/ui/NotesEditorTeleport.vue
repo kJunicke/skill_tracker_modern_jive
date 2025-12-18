@@ -25,7 +25,7 @@
     <div v-if="skill">
       <div class="row">
         <!-- Notes Editor Column -->
-        <div :class="showTimeline ? 'col-md-6' : 'col-12'">
+        <div :class="showTimeline ? 'col-12 col-lg-6' : 'col-12'">
           <NotesEditorPanel
             v-model:notes="editedNotes"
             :placeholder="placeholder"
@@ -38,7 +38,7 @@
         </div>
         
         <!-- Timeline Sidebar -->
-        <div v-if="showTimeline" class="col-md-6">
+        <div v-if="showTimeline" class="col-12 col-lg-6 mt-3 mt-lg-0">
           <NotesEditorTimelineSidebar
             :skill="currentSkill"
             @add-to-notes="handleAddToNotes"

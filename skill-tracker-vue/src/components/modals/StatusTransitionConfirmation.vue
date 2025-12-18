@@ -110,9 +110,15 @@ function getStatusDisplayName(status: SkillStatus | undefined): string {
 }
 
 function handleConfirm(): void {
-  if (props.skill?.id && props.suggestedStatus) {
-    emit('confirm', props.skill.id, props.suggestedStatus)
+  if (!props.skill?.id) {
+    console.warn('[FALLBACK] StatusTransitionConfirmation.handleConfirm: No skill id available. Confirm cancelled. Reason: skill is null or missing id.')
+    return
   }
+  if (!props.suggestedStatus) {
+    console.warn('[FALLBACK] StatusTransitionConfirmation.handleConfirm: No suggested status. Confirm cancelled. Reason: suggestedStatus is undefined.')
+    return
+  }
+  emit('confirm', props.skill.id, props.suggestedStatus)
 }
 
 function handleCancel(): void {

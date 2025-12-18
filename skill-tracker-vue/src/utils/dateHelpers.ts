@@ -39,5 +39,23 @@ export const dateUtils = {
     const d2 = new Date(date2)
     const diffTime = d2.getTime() - d1.getTime()
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+  },
+
+  formatDaysAsWeeksAndDays: (days: number): string => {
+    if (days < 7) {
+      return days === 1 ? '1 day' : `${days} days`
+    }
+    
+    const weeks = Math.floor(days / 7)
+    const remainingDays = days % 7
+    
+    if (remainingDays === 0) {
+      return weeks === 1 ? '1 week' : `${weeks} weeks`
+    }
+    
+    const weekText = weeks === 1 ? '1 week' : `${weeks} weeks`
+    const dayText = remainingDays === 1 ? '1 day' : `${remainingDays} days`
+    
+    return `${weekText} and ${dayText}`
   }
 }

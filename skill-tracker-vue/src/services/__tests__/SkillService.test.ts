@@ -109,10 +109,9 @@ describe('SkillService', () => {
         notes: 'Focus skill notes'
       }
 
-      mockSpacedRepetitionService.calculateTargetXP.mockReturnValue(6)
-
       const result = await skillService.createSkill(skillData)
 
+      // calculateTargetXP is called directly from focusDataHelpers, not through SpacedRepetitionService
       expect(result.focusData).toEqual({
         totalSessions: 0,
         consecutiveGoodSessions: 0,
@@ -121,7 +120,6 @@ describe('SkillService', () => {
         lastQuality: null,
         readyForLevelUp: false
       })
-      expect(mockSpacedRepetitionService.calculateTargetXP).toHaveBeenCalledWith(2)
     })
 
     it('should throw error for invalid skill data', async () => {
@@ -180,7 +178,7 @@ describe('SkillService', () => {
 
     it('should throw error when skill not found', async () => {
       await expect(skillService.updateSkill('nonexistent', { name: 'Updated' }))
-        .rejects.toThrow('Skill with id nonexistent not found')
+        .rejects.toThrow('Skill not found: nonexistent')
     })
   })
 
@@ -254,7 +252,7 @@ describe('SkillService', () => {
       const session: PracticeSessionDto = { quality: 2, note: 'Test' }
 
       await expect(skillService.recordPracticeSession('nonexistent', session))
-        .rejects.toThrow('Skill with id nonexistent not found')
+        .rejects.toThrow('Skill not found: nonexistent')
     })
   })
 
@@ -295,7 +293,7 @@ describe('SkillService', () => {
 
     it('should throw error when skill not found', async () => {
       await expect(skillService.levelUpSkill('nonexistent', 4, 'Test'))
-        .rejects.toThrow('Skill with id nonexistent not found')
+        .rejects.toThrow('Skill not found: nonexistent')
     })
   })
 

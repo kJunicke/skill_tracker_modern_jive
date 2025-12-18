@@ -5,7 +5,7 @@ import type { SkillData } from '@/types/skill'
 import { createMockSkill } from '@/services/__tests__/testHelpers'
 
 // Mock all modal components
-vi.mock('@/components/skills/SkillModal.vue', () => ({
+vi.mock('@/components/skills/SkillModalTeleport.vue', () => ({
   default: {
     name: 'SkillModal',
     template: '<div data-testid="skill-modal-component" :class="{ visible: isVisible }">Skill Modal</div>',
@@ -14,7 +14,7 @@ vi.mock('@/components/skills/SkillModal.vue', () => ({
   }
 }))
 
-vi.mock('@/components/training/PracticeRating.vue', () => ({
+vi.mock('@/components/training/PracticeRatingTeleport.vue', () => ({
   default: {
     name: 'PracticeRating',
     template: '<div data-testid="practice-rating-component" :class="{ visible: isVisible }">Practice Rating</div>',
@@ -23,7 +23,7 @@ vi.mock('@/components/training/PracticeRating.vue', () => ({
   }
 }))
 
-vi.mock('@/components/ui/TimelineModal.vue', () => ({
+vi.mock('@/components/ui/TimelineModalTeleport.vue', () => ({
   default: {
     name: 'TimelineModal',
     template: '<div data-testid="timeline-modal-component" :class="{ visible: isVisible }">Timeline Modal</div>',
@@ -32,7 +32,7 @@ vi.mock('@/components/ui/TimelineModal.vue', () => ({
   }
 }))
 
-vi.mock('@/components/ui/StatusEditor.vue', () => ({
+vi.mock('@/components/ui/StatusEditorTeleport.vue', () => ({
   default: {
     name: 'StatusEditor',
     template: '<div data-testid="status-editor-component" :class="{ visible: isVisible }">Status Editor</div>',
@@ -41,7 +41,7 @@ vi.mock('@/components/ui/StatusEditor.vue', () => ({
   }
 }))
 
-vi.mock('@/components/ui/TagsEditor.vue', () => ({
+vi.mock('@/components/ui/TagsEditorTeleport.vue', () => ({
   default: {
     name: 'TagsEditor',
     template: '<div data-testid="tags-editor-component" :class="{ visible: isVisible }">Tags Editor</div>',
@@ -50,7 +50,7 @@ vi.mock('@/components/ui/TagsEditor.vue', () => ({
   }
 }))
 
-vi.mock('@/components/ui/NotesEditor.vue', () => ({
+vi.mock('@/components/ui/NotesEditorTeleport.vue', () => ({
   default: {
     name: 'NotesEditor',
     template: '<div data-testid="notes-editor-component" :class="{ visible: isVisible }">Notes Editor</div>',
@@ -59,7 +59,7 @@ vi.mock('@/components/ui/NotesEditor.vue', () => ({
   }
 }))
 
-vi.mock('@/components/analytics/TrainingLog.vue', () => ({
+vi.mock('@/components/analytics/TrainingLogTeleport.vue', () => ({
   default: {
     name: 'TrainingLog',
     template: '<div data-testid="training-log-component" :class="{ visible: isVisible }">Training Log</div>',

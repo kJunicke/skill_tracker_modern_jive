@@ -2,7 +2,7 @@
 
 :root {
   /* Modal Layout Variables */
-  --modal-z-index: 1055;
+  --modal-z-index: 1050;
   --modal-overlay-bg: rgba(0, 0, 0, 0.5);
   --modal-backdrop-filter: blur(2px);
   --modal-border-radius: 8px;
@@ -36,7 +36,8 @@
 
 /* Dark Mode Modal Variables */
 [data-theme="dark"] {
-  --modal-overlay-bg: rgba(0, 0, 0, 0.7);
+  --modal-overlay-bg: rgba(0, 0, 0, 0.5);
+  --modal-backdrop-filter: blur(3px);
   --modal-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   --modal-bg: var(--bg-card);
   --modal-header-bg: linear-gradient(135deg, #4299e1, #3182ce);
@@ -122,8 +123,10 @@
   cursor: pointer;
   transition: opacity 0.15s ease-in-out;
   color: var(--modal-header-color);
-  width: 32px;
-  height: 32px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -171,6 +174,27 @@
 
 .modal-content.modal-xl {
   max-width: 1200px;
+}
+
+/* Tablet Responsive Modals */
+@media (min-width: 576px) and (max-width: 991.98px) {
+  .modal-content {
+    width: 90%;
+    max-width: min(600px, calc(100vw - 2rem));
+  }
+
+  .modal-content.modal-lg {
+    max-width: min(700px, calc(100vw - 2rem));
+  }
+
+  .modal-content.modal-xl {
+    max-width: min(900px, calc(100vw - 2rem));
+  }
+
+  .modal-footer .btn {
+    min-width: 100px;
+    flex: 1;
+  }
 }
 
 /* Modal Specific Header Classes */

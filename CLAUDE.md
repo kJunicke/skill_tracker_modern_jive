@@ -17,34 +17,23 @@ This file provides guidance to Claude Code when working with the Modern Jive Ski
 
 **Key Transitions**: ACQUISITION → MAINTENANCE at Level 5, FOCUS → MAINTENANCE after 7 days without practice
 
-### Current Status (2025-08-27)
+### Current Status (2025-12-18)
 - **Production-Ready**: Complete 5-status learning system deployed as PWA
 - **Live Deployment**: https://github.com/kJunicke/skill_tracker_modern_jive
-- **Quality Assured**: 258+ unit tests passing, TypeScript strict mode, ESLint clean, 90%+ coverage
+- **Quality Assured**: 291+ unit tests passing, TypeScript strict mode, ESLint clean, 90%+ coverage
+- **Mobile Optimized**: Mobile-first responsive design, 44px touch targets, z-index hierarchy
 - **Feature Complete**: Dark mode, data backup, toast notifications, timeline filtering, centralized XP system
-- **Major Refactoring**: Unified spaced repetition system - ACQUISITION mode now correctly shows 1-2-3 day intervals
-- **Latest Feature**: **Enhanced Button UI & Weekly Mode Bug Fix** - Improved daily/weekly selection with button interface and fixed double-bonus calculation bug
-- **Bug Fixes**: Fixed critical weekly mode double-bonus bug (same pattern as daily mode), enhanced modal button UI
-- **Code Quality**: Comprehensive test coverage for both daily and weekly spaced repetition modes
-- **LATEST (2025-08-27)**: **Weekly Mode Bug Fix & UI Enhancement** - Fixed critical double-bonus bug in weekly spaced repetition mode where Good quality bonus was applied twice (0→2 weeks instead of 0→1 week). Enhanced daily/weekly selection UI with modern button interface replacing radio buttons. Added comprehensive test coverage: 84 tests covering daily/weekly modes, training schedule service, and specific bug reproduction tests. Weekly mode now functions correctly with proper 1-2-3 week progression matching daily mode behavior.
-- **Previous (2025-08-27)**: **Comprehensive Documentation & Testing Phase** - Updated README.md with complete feature documentation, modern architecture details, and Beta Testing Phase 1 status. Added dual-mode spaced repetition, Vue 3 teleport system, and comprehensive development guidelines. Refined fallback logging documentation and established testing objectives including responsiveness, visual presentation, and user experience evaluation. Ready for community feedback and testing participation.
-- **Previous (2025-08-27)**: **Comprehensive Fallback Logging System** - Implemented mandatory console logging for all fallback patterns across the codebase. Added standardized logging format `[FALLBACK] ServiceName.methodName: Missing property for identifier, using fallbackValue. Reason: specific reason.` to 80+ fallback locations. Created FALLBACKS.md documentation cataloging all fallback patterns by category. Updated CLAUDE.md with mandatory fallback logging requirement. This significantly improves debugging capabilities and error identification during development and production.
-- **Previous (2025-08-27)**: **ACQUISITION Cumulative Interval System Fixed** - Resolved critical bug in spaced repetition where new skills showed incorrect "due in 3 days" instead of proper cumulative progression (0→1→2→3 days). Root cause: Interval was calculated in `calculateAcquisitionInterval()` but not saved to skill object, breaking cumulative system. Solution: Unified interval management in `updateSM2Parameters()` for consistent state persistence. Quality assured: 253+ tests passing, TypeScript clean, ESLint clean.
-- **Previous (2025-08-27)**: **Enhanced Spaced Repetition System - Daily/Weekly Modes** - Implemented comprehensive dual-mode spaced repetition system. Skills can now be configured for daily practice (at home) or weekly practice (at training sessions). Features include global training schedule configuration (e.g., Tuesday/Thursday), intelligent weekly-based intervals (1-2-3 weeks), and automatic scheduling to next available training day. Complete with TrainingScheduleStore, TrainingScheduleService, migration logic for existing skills.
-- **Previous (2025-08-27)**: **Smooth Acquisition-Maintenance Transition** - Implemented intelligent ease factor initialization ensuring seamless interval transitions from ACQUISITION to MAINTENANCE mode at Level 5. No more interval regression - acquisition intervals are preserved or improved when transitioning to SM2 spaced repetition system.
-- **Previous (2025-08-26)**: **Acquisition Mode UX Enhancement** - Practice modal now automatically selects level-up button for skills in acquisition mode, improving user experience and workflow efficiency. This enhancement eliminates manual toggle steps for acquisition skills where level-ups are the primary goal.
-- **Previous (2025-08-26)**: **BaseTeleportModal Migration COMPLETED** - All 8 modals successfully consolidated into shared BaseTeleportModal component. Achieved ~1200 lines code reduction (40% average), DRY principle implementation, unified modal architecture, and improved maintainability. Quality assured: 241 tests passing, TypeScript clean, ESLint clean, production builds successful.
-- **Previous (2025-08-26)**: **CSS Architecture Cleanup COMPLETED** - Successfully removed all `!important` from modal.css base classes, restoring natural CSS specificity. Modal sizing now works correctly - NotesEditor timeline lg→xl expansion (800px→1200px) functions properly.
-- **Previous (2025-08-25)**: **Vue 3 Teleport Modal Migration COMPLETED** - All 8 modals successfully migrated from Bootstrap to Vue 3 Teleport architecture. Achieved 55% performance improvement, eliminated 32.5kB bundle overhead, removed anti-patterns (modalKey++/destroyModal), and established modern declarative modal management. Comprehensive modal analysis completed with 28 improvement opportunities identified for future enhancement.
-- **Previous**: **Test Suite Stabilization** - Fixed failing PracticeRating component tests that were blocking deployment. All 241 tests now pass, ensuring stable CI/CD pipeline.
-- **Previous**: **SkillModal Bootstrap Instance Caching Fix** - Fixed bug where SkillModal retained form data between openings, preventing users from adding multiple skills.
-- **Code Quality**: Fixed ESLint TypeScript warnings, updated test suite for Vue 3 Teleport patterns
+- **Architecture**: Vue 3 Teleport modal system, unified spaced repetition, dual-mode (daily/weekly) training
+- **Code Quality**: Modern TypeScript patterns, comprehensive test coverage, clean CSS architecture
 
 ## Documentation Index
 
 **📋 Project Management:**
 - **[TODO.md](./TODO.md)** - Primary source for project status, priorities, and roadmap
 - **[docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)** - Component structure and service layer details
+- **[docs/SPACED_REPETITION.md](./docs/SPACED_REPETITION.md)** - SM2 algorithm implementation and spaced repetition system
+- **[docs/DEVELOPMENT_WORKFLOW.md](./docs/DEVELOPMENT_WORKFLOW.md)** - TDD workflow and development practices
+- **[docs/BUG_PATTERNS.md](./docs/BUG_PATTERNS.md)** - Common Vue.js/Bootstrap integration issues and solutions
 
 ## Development Guidelines
 
@@ -134,7 +123,7 @@ const showModal = (skill: SkillData) => {
 ### XP System Architecture
 **Centralized Focus Mode XP calculation:**
 - **Central Function**: `calculateTargetXP(level)` in `focusDataHelpers.ts` with formula `Math.floor(3 * 2 + level / 3)`
-- **Zero Hardcoding**: All services and 241+ tests use central function - change formula once, entire system updates
+- **Zero Hardcoding**: All services and 291+ tests use central function - change formula once, entire system updates
 
 ## Development Environment
 
@@ -266,7 +255,7 @@ import BaseTeleportModal from '@/components/base/BaseTeleportModal.vue'
 - **BaseTeleportModal Ready**: All future modal development should use the existing BaseTeleportModal.vue component
 - **Migration Path**: 8 existing modals can be gradually migrated to BaseTeleportModal for consistency
 
-### Testing with Vitest (241+ tests passing)
+### Testing with Vitest (291+ tests passing)
 - **Structure**: Arrange-Act-Assert pattern
 - **Mocking**: Use vi.fn() for dependency isolation
 - **Coverage**: 90%+ for service layer, component interaction testing

@@ -96,6 +96,7 @@ import { computed, ref } from 'vue'
 import type { SkillData } from '@/types/skill'
 import { SpacedRepetitionService } from '@/services/core/SpacedRepetitionService'
 import { useViewModeStore } from '@/stores/viewModeStore'
+import { dateUtils } from '@/utils/dateHelpers'
 
 // Import child components
 import SkillCardHeader from './card/SkillCardHeader.vue'
@@ -169,7 +170,11 @@ const handleCardClick = (event: MouseEvent) => {
 const nextReviewDate = computed(() => {
   if (!props.skill.nextReview) return null
   
-  const date = new Date(props.skill.nextReview)
+  // Use display-friendly date that respects training schedules for weekly skills
+  const service = new SpacedRepetitionService()
+  const displayDate = service.getDisplayNextReview(props.skill)
+  const date = new Date(displayDate)
+  
   return date.toLocaleDateString('de-DE', { 
     day: '2-digit', 
     month: '2-digit',
@@ -181,7 +186,10 @@ const nextReviewDate = computed(() => {
 const daysUntilReview = computed(() => {
   if (!props.skill.nextReview) return null
   const service = new SpacedRepetitionService()
-  return service.getDaysUntilReview(props.skill)
+  
+  // Use display-friendly date that respects training schedules for weekly skills
+  const displayDate = service.getDisplayNextReview(props.skill)
+  return dateUtils.daysBetween(dateUtils.now(), displayDate)
 })
 
 const isDue = computed(() => {

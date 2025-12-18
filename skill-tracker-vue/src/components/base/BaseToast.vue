@@ -204,8 +204,24 @@ onMounted(() => {
 /* Responsive adjustments */
 @media (max-width: 576px) {
   .toast-custom {
-    min-width: 280px;
+    min-width: min(280px, calc(100vw - 2rem));
     max-width: calc(100vw - 2rem);
+  }
+}
+
+/* Ultra-narrow screens (iPhone SE, etc.) */
+@media (max-width: 320px) {
+  .toast-custom {
+    min-width: calc(100vw - 1.5rem);
+    font-size: 0.875rem;
+  }
+
+  .toast-header {
+    padding: 0.375rem 0.5rem;
+  }
+
+  .toast-body {
+    padding: 0.5rem;
   }
 }
 </style>

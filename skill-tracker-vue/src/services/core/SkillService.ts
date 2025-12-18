@@ -4,6 +4,7 @@ import type { StorageService } from './StorageService'
 import type { SpacedRepetitionService } from './SpacedRepetitionService'
 import type { AnalyticsService } from './AnalyticsService'
 import { QualityHelpers } from '@/utils/qualityUtils'
+import { calculateTargetXP } from '@/utils/focusDataHelpers'
 
 /**
  * DTO for creating new skills
@@ -61,6 +62,10 @@ export interface ValidationResult {
  * Main service for skill management business logic
  */
 export class SkillService {
+  private static readonly ID_RANDOM_LENGTH = 9
+  private static readonly MAX_SKILL_NAME_LENGTH = 100
+  private static readonly SKILL_NOT_FOUND_ERROR = 'Skill not found'
+
   constructor(
     private storage: StorageService,
     private spacedRepetition: SpacedRepetitionService,
@@ -77,7 +82,7 @@ export class SkillService {
       throw new Error(`Invalid skill data: ${validation.errors.join(', ')}`)
     }
 
-    const now = new Date().toISOString()
+    const now = this.getCurrentTimestamp()
     const newSkill: SkillData = {
       ...data,
       id: this.generateSkillId(),
@@ -105,7 +110,7 @@ export class SkillService {
         totalSessions: 0,
         consecutiveGoodSessions: 0,
         currentXP: 0,
-        targetXP: this.spacedRepetition.calculateTargetXP(newSkill.level),
+        targetXP: calculateTargetXP(newSkill.level),
         lastQuality: null,
         readyForLevelUp: false
       }
@@ -127,14 +132,14 @@ export class SkillService {
     const skillIndex = skills.findIndex(s => s.id === id)
     
     if (skillIndex === -1) {
-      throw new Error(`Skill with id ${id} not found`)
+      throw new Error(`${SkillService.SKILL_NOT_FOUND_ERROR}: ${id}`)
     }
 
     const skill = skills[skillIndex]
     const updatedSkill: SkillData = {
       ...skill,
       ...updates,
-      dateModified: new Date().toISOString()
+      dateModified: this.getCurrentTimestamp()
     }
 
     skills[skillIndex] = updatedSkill
@@ -163,14 +168,8 @@ export class SkillService {
    * Record a practice session with optional level-up in unified system
    */
   async recordPracticeSession(skillId: string, session: PracticeSessionDto): Promise<SkillData> {
-    const skills = await this.storage.loadSkills()
-    const skill = skills.find(s => s.id === skillId)
-    
-    if (!skill) {
-      throw new Error(`Skill with id ${skillId} not found`)
-    }
-
-    const now = new Date().toISOString()
+    const skill = await this.findSkillById(skillId)
+    const now = this.getCurrentTimestamp()
     
     // Add practice session to log
     const practiceSession: PracticeSession = {
@@ -181,10 +180,7 @@ export class SkillService {
       levelUpInfo: session.levelUpInfo
     }
 
-    if (!skill.practiceLog) {
-      skill.practiceLog = []
-    }
-    skill.practiceLog.push(practiceSession)
+    this.addPracticeSession(skill, practiceSession)
 
     // Handle level-up if provided
     let levelUpUpdates = {}
@@ -197,10 +193,7 @@ export class SkillService {
         previousLevel: skill.level
       }
 
-      if (!skill.progressionHistory) {
-        skill.progressionHistory = []
-      }
-      skill.progressionHistory.push(progressionEntry)
+      this.addProgressionEntry(skill, progressionEntry)
 
       // Reset focus data if leveling up from focus mode
       const focusDataUpdate = this.spacedRepetition.resetFocusDataForLevelUp(skill, session.levelUpInfo.newLevel)
@@ -259,14 +252,8 @@ export class SkillService {
    * Level up a skill
    */
   async levelUpSkill(skillId: string, newLevel: number, comment: string): Promise<SkillData> {
-    const skills = await this.storage.loadSkills()
-    const skill = skills.find(s => s.id === skillId)
-    
-    if (!skill) {
-      throw new Error(`Skill with id ${skillId} not found`)
-    }
-
-    const now = new Date().toISOString()
+    const skill = await this.findSkillById(skillId)
+    const now = this.getCurrentTimestamp()
     
     // Add progression entry
     const progressionEntry: ProgressionEntry = {
@@ -276,10 +263,7 @@ export class SkillService {
       previousLevel: skill.level
     }
 
-    if (!skill.progressionHistory) {
-      skill.progressionHistory = []
-    }
-    skill.progressionHistory.push(progressionEntry)
+    this.addProgressionEntry(skill, progressionEntry)
 
     // Reset focus data if leveling up from focus mode
     const focusDataUpdate = this.spacedRepetition.resetFocusDataForLevelUp(skill, newLevel)
@@ -301,7 +285,7 @@ export class SkillService {
     const skill = skills.find(s => s.id === skillId)
     
     if (!skill) {
-      throw new Error(`Skill with id ${skillId} not found`)
+      throw new Error(`${SkillService.SKILL_NOT_FOUND_ERROR}: ${skillId}`)
     }
     
     const progressionEntry = skill.progressionHistory.find(p => p.level === level)
@@ -319,7 +303,7 @@ export class SkillService {
     const skill = skills.find(s => s.id === skillId)
     
     if (!skill) {
-      throw new Error(`Skill with id ${skillId} not found`)
+      throw new Error(`${SkillService.SKILL_NOT_FOUND_ERROR}: ${skillId}`)
     }
     
     const practiceSession = skill.practiceLog.find(p => p.date === date)
@@ -377,8 +361,8 @@ export class SkillService {
       errors.push('Skill name is required')
     }
 
-    if (data.name && data.name.length > 100) {
-      errors.push('Skill name must be 100 characters or less')
+    if (data.name && data.name.length > SkillService.MAX_SKILL_NAME_LENGTH) {
+      errors.push(`Skill name must be ${SkillService.MAX_SKILL_NAME_LENGTH} characters or less`)
     }
 
     if (data.level < 0) {
@@ -499,6 +483,47 @@ export class SkillService {
    * Generate unique skill ID
    */
   private generateSkillId(): string {
-    return `skill_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    return `skill_${Date.now()}_${Math.random().toString(36).substr(2, SkillService.ID_RANDOM_LENGTH)}`
+  }
+
+  /**
+   * Get current timestamp in ISO string format
+   */
+  private getCurrentTimestamp(): string {
+    return new Date().toISOString()
+  }
+
+  /**
+   * Find skill by ID or throw error if not found
+   */
+  private async findSkillById(id: string): Promise<SkillData> {
+    const skills = await this.storage.loadSkills()
+    const skill = skills.find(s => s.id === id)
+    
+    if (!skill) {
+      throw new Error(`${SkillService.SKILL_NOT_FOUND_ERROR}: ${id}`)
+    }
+    
+    return skill
+  }
+
+  /**
+   * Add progression entry to skill's history
+   */
+  private addProgressionEntry(skill: SkillData, entry: ProgressionEntry): void {
+    if (!skill.progressionHistory) {
+      skill.progressionHistory = []
+    }
+    skill.progressionHistory.push(entry)
+  }
+
+  /**
+   * Add practice session to skill's log
+   */
+  private addPracticeSession(skill: SkillData, session: PracticeSession): void {
+    if (!skill.practiceLog) {
+      skill.practiceLog = []
+    }
+    skill.practiceLog.push(session)
   }
 }

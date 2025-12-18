@@ -15,12 +15,12 @@
         </button>
         <ul :class="['dropdown-menu', 'dropdown-menu-sm-end', { 'show': dropdownOpen }]">
           <li>
-            <a class="dropdown-item" href="#" @click.prevent="handleEdit">
+            <a class="dropdown-item" href="#" @click.prevent.stop="handleEdit">
               <i class="bi bi-pencil me-2"></i>Edit
             </a>
           </li>
           <li>
-            <a class="dropdown-item text-danger" href="#" @click.prevent="handleDelete">
+            <a class="dropdown-item text-danger" href="#" @click.prevent.stop="handleDelete">
               <i class="bi bi-trash me-2"></i>Delete
             </a>
           </li>
@@ -83,6 +83,6 @@ const handleShowTimeline = () => {
 }
 
 .dropdown-menu {
-  z-index: 1000;
+  z-index: 1020;
 }
 </style>
